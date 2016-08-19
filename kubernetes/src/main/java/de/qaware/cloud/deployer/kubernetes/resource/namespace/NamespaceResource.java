@@ -1,6 +1,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
 import okhttp3.ResponseBody;
@@ -13,8 +14,8 @@ public class NamespaceResource extends BaseResource implements DeletableResource
 
     private final NamespaceClient namespaceClient;
 
-    public NamespaceResource(ResourceConfig resourceConfig) {
-        super(resourceConfig.getResourceId(), resourceConfig);
+    public NamespaceResource(ResourceConfig resourceConfig, ClientFactory clientFactory) {
+        super(resourceConfig.getResourceId(), resourceConfig, clientFactory);
         this.namespaceClient = createClient(NamespaceClient.class);
     }
 

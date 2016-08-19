@@ -2,6 +2,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -13,8 +14,8 @@ public class DeploymentResource extends BaseResource implements Resource {
 
     private final DeploymentClient deploymentClient;
 
-    public DeploymentResource(String namespace, ResourceConfig resourceConfig) {
-        super(namespace, resourceConfig);
+    public DeploymentResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
+        super(namespace, resourceConfig, clientFactory);
         this.deploymentClient = createClient(DeploymentClient.class);
     }
 

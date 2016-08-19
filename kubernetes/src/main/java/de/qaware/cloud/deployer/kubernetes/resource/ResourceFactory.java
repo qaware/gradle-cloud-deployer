@@ -1,8 +1,9 @@
 package de.qaware.cloud.deployer.kubernetes.resource;
 
-import de.qaware.cloud.deployer.kubernetes.config.auth.AuthConfig;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.ClusterConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
+import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
@@ -17,10 +18,12 @@ import java.util.List;
 public class ResourceFactory {
 
     private final NamespaceResource namespaceResource;
+    private final ClientFactory clientFactory;
 
-    public ResourceFactory(String namespace) throws IOException {
+    public ResourceFactory(String namespace, ClusterConfig clusterConfig) throws IOException {
+        this.clientFactory = new ClientFactory(clusterConfig);
         ResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
-        namespaceResource = new NamespaceResource(namespaceResourceConfig);
+        this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
     }
 
     public DeletableResource getNamespaceResource() {
@@ -42,16 +45,16 @@ public class ResourceFactory {
             case "extensions/v1beta1":
                 switch (resourceType) {
                     case "Deployment":
-                        return new DeploymentResource(namespaceResource.getNamespace(), resourceConfig);
+                        return new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                     default:
                         throw new IllegalArgumentException("Unknown Kubernetes resource type for api version " + resourceVersion);
                 }
             case "v1":
                 switch (resourceType) {
                     case "Pod":
-                        return new PodResource(namespaceResource.getNamespace(), resourceConfig);
+                        return new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                     case "Service":
-                        return new ServiceResource(namespaceResource.getNamespace(), resourceConfig);
+                        return new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                     default:
                         throw new IllegalArgumentException("Unknown Kubernetes resource type for api version " + resourceVersion);
                 }

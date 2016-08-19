@@ -2,6 +2,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.pod;
 
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -13,8 +14,8 @@ public class PodResource extends BaseResource implements Resource {
 
     private final PodClient podClient;
 
-    public PodResource(String namespace, ResourceConfig resourceConfig) {
-        super(namespace, resourceConfig);
+    public PodResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
+        super(namespace, resourceConfig, clientFactory);
         this.podClient = createClient(PodClient.class);
     }
 

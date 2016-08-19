@@ -4,18 +4,17 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import retrofit2.Retrofit;
 
 public abstract class BaseResource {
 
     private final String namespace;
     private final ResourceConfig resourceConfig;
-    private final Retrofit retrofit;
+    private final ClientFactory clientFactory;
 
-    public BaseResource(String namespace, ResourceConfig resourceConfig) {
+    public BaseResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
         this.namespace = namespace;
         this.resourceConfig = resourceConfig;
-        this.retrofit = createRetrofit();
+        this.clientFactory = clientFactory;
     }
 
     public String getId() {
@@ -50,11 +49,6 @@ public abstract class BaseResource {
     }
 
     public <T> T createClient(Class<T> serviceClass) {
-        return retrofit.create(serviceClass);
-    }
-
-    private Retrofit createRetrofit() {
-        // TODO: implement!
-        return null;
+        return clientFactory.create(serviceClass);
     }
 }
