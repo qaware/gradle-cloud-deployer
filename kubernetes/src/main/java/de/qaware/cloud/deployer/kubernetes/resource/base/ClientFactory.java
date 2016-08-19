@@ -53,7 +53,7 @@ public class ClientFactory {
     }
 
     private SSLSocketFactory createSSLSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
-        final TrustManager[] trustAllCerts = new TrustManager[] {
+        final TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     @Override
                     public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
@@ -79,6 +79,4 @@ public class ClientFactory {
     private HostnameVerifier createHostnameVerifier() {
         return (hostname, session) -> true;
     }
-
-
 }
