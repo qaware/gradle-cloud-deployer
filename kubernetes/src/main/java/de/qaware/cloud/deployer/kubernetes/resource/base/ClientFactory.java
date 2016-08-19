@@ -7,6 +7,11 @@ import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.net.ssl.*;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+
 public class ClientFactory {
 
     private final Retrofit retrofit;
@@ -21,8 +26,8 @@ public class ClientFactory {
 
     private Retrofit createRetrofit(ClusterConfig clusterConfig) {
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(chain -> {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(chain -> {
             String credentials = Credentials.basic(clusterConfig.getUsername(), clusterConfig.getPassword());
             Request original = chain.request();
             Request request = original.newBuilder()
@@ -31,14 +36,14 @@ public class ClientFactory {
             return chain.proceed(request);
         });
 
-//        TODO: add logic for certs here...
-//        try {
-//            httpClient = CertHelper.addCerts(clusterConfig.getCertificate(), httpClient);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            builder.sslSocketFactory(createSSLSocketFactory());
+            builder.hostnameVerifier(createHostnameVerifier());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        OkHttpClient client = httpClient.build();
+        OkHttpClient client = builder.build();
 
         return new Retrofit.Builder()
                 .baseUrl(clusterConfig.getBaseUrl())
@@ -46,4 +51,34 @@ public class ClientFactory {
                 .client(client)
                 .build();
     }
+
+    private SSLSocketFactory createSSLSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
+        final TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[]{};
+                    }
+                }
+        };
+
+        final SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+        return sslContext.getSocketFactory();
+    }
+
+    private HostnameVerifier createHostnameVerifier() {
+        return (hostname, session) -> true;
+    }
+
+
 }
