@@ -1,25 +1,21 @@
-package de.qaware.cloud.deployer.kubernetes.config;
+package de.qaware.cloud.deployer.kubernetes.config.cloud;
 
 public class ClusterConfig {
 
     private final String baseUrl;
-    private final String certificate;
     private final String username;
     private final String password;
+    private final SSLConfig sslConfig;
 
-    public ClusterConfig(String baseUrl, String certificate, String username, String password) {
+    public ClusterConfig(String baseUrl, String username, String password, SSLConfig sslConfig) {
         this.baseUrl = baseUrl;
-        this.certificate = certificate;
         this.username = username;
         this.password = password;
+        this.sslConfig = sslConfig;
     }
 
     public String getBaseUrl() {
         return baseUrl;
-    }
-
-    public String getCertificate() {
-        return certificate;
     }
 
     public String getUsername() {
@@ -28,5 +24,9 @@ public class ClusterConfig {
 
     public String getPassword() {
         return password;
+    }
+
+    public SSLConfig getSslConfig() {
+        return sslConfig;
     }
 }

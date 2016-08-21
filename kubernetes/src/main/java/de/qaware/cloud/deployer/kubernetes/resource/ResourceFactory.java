@@ -1,6 +1,6 @@
 package de.qaware.cloud.deployer.kubernetes.resource;
 
-import de.qaware.cloud.deployer.kubernetes.config.ClusterConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.ClusterConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
