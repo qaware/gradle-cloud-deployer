@@ -1,0 +1,27 @@
+version "$version"
+
+apply plugin: 'de.qaware.cloud.deployer.plugin'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.qaware.cloud.deployer:deployer-plugin:1.0.0'
+    }
+}
+
+deployer {
+
+    baseUrl = ""
+    username = ""
+    password = ""
+
+    trustAll = true
+    certificate = ""
+
+    namespace = "test"
+
+    files = [file("$projectDir/k8s-zwitscher-edge.yml")]
+}

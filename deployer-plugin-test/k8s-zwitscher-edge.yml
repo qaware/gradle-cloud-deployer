@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zwitscher-edge
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  template:
+    metadata:
+      labels:
+        zwitscher: edge
+    spec:
+      containers:
+      - name: zwitscher-edge
+        image: "qaware-oss-docker-registry.bintray.io/zwitscher/zwitscher-edge:1.0.1"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 8765
+        livenessProbe:
+          httpGet:
+            path: /admin/health
+            port: 8765
+          initialDelaySeconds: 90
+          timeoutSeconds: 30
+        env:
+        - name: EUREKA_HOST
+          value: zwitscher-eureka
+        - name: JAVA_OPTS
+          value: -Xmx128m
