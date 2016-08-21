@@ -1,6 +1,6 @@
 package de.qaware.cloud.deployer.kubernetes.resource;
 
-import de.qaware.cloud.deployer.kubernetes.config.cloud.ClusterConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
@@ -20,8 +20,8 @@ public class ResourceFactory {
     private final NamespaceResource namespaceResource;
     private final ClientFactory clientFactory;
 
-    public ResourceFactory(String namespace, ClusterConfig clusterConfig) throws IOException {
-        this.clientFactory = new ClientFactory(clusterConfig);
+    public ResourceFactory(String namespace, CloudConfig cloudConfig) throws IOException {
+        this.clientFactory = new ClientFactory(cloudConfig);
         ResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
     }

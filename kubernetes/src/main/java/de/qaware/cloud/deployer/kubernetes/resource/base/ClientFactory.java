@@ -1,6 +1,6 @@
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
-import de.qaware.cloud.deployer.kubernetes.config.cloud.ClusterConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.SSLConfig;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -25,19 +25,19 @@ public class ClientFactory {
 
     private final Retrofit retrofit;
 
-    public ClientFactory(ClusterConfig clusterConfig) {
-        this.retrofit = createRetrofit(clusterConfig);
+    public ClientFactory(CloudConfig cloudConfig) {
+        this.retrofit = createRetrofit(cloudConfig);
     }
 
     public <T> T create(Class<T> serviceClass) {
         return retrofit.create(serviceClass);
     }
 
-    private Retrofit createRetrofit(ClusterConfig clusterConfig) {
+    private Retrofit createRetrofit(CloudConfig cloudConfig) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(chain -> {
-            String credentials = Credentials.basic(clusterConfig.getUsername(), clusterConfig.getPassword());
+            String credentials = Credentials.basic(cloudConfig.getUsername(), cloudConfig.getPassword());
             Request original = chain.request();
             Request request = original.newBuilder()
                     .addHeader("Authorization", credentials)
@@ -46,7 +46,7 @@ public class ClientFactory {
         });
 
         try {
-            SSLConfig sslConfig = clusterConfig.getSslConfig();
+            SSLConfig sslConfig = cloudConfig.getSslConfig();
             if (sslConfig.isTrustAll()) {
                 builder = addTrustAllTrustManager(builder);
             } else if (sslConfig.hasCertificate()) {
@@ -59,7 +59,7 @@ public class ClientFactory {
         OkHttpClient client = builder.build();
 
         return new Retrofit.Builder()
-                .baseUrl(clusterConfig.getBaseUrl())
+                .baseUrl(cloudConfig.getBaseUrl())
                 .addConverterFactory(JacksonConverterFactory.create())
                 .client(client)
                 .build();
