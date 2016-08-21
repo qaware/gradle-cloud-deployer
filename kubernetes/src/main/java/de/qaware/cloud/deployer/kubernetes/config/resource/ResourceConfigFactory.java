@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConfigFactory {
+public class ResourceConfigFactory {
 
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
 
-    private ConfigFactory() {
+    private ResourceConfigFactory() {
     }
 
     public static List<ResourceConfig> getConfigs(List<File> files) throws IOException {
