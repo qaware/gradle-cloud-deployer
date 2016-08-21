@@ -1,0 +1,4 @@
+jar {
+    baseName = 'deployer-commons'
+    version = "$version"
+}

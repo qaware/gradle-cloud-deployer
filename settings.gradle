@@ -1,5 +1,3 @@
-rootProject.name = 'deployer'
-include 'core'
-include 'kubernetes'
-include 'commons'
-
+include ':deployer-commons'
+include ':deployer-kubernetes'
+include ':deployer-plugin'

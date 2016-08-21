@@ -1,14 +1,19 @@
-group 'de.qaware.cloud'
-version '1.0-SNAPSHOT'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
 
-apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-sourceCompatibility = 1.5
+    group = 'de.qaware.cloud.deployer'
+    version = '1.0.0'
 
-repositories {
-    mavenCentral()
-}
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
 }

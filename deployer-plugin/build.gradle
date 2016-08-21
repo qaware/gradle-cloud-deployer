@@ -1,0 +1,10 @@
+jar {
+    baseName = 'deployer-plugin'
+    version = "$version"
+}
+
+dependencies {
+    compile project(':deployer-kubernetes')
+
+    compile gradleApi()
+}
