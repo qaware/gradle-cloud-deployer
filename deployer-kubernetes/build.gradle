@@ -12,4 +12,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
     compile 'org.slf4j:slf4j-api:1.7.21'
+
+    testCompile 'io.fabric8:kubernetes-client:1.4.4'
 }
