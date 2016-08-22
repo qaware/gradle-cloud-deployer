@@ -41,18 +41,18 @@ public class KubernetesDeployer {
             createResources(resources);
     }
 
-    private void createResources(List<Resource> resources) {
+    private void createResources(List<Resource> resources) throws ResourceException {
         LOGGER.info("Deploying resources...");
 
-        resources.forEach(resource -> {
+        for(Resource resource : resources) {
             LOGGER.info("- " + resource);
             resource.create();
-        });
+        }
 
         LOGGER.info("Finished deploying resources...");
     }
 
-    private void resetNamespace(DeletableResource namespaceResource) {
+    private void resetNamespace(DeletableResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
             LOGGER.info("Removing namespace...");
 
@@ -63,7 +63,7 @@ public class KubernetesDeployer {
         }
     }
 
-    private void createNamespace(Resource namespaceResource) {
+    private void createNamespace(Resource namespaceResource) throws ResourceException {
         LOGGER.info("Deploying namespace...");
 
         LOGGER.info("- " + namespaceResource);

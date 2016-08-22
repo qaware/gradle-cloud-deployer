@@ -1,6 +1,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
@@ -20,39 +21,36 @@ public class NamespaceResource extends BaseResource implements DeletableResource
     }
 
     @Override
-    public boolean exists() {
+    public boolean exists() throws ResourceException {
         try {
             Call<ResponseBody> request = namespaceClient.get(getId());
             Response<ResponseBody> response = request.execute();
             return isSuccessResponse(response);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ResourceException(e);
         }
-        return false;
     }
 
     @Override
-    public boolean create() {
+    public boolean create() throws ResourceException {
         try {
             Call<ResponseBody> request = namespaceClient.create(createRequestBody());
             Response<ResponseBody> response = request.execute();
             return isSuccessResponse(response);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ResourceException(e);
         }
-        return false;
     }
 
     @Override
-    public boolean delete() {
+    public boolean delete() throws ResourceException {
         try {
             Call<ResponseBody> request = namespaceClient.delete(getId());
             Response<ResponseBody> response = request.execute();
             return isSuccessResponse(response);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ResourceException(e);
         }
-        return false;
     }
 
     @Override
