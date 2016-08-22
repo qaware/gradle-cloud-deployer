@@ -1,9 +1,11 @@
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 
 import java.io.IOException;
 
@@ -11,12 +13,18 @@ public class ResourceConfig {
 
     private final String content;
     private final ContentType contentType;
-    private final JsonNode contentObjectTree;
+    private final String resourceVersion;
+    private final String resourceId;
+    private final String resourceType;
 
-    public ResourceConfig(ContentType contentType, String content) throws IOException {
+    public ResourceConfig(ContentType contentType, String content) throws ResourceConfigException {
         this.content = content;
         this.contentType = contentType;
-        this.contentObjectTree = createObjectTree();
+
+        JsonNode contentObjectTree = createObjectTree(contentType, content);
+        this.resourceId = readStringValue(readNodeValue(contentObjectTree, "metadata"), "name");
+        this.resourceType = readStringValue(contentObjectTree, "kind");
+        this.resourceVersion = readStringValue(contentObjectTree, "apiVersion");
     }
 
     public String getContent() {
@@ -28,18 +36,18 @@ public class ResourceConfig {
     }
 
     public String getResourceVersion() {
-        return contentObjectTree.get("apiVersion").textValue();
+        return resourceVersion;
     }
 
     public String getResourceType() {
-        return contentObjectTree.get("kind").textValue();
+        return resourceType;
     }
 
     public String getResourceId() {
-        return contentObjectTree.get("metadata").get("name").textValue();
+        return resourceId;
     }
 
-    private JsonNode createObjectTree() throws IOException {
+    public JsonNode createObjectTree(ContentType contentType, String content) throws ResourceConfigException {
         ObjectMapper mapper;
         switch (contentType) {
             case YAML:
@@ -49,9 +57,31 @@ public class ResourceConfig {
                 mapper = new ObjectMapper(new JsonFactory());
                 break;
             default:
-                throw new IllegalArgumentException("Unknown type " + contentType);
+                throw new ResourceConfigException("Unknown config type " + contentType);
         }
-        return mapper.readTree(content);
+        try {
+            return mapper.readTree(content);
+        } catch (JsonProcessingException ex) {
+            throw new ResourceConfigException("Could not parse config content", ex);
+        } catch (IOException ex) {
+            throw new ResourceConfigException(ex.getMessage(), ex);
+        }
+    }
+
+    public JsonNode readNodeValue(JsonNode contentObjectTree, String key) throws ResourceConfigException {
+        if (contentObjectTree.hasNonNull(key)) {
+            return contentObjectTree.get(key);
+        } else {
+            throw new ResourceConfigException("Could not find attribute '" + key + "' in config content");
+        }
+    }
+
+    public String readStringValue(JsonNode contentObjectTree, String key) throws ResourceConfigException {
+        if (contentObjectTree.hasNonNull(key)) {
+            return contentObjectTree.get(key).textValue();
+        } else {
+            throw new ResourceConfigException("Could not find attribute '" + key + "' in config content");
+        }
     }
 
     @Override

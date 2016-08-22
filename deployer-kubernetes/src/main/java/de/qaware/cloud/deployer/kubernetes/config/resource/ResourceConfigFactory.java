@@ -1,5 +1,6 @@
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
+import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -20,16 +21,15 @@ public class ResourceConfigFactory {
     private ResourceConfigFactory() {
     }
 
-    public static List<ResourceConfig> getConfigs(List<File> files) throws IOException {
+    public static List<ResourceConfig> getConfigs(List<File> files) throws ResourceConfigException {
 
         LOGGER.info("Reading config files...");
 
         List<ResourceConfig> resourceConfigs = new ArrayList<>();
         for (File file : files) {
             String filename = file.getName();
-            String fileEnding = FilenameUtils.getExtension(file.getName());
-            ContentType contentType = retrieveContentType(fileEnding);
-            String content = FileUtils.readFileToString(file, Charset.defaultCharset());
+            ContentType contentType = retrieveContentType(file);
+            String content = readFileContent(file);
             resourceConfigs.add(new FileResourceConfig(filename, contentType, content));
         }
 
@@ -40,7 +40,7 @@ public class ResourceConfigFactory {
         return resourceConfigs;
     }
 
-    private static List<ResourceConfig> splitConfigs(List<ResourceConfig> resourceConfigs, String splitString) throws IOException {
+    private static List<ResourceConfig> splitConfigs(List<ResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {
         List<ResourceConfig> splitResourceConfigs = new ArrayList<>();
         for (ResourceConfig resourceConfig : resourceConfigs) {
             List<String> splitContents = splitContent(resourceConfig.getContent(), splitString);
@@ -57,14 +57,24 @@ public class ResourceConfigFactory {
         return splitResourceConfigs;
     }
 
-    private static ContentType retrieveContentType(String fileEnding) {
+    private static ContentType retrieveContentType(File file) throws ResourceConfigException {
+        String fileEnding = FilenameUtils.getExtension(file.getName());
         switch (fileEnding) {
             case "json":
                 return ContentType.JSON;
             case "yml":
                 return ContentType.YAML;
             default:
-                throw new IllegalArgumentException("Unknown content type for file ending: " + fileEnding);
+                throw new ResourceConfigException("Unknown content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
+        }
+    }
+
+    // TODO: charset correct?
+    private static String readFileContent(File file) throws ResourceConfigException {
+        try {
+            return FileUtils.readFileToString(file, Charset.defaultCharset());
+        } catch (IOException e) {
+            throw new ResourceConfigException(e.getMessage(), e);
         }
     }
 

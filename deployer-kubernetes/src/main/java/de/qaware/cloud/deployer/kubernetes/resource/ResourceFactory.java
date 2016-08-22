@@ -3,6 +3,8 @@ package de.qaware.cloud.deployer.kubernetes.resource;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
+import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
@@ -23,7 +25,7 @@ public class ResourceFactory {
     private final NamespaceResource namespaceResource;
     private final ClientFactory clientFactory;
 
-    public ResourceFactory(String namespace, CloudConfig cloudConfig) throws IOException {
+    public ResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException {
         this.clientFactory = new ClientFactory(cloudConfig);
         ResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
@@ -33,7 +35,7 @@ public class ResourceFactory {
         return namespaceResource;
     }
 
-    public List<Resource> createResources(List<ResourceConfig> resourceConfigs) throws IOException {
+    public List<Resource> createResources(List<ResourceConfig> resourceConfigs) throws ResourceException {
 
         LOGGER.info("Creating resources...");
 
@@ -47,7 +49,7 @@ public class ResourceFactory {
         return resources;
     }
 
-    public Resource createResource(ResourceConfig resourceConfig) throws IOException {
+    public Resource createResource(ResourceConfig resourceConfig) throws ResourceException {
         String resourceVersion = resourceConfig.getResourceVersion();
         String resourceType = resourceConfig.getResourceType();
         Resource resource;
@@ -58,7 +60,7 @@ public class ResourceFactory {
                         resource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                         break;
                     default:
-                        throw new IllegalArgumentException("Unknown Kubernetes resource type for api version " + resourceVersion);
+                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(ResourceConfig: " + resourceConfig + ")");
                 }
                 break;
             case "v1":
@@ -70,11 +72,11 @@ public class ResourceFactory {
                         resource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                         break;
                     default:
-                        throw new IllegalArgumentException("Unknown Kubernetes resource type for api version " + resourceVersion);
+                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(ResourceConfig: " + resourceConfig + ")");
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Unknown Kubernetes api version");
+                throw new ResourceException("Unknown Kubernetes api version (ResourceConfig: " + resourceConfig + ")");
         }
 
         LOGGER.info("- " + resource);
