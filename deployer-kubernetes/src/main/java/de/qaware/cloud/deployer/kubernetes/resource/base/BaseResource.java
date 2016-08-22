@@ -51,4 +51,7 @@ public abstract class BaseResource {
     public <T> T createClient(Class<T> serviceClass) {
         return clientFactory.create(serviceClass);
     }
+
+    @Override
+    public abstract String toString();
 }

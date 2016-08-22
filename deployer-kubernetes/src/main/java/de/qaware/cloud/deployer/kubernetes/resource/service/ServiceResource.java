@@ -42,4 +42,9 @@ public class ServiceResource extends BaseResource implements Resource {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceResource: " + getNamespace() + "/" + getId();
+    }
 }

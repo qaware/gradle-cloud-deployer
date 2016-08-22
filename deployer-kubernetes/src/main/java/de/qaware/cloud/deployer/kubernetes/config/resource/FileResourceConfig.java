@@ -14,4 +14,9 @@ public class FileResourceConfig extends ResourceConfig {
     public String getFilename() {
         return filename;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " (File: " + filename + ")";
+    }
 }

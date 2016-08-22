@@ -54,4 +54,9 @@ public class NamespaceResource extends BaseResource implements DeletableResource
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "NamespaceResource: " + getNamespace();
+    }
 }

@@ -2,6 +2,8 @@ package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,11 +15,15 @@ import java.util.List;
 public class ResourceConfigFactory {
 
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceConfig.class);
 
     private ResourceConfigFactory() {
     }
 
     public static List<ResourceConfig> getConfigs(List<File> files) throws IOException {
+
+        LOGGER.info("Reading config files...");
+
         List<ResourceConfig> resourceConfigs = new ArrayList<>();
         for (File file : files) {
             String filename = file.getName();
@@ -26,7 +32,12 @@ public class ResourceConfigFactory {
             String content = FileUtils.readFileToString(file, Charset.defaultCharset());
             resourceConfigs.add(new FileResourceConfig(filename, contentType, content));
         }
-        return splitConfigs(resourceConfigs, KUBERNETES_CONFIG_SEPARATOR);
+
+        resourceConfigs = splitConfigs(resourceConfigs, KUBERNETES_CONFIG_SEPARATOR);
+
+        LOGGER.info("Finished reading config files...");
+
+        return resourceConfigs;
     }
 
     private static List<ResourceConfig> splitConfigs(List<ResourceConfig> resourceConfigs, String splitString) throws IOException {
@@ -40,6 +51,7 @@ public class ResourceConfigFactory {
                 } else {
                     splitResourceConfigs.add(new ResourceConfig(resourceConfig.getContentType(), splitContent));
                 }
+                LOGGER.info("- " + resourceConfig);
             }
         }
         return splitResourceConfigs;

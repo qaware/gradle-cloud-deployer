@@ -42,4 +42,9 @@ public class DeploymentResource extends BaseResource implements Resource {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "DeploymentResource: " + getNamespace() + "/" + getId();
+    }
 }

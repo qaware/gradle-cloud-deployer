@@ -53,4 +53,9 @@ public class ResourceConfig {
         }
         return mapper.readTree(content);
     }
+
+    @Override
+    public String toString() {
+        return "ResourceConfig: " + getResourceId() + " - " + getResourceType();
+    }
 }

@@ -42,4 +42,9 @@ public class PodResource extends BaseResource implements Resource {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "PodResource: " + getNamespace() + "/" + getId();
+    }
 }
