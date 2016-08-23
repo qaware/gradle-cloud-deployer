@@ -7,6 +7,7 @@ public class DeployerExtension {
     private String baseUrl;
     private String username;
     private String password;
+    private String updateStrategy;
 
     private boolean trustAll;
     private String certificate;
@@ -69,5 +70,13 @@ public class DeployerExtension {
 
     public void setFiles(File[] files) {
         this.files = files;
+    }
+
+    public String getUpdateStrategy() {
+        return updateStrategy;
+    }
+
+    public void setUpdateStrategy(String updateStrategy) {
+        this.updateStrategy = updateStrategy;
     }
 }

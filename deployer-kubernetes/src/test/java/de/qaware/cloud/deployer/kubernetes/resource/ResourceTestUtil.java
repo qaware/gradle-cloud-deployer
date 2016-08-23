@@ -39,6 +39,7 @@ public class ResourceTestUtil {
         CloudConfig cloudConfig = new CloudConfig(environmentProperties.get("URL"),
                 environmentProperties.get("USERNAME"),
                 environmentProperties.get("PASSWORD"),
+                "HARD",
                 sslConfig
         );
         return new ClientFactory(cloudConfig);

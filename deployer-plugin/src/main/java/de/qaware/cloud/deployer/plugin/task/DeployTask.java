@@ -19,7 +19,11 @@ public class DeployTask extends DefaultTask {
     public void deploy() throws ResourceException, ResourceConfigException {
         DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);
         SSLConfig sslConfig = new SSLConfig(extension.isTrustAll(), extension.getCertificate());
-        CloudConfig cloudConfig = new CloudConfig(extension.getBaseUrl(), extension.getUsername(), extension.getPassword(), sslConfig);
+        CloudConfig cloudConfig = new CloudConfig(extension.getBaseUrl(),
+                extension.getUsername(),
+                extension.getPassword(),
+                extension.getUpdateStrategy(),
+                sslConfig);
         String namespace = extension.getNamespace();
 
         List<File> files = Arrays.asList(extension.getFiles());

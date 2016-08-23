@@ -29,7 +29,7 @@ public class ResourceFactory {
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
     }
 
-    public Resource getNamespaceResource() {
+    public NamespaceResource getNamespaceResource() {
         return namespaceResource;
     }
 

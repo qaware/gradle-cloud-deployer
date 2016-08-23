@@ -7,6 +7,10 @@ import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
+import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import de.qaware.cloud.deployer.kubernetes.update.HardUpdateStrategy;
+import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategy;
+import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,17 +19,15 @@ import java.util.List;
 
 public class KubernetesDeployer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesDeployer.class);
-
     public void delete(CloudConfig cloudConfig, String namespace) throws ResourceConfigException, ResourceException {
         // 1. Create a resource factory for the specified namespace
         ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
 
         // 2. Create the namespace resource
-        Resource namespaceResource = resourceFactory.getNamespaceResource();
+        NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
 
         // 3. Delete the namespace
-        resetNamespace(namespaceResource);
+        HardUpdateStrategy.deleteNamespace(namespaceResource);
     }
 
     public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
@@ -39,46 +41,12 @@ public class KubernetesDeployer {
         List<Resource> resources = resourceFactory.createResources(resourceConfigs);
 
         // 4. Create the namespace resource
-        Resource namespaceResource = resourceFactory.getNamespaceResource();
+        NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
 
-        // 5a. Delete the namespace if it already exists
-        resetNamespace(namespaceResource);
+        // 5. Retrieve a update strategy
+        UpdateStrategy updateStrategy = UpdateStrategyFactory.create(cloudConfig.getUpdateStrategy());
 
-        // 5b. Create the namespace
-        createNamespace(namespaceResource);
-
-        // 6. Create the resources
-        createResources(resources);
-    }
-
-    private static void createResources(List<Resource> resources) throws ResourceException {
-        LOGGER.info("Deploying resources...");
-
-        for (Resource resource : resources) {
-            LOGGER.info("- " + resource);
-            resource.create();
-        }
-
-        LOGGER.info("Finished deploying resources...");
-    }
-
-    private static void resetNamespace(Resource namespaceResource) throws ResourceException {
-        if (namespaceResource.exists()) {
-            LOGGER.info("Removing namespace...");
-
-            LOGGER.info("- " + namespaceResource);
-            namespaceResource.delete();
-
-            LOGGER.info("Finished removing namespace...");
-        }
-    }
-
-    private static void createNamespace(Resource namespaceResource) throws ResourceException {
-        LOGGER.info("Deploying namespace...");
-
-        LOGGER.info("- " + namespaceResource);
-        namespaceResource.create();
-
-        LOGGER.info("Finished deploying namespace...");
+        // 6. Deploy the resources using the strategy
+        updateStrategy.deploy(namespaceResource, resources);
     }
 }
