@@ -1,11 +1,16 @@
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
-public abstract class BaseResource {
+import java.io.IOException;
+
+public abstract class BaseResource implements Resource {
 
     private final String namespace;
     private final ResourceConfig resourceConfig;
@@ -50,6 +55,31 @@ public abstract class BaseResource {
 
     public <T> T createClient(Class<T> serviceClass) {
         return clientFactory.create(serviceClass);
+    }
+
+    public boolean executeCreateCallAndBlock(Call<ResponseBody> createCall) throws ResourceException {
+        try {
+            Response<ResponseBody> response = createCall.execute();
+            if(isSuccessResponse(response)) {
+                while(!this.exists()) {
+                    Thread.sleep(500);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ResourceException(e);
+        }
+    }
+
+    public boolean executeExistsCall(Call<ResponseBody> existsCall) throws ResourceException {
+        try {
+            Response<ResponseBody> response = existsCall.execute();
+            return isSuccessResponse(response);
+        } catch (IOException e) {
+            throw new ResourceException(e);
+        }
     }
 
     @Override

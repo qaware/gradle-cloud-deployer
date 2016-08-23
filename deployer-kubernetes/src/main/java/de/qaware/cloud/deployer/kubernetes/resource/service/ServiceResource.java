@@ -4,14 +4,10 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 
-import java.io.IOException;
-
-public class ServiceResource extends BaseResource implements Resource {
+public class ServiceResource extends BaseResource {
 
     private final ServiceClient serviceClient;
 
@@ -22,31 +18,14 @@ public class ServiceResource extends BaseResource implements Resource {
 
     @Override
     public boolean exists() throws ResourceException {
-        try {
-            Call<ResponseBody> request = serviceClient.get(getId(), getNamespace());
-            Response<ResponseBody> response = request.execute();
-            return isSuccessResponse(response);
-        } catch (IOException e) {
-            throw new ResourceException(e);
-        }
+        Call<ResponseBody> call = serviceClient.get(getId(), getNamespace());
+        return executeExistsCall(call);
     }
 
     @Override
     public boolean create() throws ResourceException {
-        try {
-            Call<ResponseBody> request = serviceClient.create(getNamespace(), createRequestBody());
-            Response<ResponseBody> response = request.execute();
-            if (isSuccessResponse(response)) {
-                while (!this.exists()) {
-                    Thread.sleep(500);
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IOException | InterruptedException e) {
-            throw new ResourceException(e);
-        }
+        Call<ResponseBody> request = serviceClient.create(getNamespace(), createRequestBody());
+        return executeCreateCallAndBlock(request);
     }
 
     @Override

@@ -22,31 +22,14 @@ public class NamespaceResource extends BaseResource implements DeletableResource
 
     @Override
     public boolean exists() throws ResourceException {
-        try {
-            Call<ResponseBody> request = namespaceClient.get(getId());
-            Response<ResponseBody> response = request.execute();
-            return isSuccessResponse(response);
-        } catch (IOException e) {
-            throw new ResourceException(e);
-        }
+        Call<ResponseBody> call = namespaceClient.get(getId());
+        return executeExistsCall(call);
     }
 
     @Override
     public boolean create() throws ResourceException {
-        try {
-            Call<ResponseBody> request = namespaceClient.create(createRequestBody());
-            Response<ResponseBody> response = request.execute();
-            if(isSuccessResponse(response)) {
-                while(!this.exists()) {
-                    Thread.sleep(500);
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IOException | InterruptedException e) {
-            throw new ResourceException(e);
-        }
+        Call<ResponseBody> request = namespaceClient.create(createRequestBody());
+        return executeCreateCallAndBlock(request);
     }
 
     @Override
@@ -54,8 +37,8 @@ public class NamespaceResource extends BaseResource implements DeletableResource
         try {
             Call<ResponseBody> request = namespaceClient.delete(getId());
             Response<ResponseBody> response = request.execute();
-            if(isSuccessResponse(response)) {
-                while(this.exists()) {
+            if (isSuccessResponse(response)) {
+                while (this.exists()) {
                     Thread.sleep(500);
                 }
                 return true;
