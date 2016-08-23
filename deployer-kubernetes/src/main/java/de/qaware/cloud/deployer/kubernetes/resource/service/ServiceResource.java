@@ -36,8 +36,15 @@ public class ServiceResource extends BaseResource implements Resource {
         try {
             Call<ResponseBody> request = serviceClient.create(getNamespace(), createRequestBody());
             Response<ResponseBody> response = request.execute();
-            return isSuccessResponse(response);
-        } catch (IOException e) {
+            if (isSuccessResponse(response)) {
+                while (!this.exists()) {
+                    Thread.sleep(500);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }

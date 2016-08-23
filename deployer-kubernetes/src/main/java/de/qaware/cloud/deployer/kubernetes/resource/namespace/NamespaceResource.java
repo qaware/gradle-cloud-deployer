@@ -2,9 +2,9 @@ package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
+import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
-import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -36,8 +36,15 @@ public class NamespaceResource extends BaseResource implements DeletableResource
         try {
             Call<ResponseBody> request = namespaceClient.create(createRequestBody());
             Response<ResponseBody> response = request.execute();
-            return isSuccessResponse(response);
-        } catch (IOException e) {
+            if(isSuccessResponse(response)) {
+                while(!this.exists()) {
+                    Thread.sleep(500);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }
@@ -47,8 +54,15 @@ public class NamespaceResource extends BaseResource implements DeletableResource
         try {
             Call<ResponseBody> request = namespaceClient.delete(getId());
             Response<ResponseBody> response = request.execute();
-            return isSuccessResponse(response);
-        } catch (IOException e) {
+            if(isSuccessResponse(response)) {
+                while(this.exists()) {
+                    Thread.sleep(500);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }
