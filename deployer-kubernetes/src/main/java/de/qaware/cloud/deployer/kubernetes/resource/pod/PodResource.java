@@ -29,6 +29,12 @@ public class PodResource extends BaseResource {
     }
 
     @Override
+    public boolean delete() throws ResourceException {
+        Call<ResponseBody> deleteCall = podClient.delete(getId(), getNamespace());
+        return executeDeleteCallAndBlock(deleteCall);
+    }
+
+    @Override
     public String toString() {
         return "PodResource: " + getNamespace() + "/" + getId();
     }

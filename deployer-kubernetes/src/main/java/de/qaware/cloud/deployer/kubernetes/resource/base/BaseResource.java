@@ -82,6 +82,22 @@ public abstract class BaseResource implements Resource {
         }
     }
 
+    public boolean executeDeleteCallAndBlock(Call<ResponseBody> deleteCall) throws ResourceException {
+        try {
+            Response<ResponseBody> response = deleteCall.execute();
+            if (isSuccessResponse(response)) {
+                while (this.exists()) {
+                    Thread.sleep(500);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ResourceException(e);
+        }
+    }
+
     @Override
     public abstract String toString();
 }

@@ -12,4 +12,7 @@ public interface DeploymentClient {
 
     @POST("/apis/extensions/v1beta1/namespaces/{namespace}/deployments")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody deploymentDescription);
+
+    @DELETE("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
+    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 }

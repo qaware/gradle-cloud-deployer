@@ -6,7 +6,6 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfigFactory
 import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ public class KubernetesDeployer {
         ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
 
         // 2. Create the namespace resource
-        DeletableResource namespaceResource = resourceFactory.getNamespaceResource();
+        Resource namespaceResource = resourceFactory.getNamespaceResource();
 
         // 3. Delete the namespace
         resetNamespace(namespaceResource);
@@ -40,7 +39,7 @@ public class KubernetesDeployer {
         List<Resource> resources = resourceFactory.createResources(resourceConfigs);
 
         // 4. Create the namespace resource
-        DeletableResource namespaceResource = resourceFactory.getNamespaceResource();
+        Resource namespaceResource = resourceFactory.getNamespaceResource();
 
         // 5a. Delete the namespace if it already exists
         resetNamespace(namespaceResource);
@@ -63,7 +62,7 @@ public class KubernetesDeployer {
         LOGGER.info("Finished deploying resources...");
     }
 
-    private static void resetNamespace(DeletableResource namespaceResource) throws ResourceException {
+    private static void resetNamespace(Resource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
             LOGGER.info("Removing namespace...");
 

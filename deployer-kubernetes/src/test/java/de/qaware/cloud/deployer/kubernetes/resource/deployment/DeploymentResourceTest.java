@@ -67,6 +67,23 @@ public class DeploymentResourceTest extends BaseResourceTest {
         assertEquals(deployment.getKind(), deploymentResource.getResourceConfig().getResourceType());
     }
 
+    public void testDelete() throws ResourceException {
+
+        // Create deployment
+        assertTrue(deploymentResource.create());
+
+        // Check that the deployment exists
+        Deployment deployment = retrieveDeployment();
+        assertNotNull(deployment);
+
+        // Delete deployment
+        assertTrue(deploymentResource.delete());
+
+        // Check that deployment doesn't exist anymore
+        deployment = retrieveDeployment();
+        assertNull(deployment);
+    }
+
     private Deployment retrieveDeployment() {
         return getKubernetesClient().extensions().deployments().inNamespace(deploymentResource.getNamespace()).withName(deploymentResource.getId()).get();
     }

@@ -29,6 +29,12 @@ public class DeploymentResource extends BaseResource {
     }
 
     @Override
+    public boolean delete() throws ResourceException {
+        Call<ResponseBody> deleteCall = deploymentClient.delete(getId(), getNamespace());
+        return executeDeleteCallAndBlock(deleteCall);
+    }
+
+    @Override
     public String toString() {
         return "DeploymentResource: " + getNamespace() + "/" + getId();
     }

@@ -6,7 +6,6 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.base.DeletableResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -15,7 +14,6 @@ import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class ResourceFactory {
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
     }
 
-    public DeletableResource getNamespaceResource() {
+    public Resource getNamespaceResource() {
         return namespaceResource;
     }
 

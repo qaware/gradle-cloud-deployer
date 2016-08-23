@@ -29,6 +29,12 @@ public class ServiceResource extends BaseResource {
     }
 
     @Override
+    public boolean delete() throws ResourceException {
+        Call<ResponseBody> deleteCall = serviceClient.delete(getId(), getNamespace());
+        return executeDeleteCallAndBlock(deleteCall);
+    }
+
+    @Override
     public String toString() {
         return "ServiceResource: " + getNamespace() + "/" + getId();
     }

@@ -12,4 +12,7 @@ public interface PodClient {
 
     @POST("/api/v1/namespaces/{namespace}/pods")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody podDescription);
+
+    @DELETE("/api/v1/namespaces/{namespace}/pods/{name}")
+    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 }

@@ -67,6 +67,23 @@ public class PodResourceTest extends BaseResourceTest {
         assertEquals(pod.getKind(), podResource.getResourceConfig().getResourceType());
     }
 
+    public void testDelete() throws ResourceException {
+
+        // Create pod
+        assertTrue(podResource.create());
+
+        // Check that the pod exists
+        Pod pod = retrievePod();
+        assertNotNull(pod);
+
+        // Delete pod
+        assertTrue(podResource.delete());
+
+        // Check that pod doesn't exist anymore
+        pod = retrievePod();
+        assertNull(pod);
+    }
+
     private Pod retrievePod() {
         return getKubernetesClient().pods().inNamespace(podResource.getNamespace()).withName(podResource.getId()).get();
     }

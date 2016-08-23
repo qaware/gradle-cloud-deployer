@@ -67,6 +67,23 @@ public class ServiceResourceTest extends BaseResourceTest {
         assertEquals(service.getKind(), serviceResource.getResourceConfig().getResourceType());
     }
 
+    public void testDelete() throws ResourceException {
+
+        // Create service
+        assertTrue(serviceResource.create());
+
+        // Check that the service exists
+        Service service = retrieveService();
+        assertNotNull(service);
+
+        // Delete service
+        assertTrue(serviceResource.delete());
+
+        // Check that service doesn't exist anymore
+        service = retrieveService();
+        assertNull(service);
+    }
+
     private Service retrieveService() {
         return getKubernetesClient().services().inNamespace(serviceResource.getNamespace()).withName(serviceResource.getId()).get();
     }

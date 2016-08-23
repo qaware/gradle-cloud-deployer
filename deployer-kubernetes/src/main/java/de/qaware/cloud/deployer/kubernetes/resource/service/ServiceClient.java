@@ -12,4 +12,7 @@ public interface ServiceClient {
 
     @POST("/api/v1/namespaces/{namespace}/services")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody serviceDescription);
+
+    @DELETE("/api/v1/namespaces/{namespace}/services/{name}")
+    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 }
