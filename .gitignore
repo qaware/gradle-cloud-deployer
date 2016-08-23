@@ -16,3 +16,6 @@ hs_err_pid*
 
 # Environment file
 env.properties
+
+# Allow gradle wrapper jar
+!gradle-wrapper.jar
