@@ -5,7 +5,6 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.BaseResourceTest;
 import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.Service;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -21,9 +20,6 @@ public class PodResourceTest extends BaseResourceTest {
         // Prepare namespace
         super.setUp();
         getNamespaceResource().create();
-
-        // Wait until the namespace is created by kubernetes
-        Thread.sleep(5000);
 
         // Create the PodResource object
         File podDescriptionFile = new File(this.getClass().getResource("/pod.json").getPath());
@@ -44,9 +40,6 @@ public class PodResourceTest extends BaseResourceTest {
         // Create pod
         assertTrue(podResource.create());
 
-        // Wait a little bit for kubernetes to create the pod
-        Thread.sleep(2000);
-
         // Check that the pod exists
         pod = retrievePod();
         assertNotNull(pod);
@@ -63,9 +56,6 @@ public class PodResourceTest extends BaseResourceTest {
 
         // Create pod
         assertTrue(podResource.create());
-
-        // Wait a little bit for kubernetes to create the pod
-        Thread.sleep(2000);
 
         // Check that the pod exists
         pod = retrievePod();

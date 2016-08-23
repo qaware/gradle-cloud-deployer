@@ -5,6 +5,7 @@ import de.qaware.cloud.deployer.kubernetes.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
+import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.client.Config;
@@ -68,15 +69,17 @@ public class BaseResourceTest extends TestCase {
         kubernetesClient = createKubernetesClient(environmentVariables);
         clientFactory = createClientFactory(environmentVariables);
         namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
+
+        // Delete namespace resource if it already exists
+        if (namespaceResource.exists()) {
+            namespaceResource.delete();
+        }
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown() throws ResourceException {
         // Delete the test namespace
         namespaceResource.delete();
-
-        // Wait a little bit for kubernetes to delete the test namespace
-        Thread.sleep(5000);
     }
 
     public NamespaceResource getNamespaceResource() {

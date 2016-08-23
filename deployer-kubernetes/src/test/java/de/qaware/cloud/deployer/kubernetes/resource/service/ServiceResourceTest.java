@@ -21,9 +21,6 @@ public class ServiceResourceTest extends BaseResourceTest {
         super.setUp();
         getNamespaceResource().create();
 
-        // Wait until the namespace is created by kubernetes
-        Thread.sleep(5000);
-
         // Create the ServiceResource object
         File serviceDescriptionFile = new File(this.getClass().getResource("/service.yml").getPath());
         String serviceDescription = FileUtils.readFileToString(serviceDescriptionFile, Charset.defaultCharset());
@@ -31,7 +28,7 @@ public class ServiceResourceTest extends BaseResourceTest {
         serviceResource = new ServiceResource(getNamespaceResource().getNamespace(), resourceConfig, getClientFactory());
     }
 
-    public void testExists() throws ResourceException, InterruptedException {
+    public void testExists() throws ResourceException {
 
         // Check that the service doesn't exist already
         Service service = retrieveService();
@@ -43,9 +40,6 @@ public class ServiceResourceTest extends BaseResourceTest {
         // Create service
         assertTrue(serviceResource.create());
 
-        // Wait a little bit for kubernetes to create the service
-        Thread.sleep(2000);
-
         // Check that the service exists
         service = retrieveService();
         assertNotNull(service);
@@ -54,7 +48,7 @@ public class ServiceResourceTest extends BaseResourceTest {
         assertTrue(serviceResource.exists());
     }
 
-    public void testCreate() throws ResourceException, InterruptedException {
+    public void testCreate() throws ResourceException {
 
         // Check that the service doesn't exist already
         Service service = retrieveService();
@@ -62,9 +56,6 @@ public class ServiceResourceTest extends BaseResourceTest {
 
         // Create service
         assertTrue(serviceResource.create());
-
-        // Wait a little bit for kubernetes to create the service
-        Thread.sleep(2000);
 
         // Check that the service exists
         service = retrieveService();

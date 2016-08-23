@@ -21,9 +21,6 @@ public class DeploymentResourceTest extends BaseResourceTest {
         super.setUp();
         getNamespaceResource().create();
 
-        // Wait until the namespace is created by kubernetes
-        Thread.sleep(5000);
-
         // Create the DeploymentResource object
         File deploymentDescriptionFile = new File(this.getClass().getResource("/deployment.yml").getPath());
         String deploymentDescription = FileUtils.readFileToString(deploymentDescriptionFile, Charset.defaultCharset());
@@ -31,7 +28,7 @@ public class DeploymentResourceTest extends BaseResourceTest {
         deploymentResource = new DeploymentResource(getNamespaceResource().getNamespace(), resourceConfig, getClientFactory());
     }
 
-    public void testExists() throws ResourceException, InterruptedException {
+    public void testExists() throws ResourceException {
 
         // Check that the deployment doesn't exist already
         Deployment deployment = retrieveDeployment();
@@ -43,9 +40,6 @@ public class DeploymentResourceTest extends BaseResourceTest {
         // Create deployment
         assertTrue(deploymentResource.create());
 
-        // Wait a little bit for kubernetes to create the deployment
-        Thread.sleep(2000);
-
         // Check that the deployment exists
         deployment = retrieveDeployment();
         assertNotNull(deployment);
@@ -54,7 +48,7 @@ public class DeploymentResourceTest extends BaseResourceTest {
         assertTrue(deploymentResource.exists());
     }
 
-    public void testCreate() throws ResourceException, InterruptedException {
+    public void testCreate() throws ResourceException {
 
         // Check that the deployment doesn't exist already
         Deployment deployment = retrieveDeployment();
@@ -62,9 +56,6 @@ public class DeploymentResourceTest extends BaseResourceTest {
 
         // Create deployment
         assertTrue(deploymentResource.create());
-
-        // Wait a little bit for kubernetes to create the deployment
-        Thread.sleep(2000);
 
         // Check that the deployment exists
         deployment = retrieveDeployment();

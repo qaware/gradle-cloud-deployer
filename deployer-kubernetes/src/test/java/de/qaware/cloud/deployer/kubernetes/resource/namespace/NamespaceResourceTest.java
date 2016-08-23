@@ -6,7 +6,7 @@ import io.fabric8.kubernetes.api.model.Namespace;
 
 public class NamespaceResourceTest extends BaseResourceTest {
 
-    public void testExists() throws ResourceException, InterruptedException {
+    public void testExists() throws ResourceException {
         NamespaceResource namespaceResource = getNamespaceResource();
 
         // Check that the namespace doesn't exist already
@@ -19,9 +19,6 @@ public class NamespaceResourceTest extends BaseResourceTest {
         // Create namespace
         assertTrue(namespaceResource.create());
 
-        // Wait a little bit for kubernetes to create the namespace
-        Thread.sleep(2000);
-
         // Check that the namespace exists
         namespace = retrieveNamespace();
         assertNotNull(namespace);
@@ -30,14 +27,11 @@ public class NamespaceResourceTest extends BaseResourceTest {
         assertTrue(namespaceResource.exists());
     }
 
-    public void testDelete() throws ResourceException, InterruptedException {
+    public void testDelete() throws ResourceException {
         NamespaceResource namespaceResource = getNamespaceResource();
 
         // Create namespace
         assertTrue(namespaceResource.create());
-
-        // Wait a little bit for kubernetes to create the namespace
-        Thread.sleep(2000);
 
         // Check that the namespace exists
         Namespace namespace = retrieveNamespace();
@@ -46,15 +40,12 @@ public class NamespaceResourceTest extends BaseResourceTest {
         // Delete namespace
         assertTrue(namespaceResource.delete());
 
-        // Wait a little bit for kubernetes to delete the namespace
-        Thread.sleep(2000);
-
         // Check that namespace doesn't exist anymore
         namespace = retrieveNamespace();
         assertNull(namespace);
     }
 
-    public void testCreate() throws ResourceException, InterruptedException {
+    public void testCreate() throws ResourceException {
         NamespaceResource namespaceResource = getNamespaceResource();
 
         // Check that the namespace doesn't exist already
@@ -63,9 +54,6 @@ public class NamespaceResourceTest extends BaseResourceTest {
 
         // Create namespace
         assertTrue(namespaceResource.create());
-
-        // Wait a little bit for kubernetes to create the namespace
-        Thread.sleep(2000);
 
         // Check that the namespace exists
         namespace = retrieveNamespace();
