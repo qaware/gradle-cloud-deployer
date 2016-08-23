@@ -18,33 +18,44 @@ public class KubernetesDeployer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesDeployer.class);
 
-    public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
-            // 1. Read and create resource configs
-            List<ResourceConfig> resourceConfigs = ResourceConfigFactory.getConfigs(files);
+    public void delete(CloudConfig cloudConfig, String namespace) throws ResourceConfigException, ResourceException {
+        // 1. Create a resource factory for the specified namespace
+        ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
 
-            // 2. Create a resource factory for the specified namespace
-            ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
+        // 2. Create the namespace resource
+        DeletableResource namespaceResource = resourceFactory.getNamespaceResource();
 
-            // 3. Create the resources for the configs out of step 1.
-            List<Resource> resources = resourceFactory.createResources(resourceConfigs);
-
-            // 4. Create the namespace resource
-            DeletableResource namespaceResource = resourceFactory.getNamespaceResource();
-
-            // 5a. Delete the namespace if it already exists
-            resetNamespace(namespaceResource);
-
-            // 5b. Create the namespace
-            createNamespace(namespaceResource);
-
-            // 6. Create the resources
-            createResources(resources);
+        // 3. Delete the namespace
+        resetNamespace(namespaceResource);
     }
 
-    private void createResources(List<Resource> resources) throws ResourceException {
+    public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
+        // 1. Read and create resource configs
+        List<ResourceConfig> resourceConfigs = ResourceConfigFactory.getConfigs(files);
+
+        // 2. Create a resource factory for the specified namespace
+        ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
+
+        // 3. Create the resources for the configs out of step 1.
+        List<Resource> resources = resourceFactory.createResources(resourceConfigs);
+
+        // 4. Create the namespace resource
+        DeletableResource namespaceResource = resourceFactory.getNamespaceResource();
+
+        // 5a. Delete the namespace if it already exists
+        resetNamespace(namespaceResource);
+
+        // 5b. Create the namespace
+        createNamespace(namespaceResource);
+
+        // 6. Create the resources
+        createResources(resources);
+    }
+
+    private static void createResources(List<Resource> resources) throws ResourceException {
         LOGGER.info("Deploying resources...");
 
-        for(Resource resource : resources) {
+        for (Resource resource : resources) {
             LOGGER.info("- " + resource);
             resource.create();
         }
@@ -52,7 +63,7 @@ public class KubernetesDeployer {
         LOGGER.info("Finished deploying resources...");
     }
 
-    private void resetNamespace(DeletableResource namespaceResource) throws ResourceException {
+    private static void resetNamespace(DeletableResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
             LOGGER.info("Removing namespace...");
 
@@ -63,7 +74,7 @@ public class KubernetesDeployer {
         }
     }
 
-    private void createNamespace(Resource namespaceResource) throws ResourceException {
+    private static void createNamespace(Resource namespaceResource) throws ResourceException {
         LOGGER.info("Deploying namespace...");
 
         LOGGER.info("- " + namespaceResource);
