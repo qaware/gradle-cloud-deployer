@@ -14,27 +14,61 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Ignore
 public class BaseResourceTest extends TestCase {
 
+    private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
     private NamespaceResource namespaceResource;
     private ClientFactory clientFactory;
     private KubernetesClient kubernetesClient;
 
-    private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
+    private static Map<String, String> loadEnvironmentVariables() throws IOException {
+        Map<String, String> environmentVariables = new HashMap<>();
+        environmentVariables.put("USERNAME", System.getenv("USERNAME"));
+        environmentVariables.put("PASSWORD", System.getenv("PASSWORD"));
+        environmentVariables.put("URL", System.getenv("URL"));
+        environmentVariables.put("TEST_NAMESPACE_PREFIX", System.getenv("TEST_NAMESPACE_PREFIX"));
+        return environmentVariables;
+    }
+
+    private static ClientFactory createClientFactory(Map<String, String> environmentProperties) {
+        SSLConfig sslConfig = new SSLConfig(true, null);
+        CloudConfig cloudConfig = new CloudConfig(environmentProperties.get("URL"),
+                environmentProperties.get("USERNAME"),
+                environmentProperties.get("PASSWORD"),
+                sslConfig
+        );
+        return new ClientFactory(cloudConfig);
+    }
+
+    private static KubernetesClient createKubernetesClient(Map<String, String> environmentProperties) {
+        Config config = new ConfigBuilder()
+                .withMasterUrl(environmentProperties.get("URL"))
+                .withTrustCerts(true)
+                .withUsername(environmentProperties.get("USERNAME"))
+                .withPassword(environmentProperties.get("PASSWORD"))
+                .build();
+        return new DefaultKubernetesClient(config);
+    }
+
+    private static NamespaceResource createNamespaceResource(ClientFactory clientFactory, Map<String, String> environmentProperties) throws ResourceConfigException {
+        String namespace = environmentProperties.get("TEST_NAMESPACE_PREFIX") + "-" + subNamespaceCounter.getAndIncrement();
+        ResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
+        return new NamespaceResource(namespaceResourceConfig, clientFactory);
+    }
 
     @Override
     public void setUp() throws Exception {
-        Properties environmentProperties = loadEnvironmentProperties();
-        kubernetesClient = createKubernetesClient(environmentProperties);
-        clientFactory = createClientFactory(environmentProperties);
-        namespaceResource = createNamespaceResource(clientFactory, environmentProperties);
+        Map<String, String> environmentVariables = loadEnvironmentVariables();
+        kubernetesClient = createKubernetesClient(environmentVariables);
+        clientFactory = createClientFactory(environmentVariables);
+        namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
     }
 
     @Override
@@ -56,38 +90,5 @@ public class BaseResourceTest extends TestCase {
 
     public KubernetesClient getKubernetesClient() {
         return kubernetesClient;
-    }
-
-    private static Properties loadEnvironmentProperties() throws IOException {
-        File propertiesFile = new File(BaseResourceTest.class.getResource("/env.properties").getPath());
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(propertiesFile));
-        return properties;
-    }
-
-    private static ClientFactory createClientFactory(Properties environmentProperties) {
-        SSLConfig sslConfig = new SSLConfig(true, null);
-        CloudConfig cloudConfig = new CloudConfig(environmentProperties.getProperty("URL"),
-                environmentProperties.getProperty("USERNAME"),
-                environmentProperties.getProperty("PASSWORD"),
-                sslConfig
-        );
-        return new ClientFactory(cloudConfig);
-    }
-
-    private static KubernetesClient createKubernetesClient(Properties environmentProperties) {
-        Config config = new ConfigBuilder()
-                .withMasterUrl(environmentProperties.getProperty("URL"))
-                .withTrustCerts(true)
-                .withUsername(environmentProperties.getProperty("USERNAME"))
-                .withPassword(environmentProperties.getProperty("PASSWORD"))
-                .build();
-        return new DefaultKubernetesClient(config);
-    }
-
-    private static NamespaceResource createNamespaceResource(ClientFactory clientFactory, Properties environmentProperties) throws ResourceConfigException {
-        String namespace = environmentProperties.getProperty("TEST_NAMESPACE_PREFIX") + "-" + subNamespaceCounter.getAndIncrement();
-        ResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
-        return new NamespaceResource(namespaceResourceConfig, clientFactory);
     }
 }
