@@ -11,8 +11,6 @@ import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.update.HardUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategyFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
