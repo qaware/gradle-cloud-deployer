@@ -3,29 +3,38 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.BaseResourceTest;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
-import org.apache.commons.io.FileUtils;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import junit.framework.TestCase;
 
-import java.io.File;
-import java.nio.charset.Charset;
+public class DeploymentResourceTest extends TestCase {
 
-public class DeploymentResourceTest extends BaseResourceTest {
-
+    private KubernetesClient kubernetesClient;
+    private NamespaceResource namespaceResource;
     private DeploymentResource deploymentResource;
 
     @Override
     public void setUp() throws Exception {
-
-        // Prepare namespace
-        super.setUp();
-        getNamespaceResource().create();
+        // Create test environment
+        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        namespaceResource = testEnvironment.getNamespaceResource();
+        kubernetesClient = testEnvironment.getKubernetesClient();
+        ResourceTestUtil.createNamespace(namespaceResource);
 
         // Create the DeploymentResource object
-        File deploymentDescriptionFile = new File(this.getClass().getResource("/deployment.yml").getPath());
-        String deploymentDescription = FileUtils.readFileToString(deploymentDescriptionFile, Charset.defaultCharset());
+        ClientFactory clientFactory = testEnvironment.getClientFactory();
+        String deploymentDescription = ResourceTestUtil.readFile("/deployment.yml");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.YAML, deploymentDescription);
-        deploymentResource = new DeploymentResource(getNamespaceResource().getNamespace(), resourceConfig, getClientFactory());
+        deploymentResource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        namespaceResource.delete();
     }
 
     public void testExists() throws ResourceException {
@@ -85,6 +94,6 @@ public class DeploymentResourceTest extends BaseResourceTest {
     }
 
     private Deployment retrieveDeployment() {
-        return getKubernetesClient().extensions().deployments().inNamespace(deploymentResource.getNamespace()).withName(deploymentResource.getId()).get();
+        return kubernetesClient.extensions().deployments().inNamespace(deploymentResource.getNamespace()).withName(deploymentResource.getId()).get();
     }
 }

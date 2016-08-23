@@ -3,29 +3,38 @@ package de.qaware.cloud.deployer.kubernetes.resource.service;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.BaseResourceTest;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.api.model.Service;
-import org.apache.commons.io.FileUtils;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import junit.framework.TestCase;
 
-import java.io.File;
-import java.nio.charset.Charset;
+public class ServiceResourceTest extends TestCase {
 
-public class ServiceResourceTest extends BaseResourceTest {
-
+    private KubernetesClient kubernetesClient;
+    private NamespaceResource namespaceResource;
     private ServiceResource serviceResource;
 
     @Override
     public void setUp() throws Exception {
-
-        // Prepare namespace
-        super.setUp();
-        getNamespaceResource().create();
+        // Create test environment
+        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        namespaceResource = testEnvironment.getNamespaceResource();
+        kubernetesClient = testEnvironment.getKubernetesClient();
+        ResourceTestUtil.createNamespace(namespaceResource);
 
         // Create the ServiceResource object
-        File serviceDescriptionFile = new File(this.getClass().getResource("/service.yml").getPath());
-        String serviceDescription = FileUtils.readFileToString(serviceDescriptionFile, Charset.defaultCharset());
+        ClientFactory clientFactory = testEnvironment.getClientFactory();
+        String serviceDescription = ResourceTestUtil.readFile("/service.yml");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.YAML, serviceDescription);
-        serviceResource = new ServiceResource(getNamespaceResource().getNamespace(), resourceConfig, getClientFactory());
+        serviceResource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        namespaceResource.delete();
     }
 
     public void testExists() throws ResourceException {
@@ -85,6 +94,6 @@ public class ServiceResourceTest extends BaseResourceTest {
     }
 
     private Service retrieveService() {
-        return getKubernetesClient().services().inNamespace(serviceResource.getNamespace()).withName(serviceResource.getId()).get();
+        return kubernetesClient.services().inNamespace(serviceResource.getNamespace()).withName(serviceResource.getId()).get();
     }
 }

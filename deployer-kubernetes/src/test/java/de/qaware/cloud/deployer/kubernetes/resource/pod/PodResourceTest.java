@@ -3,29 +3,38 @@ package de.qaware.cloud.deployer.kubernetes.resource.pod;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.BaseResourceTest;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
+import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.api.model.Pod;
-import org.apache.commons.io.FileUtils;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import junit.framework.TestCase;
 
-import java.io.File;
-import java.nio.charset.Charset;
+public class PodResourceTest extends TestCase {
 
-public class PodResourceTest extends BaseResourceTest {
-
+    private KubernetesClient kubernetesClient;
+    private NamespaceResource namespaceResource;
     private PodResource podResource;
 
     @Override
     public void setUp() throws Exception {
-
-        // Prepare namespace
-        super.setUp();
-        getNamespaceResource().create();
+        // Create test environment
+        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        namespaceResource = testEnvironment.getNamespaceResource();
+        kubernetesClient = testEnvironment.getKubernetesClient();
+        ResourceTestUtil.createNamespace(namespaceResource);
 
         // Create the PodResource object
-        File podDescriptionFile = new File(this.getClass().getResource("/pod.json").getPath());
-        String podDescription = FileUtils.readFileToString(podDescriptionFile, Charset.defaultCharset());
+        ClientFactory clientFactory = testEnvironment.getClientFactory();
+        String podDescription = ResourceTestUtil.readFile("/pod.json");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.JSON, podDescription);
-        podResource = new PodResource(getNamespaceResource().getNamespace(), resourceConfig, getClientFactory());
+        podResource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        namespaceResource.delete();
     }
 
     public void testExists() throws ResourceException, InterruptedException {
@@ -85,6 +94,6 @@ public class PodResourceTest extends BaseResourceTest {
     }
 
     private Pod retrievePod() {
-        return getKubernetesClient().pods().inNamespace(podResource.getNamespace()).withName(podResource.getId()).get();
+        return kubernetesClient.pods().inNamespace(podResource.getNamespace()).withName(podResource.getId()).get();
     }
 }

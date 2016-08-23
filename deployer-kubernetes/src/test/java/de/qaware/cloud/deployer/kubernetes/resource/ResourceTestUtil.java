@@ -12,21 +12,18 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import junit.framework.TestCase;
-import org.junit.Ignore;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Ignore
-public class BaseResourceTest extends TestCase {
+public class ResourceTestUtil {
 
     private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
-    private NamespaceResource namespaceResource;
-    private ClientFactory clientFactory;
-    private KubernetesClient kubernetesClient;
 
     private static Map<String, String> loadEnvironmentVariables() throws IOException {
         Map<String, String> environmentVariables = new HashMap<>();
@@ -63,34 +60,23 @@ public class BaseResourceTest extends TestCase {
         return new NamespaceResource(namespaceResourceConfig, clientFactory);
     }
 
-    @Override
-    public void setUp() throws Exception {
+    public static ResourceTestEnvironment createTestEnvironment() throws IOException, ResourceConfigException, ResourceException {
         Map<String, String> environmentVariables = loadEnvironmentVariables();
-        kubernetesClient = createKubernetesClient(environmentVariables);
-        clientFactory = createClientFactory(environmentVariables);
-        namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
+        KubernetesClient kubernetesClient = createKubernetesClient(environmentVariables);
+        ClientFactory clientFactory = createClientFactory(environmentVariables);
+        NamespaceResource namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
+        return new ResourceTestEnvironment(namespaceResource, clientFactory, kubernetesClient);
+    }
 
-        // Delete namespace resource if it already exists
+    public static void createNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
             namespaceResource.delete();
         }
+        namespaceResource.create();
     }
 
-    @Override
-    public void tearDown() throws ResourceException {
-        // Delete the test namespace
-        namespaceResource.delete();
-    }
-
-    public NamespaceResource getNamespaceResource() {
-        return namespaceResource;
-    }
-
-    public ClientFactory getClientFactory() {
-        return clientFactory;
-    }
-
-    public KubernetesClient getKubernetesClient() {
-        return kubernetesClient;
+    public static String readFile(String filename) throws IOException {
+        File deploymentDescriptionFile = new File(ResourceTestUtil.class.getClass().getResource(filename).getPath());
+        return FileUtils.readFileToString(deploymentDescriptionFile, Charset.defaultCharset());
     }
 }

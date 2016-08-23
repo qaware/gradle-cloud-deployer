@@ -1,13 +1,30 @@
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.BaseResourceTest;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import io.fabric8.kubernetes.api.model.Namespace;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import junit.framework.TestCase;
 
-public class NamespaceResourceTest extends BaseResourceTest {
+public class NamespaceResourceTest extends TestCase {
+
+    private NamespaceResource namespaceResource;
+    private KubernetesClient kubernetesClient;
+
+    @Override
+    public void setUp() throws Exception {
+        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        namespaceResource = testEnvironment.getNamespaceResource();
+        kubernetesClient = testEnvironment.getKubernetesClient();
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        namespaceResource.delete();
+    }
 
     public void testExists() throws ResourceException {
-        NamespaceResource namespaceResource = getNamespaceResource();
 
         // Check that the namespace doesn't exist already
         Namespace namespace = retrieveNamespace();
@@ -28,7 +45,6 @@ public class NamespaceResourceTest extends BaseResourceTest {
     }
 
     public void testDelete() throws ResourceException {
-        NamespaceResource namespaceResource = getNamespaceResource();
 
         // Create namespace
         assertTrue(namespaceResource.create());
@@ -46,7 +62,6 @@ public class NamespaceResourceTest extends BaseResourceTest {
     }
 
     public void testCreate() throws ResourceException {
-        NamespaceResource namespaceResource = getNamespaceResource();
 
         // Check that the namespace doesn't exist already
         Namespace namespace = retrieveNamespace();
@@ -66,6 +81,6 @@ public class NamespaceResourceTest extends BaseResourceTest {
     }
 
     private Namespace retrieveNamespace() {
-        return getKubernetesClient().namespaces().withName(getNamespaceResource().getId()).get();
+        return kubernetesClient.namespaces().withName(namespaceResource.getId()).get();
     }
 }
