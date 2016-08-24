@@ -37,7 +37,6 @@ public class NamespaceConfigFactoryTest extends TestCase {
     public void testEmptyNamespace() {
         boolean exceptionThrown = false;
         try {
-            // Create config
             NamespaceConfigFactory.create("");
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
@@ -48,7 +47,6 @@ public class NamespaceConfigFactoryTest extends TestCase {
     public void testNullNamespace() {
         boolean exceptionThrown = false;
         try {
-            // Create config
             NamespaceConfigFactory.create(null);
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
