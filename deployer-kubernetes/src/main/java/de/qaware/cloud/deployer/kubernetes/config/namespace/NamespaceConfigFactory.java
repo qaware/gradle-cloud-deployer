@@ -30,12 +30,17 @@ public class NamespaceConfigFactory {
     }
 
     public static ResourceConfig create(String name) throws ResourceConfigException {
+
+        if (name == null || name.isEmpty()) {
+            throw new ResourceConfigException("Please specify a valid namespace");
+        }
+
         NamespaceDescription namespaceDescription = new NamespaceDescription(name);
-        String namespaceDescriptionContent = "";
+        String namespaceDescriptionContent;
         try {
             namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespaceDescription);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new ResourceConfigException("Couldn't create namespace content", e);
         }
         return new ResourceConfig(ContentType.JSON, namespaceDescriptionContent);
     }
