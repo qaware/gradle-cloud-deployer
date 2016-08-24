@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource;
 
+import de.qaware.cloud.deployer.kubernetes.FileUtil;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
@@ -27,11 +28,8 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -92,7 +90,6 @@ public class ResourceTestUtil {
     }
 
     public static String readFile(String filename) throws IOException {
-        File deploymentDescriptionFile = new File(ResourceTestUtil.class.getClass().getResource(filename).getPath());
-        return FileUtils.readFileToString(deploymentDescriptionFile, Charset.defaultCharset());
+        return FileUtil.readFile(filename);
     }
 }
