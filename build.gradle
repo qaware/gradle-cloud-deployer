@@ -1,7 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1"
+    }
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'idea'
+    apply plugin: "com.github.hierynomus.license"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -12,6 +26,15 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+    }
+
+    license {
+        skipExistingHeaders = true
+        header rootProject.file('LICENSE_HEADER')
+        includes(["**/*.java"])
+        mapping {
+            java = 'SLASHSTAR_STYLE'
+        }
     }
 
     dependencies {
