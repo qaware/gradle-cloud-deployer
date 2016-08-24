@@ -21,7 +21,7 @@ public interface Resource {
 
     boolean exists() throws ResourceException;
 
-    boolean create() throws ResourceException;
+    void create() throws ResourceException;
 
-    boolean delete() throws ResourceException;
+    void delete() throws ResourceException;
 }

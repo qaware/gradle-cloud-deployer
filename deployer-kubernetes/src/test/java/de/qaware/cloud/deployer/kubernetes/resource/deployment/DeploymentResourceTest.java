@@ -62,7 +62,7 @@ public class DeploymentResourceTest extends TestCase {
         assertFalse(deploymentResource.exists());
 
         // Create deployment
-        assertTrue(deploymentResource.create());
+        deploymentResource.create();
 
         // Check that the deployment exists
         deployment = retrieveDeployment();
@@ -79,7 +79,7 @@ public class DeploymentResourceTest extends TestCase {
         assertNull(deployment);
 
         // Create deployment
-        assertTrue(deploymentResource.create());
+        deploymentResource.create();
 
         // Check that the deployment exists
         deployment = retrieveDeployment();
@@ -94,14 +94,14 @@ public class DeploymentResourceTest extends TestCase {
     public void testDelete() throws ResourceException {
 
         // Create deployment
-        assertTrue(deploymentResource.create());
+        deploymentResource.create();
 
         // Check that the deployment exists
         Deployment deployment = retrieveDeployment();
         assertNotNull(deployment);
 
         // Delete deployment
-        assertTrue(deploymentResource.delete());
+        deploymentResource.delete();
 
         // Check that deployment doesn't exist anymore
         deployment = retrieveDeployment();

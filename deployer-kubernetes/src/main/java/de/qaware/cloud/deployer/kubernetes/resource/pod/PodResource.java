@@ -38,15 +38,15 @@ public class PodResource extends BaseResource {
     }
 
     @Override
-    public boolean create() throws ResourceException {
+    public void create() throws ResourceException {
         Call<ResponseBody> call = podClient.create(getNamespace(), createRequestBody());
-        return executeCreateCallAndBlock(call);
+        executeCreateCallAndBlock(call);
     }
 
     @Override
-    public boolean delete() throws ResourceException {
+    public void delete() throws ResourceException {
         Call<ResponseBody> deleteCall = podClient.delete(getId(), getNamespace());
-        return executeDeleteCallAndBlock(deleteCall);
+        executeDeleteCallAndBlock(deleteCall);
     }
 
     @Override

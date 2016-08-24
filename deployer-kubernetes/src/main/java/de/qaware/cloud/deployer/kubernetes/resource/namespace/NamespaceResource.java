@@ -38,15 +38,15 @@ public class NamespaceResource extends BaseResource {
     }
 
     @Override
-    public boolean create() throws ResourceException {
+    public void create() throws ResourceException {
         Call<ResponseBody> request = namespaceClient.create(createRequestBody());
-        return executeCreateCallAndBlock(request);
+        executeCreateCallAndBlock(request);
     }
 
     @Override
-    public boolean delete() throws ResourceException {
+    public void delete() throws ResourceException {
         Call<ResponseBody> deleteCall = namespaceClient.delete(getId());
-        return executeDeleteCallAndBlock(deleteCall);
+        executeDeleteCallAndBlock(deleteCall);
     }
 
     @Override

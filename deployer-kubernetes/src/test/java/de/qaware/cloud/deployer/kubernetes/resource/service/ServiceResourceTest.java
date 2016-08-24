@@ -62,7 +62,7 @@ public class ServiceResourceTest extends TestCase {
         assertFalse(serviceResource.exists());
 
         // Create service
-        assertTrue(serviceResource.create());
+        serviceResource.create();
 
         // Check that the service exists
         service = retrieveService();
@@ -79,7 +79,7 @@ public class ServiceResourceTest extends TestCase {
         assertNull(service);
 
         // Create service
-        assertTrue(serviceResource.create());
+        serviceResource.create();
 
         // Check that the service exists
         service = retrieveService();
@@ -94,14 +94,14 @@ public class ServiceResourceTest extends TestCase {
     public void testDelete() throws ResourceException {
 
         // Create service
-        assertTrue(serviceResource.create());
+        serviceResource.create();
 
         // Check that the service exists
         Service service = retrieveService();
         assertNotNull(service);
 
         // Delete service
-        assertTrue(serviceResource.delete());
+        serviceResource.delete();
 
         // Check that service doesn't exist anymore
         service = retrieveService();

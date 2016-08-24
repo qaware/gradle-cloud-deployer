@@ -64,49 +64,49 @@ public abstract class BaseResource implements Resource {
         }
     }
 
-    public boolean isSuccessResponse(retrofit2.Response<ResponseBody> response) {
-        return response.code() == 200 || response.code() == 201;
-    }
-
     public <T> T createClient(Class<T> serviceClass) {
         return clientFactory.create(serviceClass);
     }
 
-    public boolean executeCreateCallAndBlock(Call<ResponseBody> createCall) throws ResourceException {
+    public boolean executeExistsCall(Call<ResponseBody> existsCall) throws ResourceException {
+        try {
+            Response<ResponseBody> response = existsCall.execute();
+            if (isSuccessResponse(response)) {
+                return true;
+            } else if (isNotFoundResponse(response)) {
+                return false;
+            } else {
+                throw new ResourceException("Received a unhandled http status code: " + response.code());
+            }
+        } catch (IOException e) {
+            throw new ResourceException(e);
+        }
+    }
+
+    public void executeCreateCallAndBlock(Call<ResponseBody> createCall) throws ResourceException {
         try {
             Response<ResponseBody> response = createCall.execute();
-            if(isSuccessResponse(response)) {
-                while(!this.exists()) {
+            if (isSuccessResponse(response)) {
+                while (!this.exists()) {
                     Thread.sleep(500);
                 }
-                return true;
             } else {
-                return false;
+                throw new ResourceException("Received a unhandled http status code: " + response.code());
             }
         } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }
 
-    public boolean executeExistsCall(Call<ResponseBody> existsCall) throws ResourceException {
-        try {
-            Response<ResponseBody> response = existsCall.execute();
-            return isSuccessResponse(response);
-        } catch (IOException e) {
-            throw new ResourceException(e);
-        }
-    }
-
-    public boolean executeDeleteCallAndBlock(Call<ResponseBody> deleteCall) throws ResourceException {
+    public void executeDeleteCallAndBlock(Call<ResponseBody> deleteCall) throws ResourceException {
         try {
             Response<ResponseBody> response = deleteCall.execute();
             if (isSuccessResponse(response)) {
                 while (this.exists()) {
                     Thread.sleep(500);
                 }
-                return true;
             } else {
-                return false;
+                throw new ResourceException("Received a unhandled http status code: " + response.code());
             }
         } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
@@ -115,4 +115,12 @@ public abstract class BaseResource implements Resource {
 
     @Override
     public abstract String toString();
+
+    private boolean isNotFoundResponse(Response<ResponseBody> response) {
+        return response.code() == 404;
+    }
+
+    private boolean isSuccessResponse(Response<ResponseBody> response) {
+        return response.code() == 200 || response.code() == 201;
+    }
 }

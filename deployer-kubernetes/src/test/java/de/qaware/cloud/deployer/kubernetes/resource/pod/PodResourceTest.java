@@ -62,7 +62,7 @@ public class PodResourceTest extends TestCase {
         assertFalse(podResource.exists());
 
         // Create pod
-        assertTrue(podResource.create());
+        podResource.create();
 
         // Check that the pod exists
         pod = retrievePod();
@@ -79,7 +79,7 @@ public class PodResourceTest extends TestCase {
         assertNull(pod);
 
         // Create pod
-        assertTrue(podResource.create());
+        podResource.create();
 
         // Check that the pod exists
         pod = retrievePod();
@@ -94,14 +94,14 @@ public class PodResourceTest extends TestCase {
     public void testDelete() throws ResourceException {
 
         // Create pod
-        assertTrue(podResource.create());
+        podResource.create();
 
         // Check that the pod exists
         Pod pod = retrievePod();
         assertNotNull(pod);
 
         // Delete pod
-        assertTrue(podResource.delete());
+        podResource.delete();
 
         // Check that pod doesn't exist anymore
         pod = retrievePod();

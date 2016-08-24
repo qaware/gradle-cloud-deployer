@@ -38,15 +38,15 @@ public class DeploymentResource extends BaseResource {
     }
 
     @Override
-    public boolean create() throws ResourceException {
+    public void create() throws ResourceException {
         Call<ResponseBody> request = deploymentClient.create(getNamespace(), createRequestBody());
-        return executeCreateCallAndBlock(request);
+        executeCreateCallAndBlock(request);
     }
 
     @Override
-    public boolean delete() throws ResourceException {
+    public void delete() throws ResourceException {
         Call<ResponseBody> deleteCall = deploymentClient.delete(getId(), getNamespace());
-        return executeDeleteCallAndBlock(deleteCall);
+        executeDeleteCallAndBlock(deleteCall);
     }
 
     @Override

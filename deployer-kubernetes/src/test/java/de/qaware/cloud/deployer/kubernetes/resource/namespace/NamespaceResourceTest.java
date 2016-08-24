@@ -36,7 +36,9 @@ public class NamespaceResourceTest extends TestCase {
 
     @Override
     public void tearDown() throws Exception {
-        namespaceResource.delete();
+        if (namespaceResource.exists()) {
+            namespaceResource.delete();
+        }
     }
 
     public void testExists() throws ResourceException {
@@ -49,7 +51,7 @@ public class NamespaceResourceTest extends TestCase {
         assertFalse(namespaceResource.exists());
 
         // Create namespace
-        assertTrue(namespaceResource.create());
+        namespaceResource.create();
 
         // Check that the namespace exists
         namespace = retrieveNamespace();
@@ -62,14 +64,14 @@ public class NamespaceResourceTest extends TestCase {
     public void testDelete() throws ResourceException {
 
         // Create namespace
-        assertTrue(namespaceResource.create());
+        namespaceResource.create();
 
         // Check that the namespace exists
         Namespace namespace = retrieveNamespace();
         assertNotNull(namespace);
 
         // Delete namespace
-        assertTrue(namespaceResource.delete());
+        namespaceResource.delete();
 
         // Check that namespace doesn't exist anymore
         namespace = retrieveNamespace();
@@ -83,7 +85,7 @@ public class NamespaceResourceTest extends TestCase {
         assertNull(namespace);
 
         // Create namespace
-        assertTrue(namespaceResource.create());
+        namespaceResource.create();
 
         // Check that the namespace exists
         namespace = retrieveNamespace();
