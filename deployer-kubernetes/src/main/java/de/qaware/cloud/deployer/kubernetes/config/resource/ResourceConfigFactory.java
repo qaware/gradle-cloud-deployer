@@ -36,7 +36,7 @@ public class ResourceConfigFactory {
     private ResourceConfigFactory() {
     }
 
-    public static List<ResourceConfig> getConfigs(List<File> files) throws ResourceConfigException {
+    public static List<ResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
 
         LOGGER.info("Reading config files...");
 
