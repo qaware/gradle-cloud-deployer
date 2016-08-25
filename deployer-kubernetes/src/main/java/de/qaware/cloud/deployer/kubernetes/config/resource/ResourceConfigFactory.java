@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ResourceConfigFactory {
 
-    private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
+    private static final String KUBERNETES_CONFIG_SEPARATOR = "---\r\n";
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceConfig.class);
 
     private ResourceConfigFactory() {
@@ -80,7 +80,7 @@ public class ResourceConfigFactory {
             case "yml":
                 return ContentType.YAML;
             default:
-                throw new ResourceConfigException("Unknown content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
+                throw new ResourceConfigException("Unsupported content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
         }
     }
 
@@ -97,4 +97,3 @@ public class ResourceConfigFactory {
         return Arrays.asList(content.split(splitString));
     }
 }
-
