@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ResourceConfigFactory {
 
-    private static final String KUBERNETES_CONFIG_SEPARATOR = "---\r\n";
+    private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceConfig.class);
 
     private ResourceConfigFactory() {
@@ -87,7 +87,7 @@ public class ResourceConfigFactory {
     // TODO: charset correct?
     private static String readFileContent(File file) throws ResourceConfigException {
         try {
-            return FileUtils.readFileToString(file, Charset.defaultCharset());
+            return FileUtils.readFileToString(file, Charset.defaultCharset()).trim();
         } catch (IOException e) {
             throw new ResourceConfigException(e.getMessage(), e);
         }
