@@ -1,12 +1,12 @@
 {
-  "kind": "Pod",
-  "apiVersion": "v1",
+  "kind": "Pod"
+  apiVersion: "v1",
   "metadata": {
     "name": "nginx-mysql",
-    "labels": {
+    "labels":
       "name": "nginx-mysql"
     }
-  },
+  }
   "spec": {
     "containers": [
       {
@@ -19,6 +19,5 @@
           }
         ]
       }
-    ]
   }
 }

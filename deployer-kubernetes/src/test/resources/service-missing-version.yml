@@ -1,0 +1,11 @@
+kind: Service
+metadata:
+  name: zwitscher-eureka
+  labels:
+    zwitscher: eureka
+spec:
+  type: NodePort
+  ports:
+  - port: 8761
+  selector:
+    zwitscher: eureka

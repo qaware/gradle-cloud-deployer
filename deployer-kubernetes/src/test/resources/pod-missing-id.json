@@ -2,20 +2,19 @@
   "kind": "Pod",
   "apiVersion": "v1",
   "metadata": {
-    "name": "nginx-mysql",
     "labels": {
-      "name": "nginx-mysql"
+      "name": "nginx-mysql2"
     }
   },
   "spec": {
     "containers": [
       {
-        "name": "nginx",
-        "image": "nginx",
+        "name": "nginx2",
+        "image": "nginx2",
         "ports": [
           {
-            "hostPort": 85,
-            "containerPort": 80
+            "hostPort": 852,
+            "containerPort": 802
           }
         ]
       }
