@@ -94,6 +94,10 @@ public class ResourceConfigFactory {
     }
 
     private static List<String> splitContent(String content, String splitString) {
-        return Arrays.asList(content.split(splitString));
+        List<String> splitContents = new ArrayList<>();
+        List<String> tempSplitContents = Arrays.asList(content.split(splitString));
+        // Remove whitespaces
+        tempSplitContents.forEach(s -> splitContents.add(s.trim()));
+        return splitContents;
     }
 }
