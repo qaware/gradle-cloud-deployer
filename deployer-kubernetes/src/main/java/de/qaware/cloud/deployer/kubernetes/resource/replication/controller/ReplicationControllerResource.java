@@ -19,6 +19,7 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.scale.ScaleDescription;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -45,6 +46,8 @@ public class ReplicationControllerResource extends BaseResource {
 
     @Override
     public void delete() throws ResourceException {
+        Call<ResponseBody> updateScaleCall = replicationControllerClient.updateScale(getId(), getNamespace(), new ScaleDescription(getId(), getNamespace(), 0));
+        executeCall(updateScaleCall);
         Call<ResponseBody> deleteCall = replicationControllerClient.delete(getId(), getNamespace());
         executeDeleteCallAndBlock(deleteCall);
     }

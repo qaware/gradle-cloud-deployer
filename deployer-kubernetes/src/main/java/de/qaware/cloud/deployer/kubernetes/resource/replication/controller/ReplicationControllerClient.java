@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
+import de.qaware.cloud.deployer.kubernetes.resource.scale.ScaleDescription;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -30,4 +31,7 @@ public interface ReplicationControllerClient {
 
     @DELETE("/api/v1/namespaces/{namespace}/replicationcontrollers/{name}")
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
+
+    @PUT("/api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale")
+    Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body ScaleDescription scaleDescription);
 }

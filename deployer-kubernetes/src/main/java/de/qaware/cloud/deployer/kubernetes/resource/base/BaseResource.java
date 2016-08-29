@@ -68,6 +68,17 @@ public abstract class BaseResource implements Resource {
         return clientFactory.create(serviceClass);
     }
 
+    public void executeCall(Call<ResponseBody> call) throws ResourceException {
+        try {
+            Response<ResponseBody> response = call.execute();
+            if (!isSuccessResponse(response)) {
+                throw new ResourceException("Received a unhandled http status code: " + response.code());
+            }
+        } catch (IOException e) {
+            throw new ResourceException(e);
+        }
+    }
+
     public boolean executeExistsCall(Call<ResponseBody> existsCall) throws ResourceException {
         try {
             Response<ResponseBody> response = existsCall.execute();

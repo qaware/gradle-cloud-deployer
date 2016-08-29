@@ -22,6 +22,7 @@ import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -85,13 +86,16 @@ public class ReplicationControllerResourceTest extends TestCase {
         controller = retrieveReplicationController();
         assertNotNull(controller);
 
+        // Check if the pods were created
+        assertEquals(3, retrievePods().getItems().size());
+
         // Compare services
         assertEquals(controller.getMetadata().getName(), replicationControllerResource.getId());
         assertEquals(controller.getApiVersion(), replicationControllerResource.getResourceConfig().getResourceVersion());
         assertEquals(controller.getKind(), replicationControllerResource.getResourceConfig().getResourceType());
     }
 
-    public void testDelete() throws ResourceException {
+    public void testDelete() throws ResourceException, InterruptedException {
 
         // Create controller
         replicationControllerResource.create();
@@ -100,8 +104,17 @@ public class ReplicationControllerResourceTest extends TestCase {
         ReplicationController controller = retrieveReplicationController();
         assertNotNull(controller);
 
+        // Check if the pods were created
+        assertEquals(3, retrievePods().getItems().size());
+
         // Delete controller
         replicationControllerResource.delete();
+
+        // TODO: remove waiting for deletion...
+        Thread.sleep(5000);
+
+        // Check that all pods were deleted
+        assertEquals(0, retrievePods().getItems().size());
 
         // Check that controller doesn't exist anymore
         controller = retrieveReplicationController();
@@ -110,5 +123,9 @@ public class ReplicationControllerResourceTest extends TestCase {
 
     private ReplicationController retrieveReplicationController() {
         return kubernetesClient.replicationControllers().inNamespace(replicationControllerResource.getNamespace()).withName(replicationControllerResource.getId()).get();
+    }
+
+    private PodList retrievePods() {
+        return kubernetesClient.pods().inNamespace(replicationControllerResource.getNamespace()).list();
     }
 }
