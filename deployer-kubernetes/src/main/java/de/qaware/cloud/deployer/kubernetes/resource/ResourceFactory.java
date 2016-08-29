@@ -25,6 +25,7 @@ import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.pod.PodResource;
+import de.qaware.cloud.deployer.kubernetes.resource.replication.controller.ReplicationControllerResource;
 import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,9 @@ public class ResourceFactory {
                         break;
                     case "Service":
                         resource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+                        break;
+                    case "ReplicationController":
+                        resource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                         break;
                     default:
                         throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(ResourceConfig: " + resourceConfig + ")");
