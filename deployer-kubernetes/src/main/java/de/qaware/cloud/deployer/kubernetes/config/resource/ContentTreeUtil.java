@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.config.util;
+package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 
 import java.io.IOException;
