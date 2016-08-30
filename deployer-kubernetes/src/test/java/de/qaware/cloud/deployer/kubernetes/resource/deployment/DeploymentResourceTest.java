@@ -24,8 +24,14 @@ import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
+import io.fabric8.kubernetes.api.model.extensions.ReplicaSet;
+import io.fabric8.kubernetes.api.model.extensions.ReplicaSetList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
+
+import java.util.List;
+
+import static de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource.DEPLOYMENT_MARKER_LABEL;
 
 public class DeploymentResourceTest extends TestCase {
 
@@ -89,6 +95,11 @@ public class DeploymentResourceTest extends TestCase {
         // Check if the pod was created
         assertEquals(1, retrievePods().getItems().size());
 
+        // Check if the replica set was created
+        List<ReplicaSet> replicaSets = retrieveReplicaSets().getItems();
+        assertEquals(1, replicaSets.size());
+        assertEquals("zwitscher-eureka", replicaSets.get(0).getMetadata().getLabels().get(DEPLOYMENT_MARKER_LABEL));
+
         // Compare deployments
         assertEquals(deployment.getMetadata().getName(), deploymentResource.getId());
         assertEquals(deployment.getApiVersion(), deploymentResource.getResourceConfig().getResourceVersion());
@@ -107,6 +118,9 @@ public class DeploymentResourceTest extends TestCase {
         // Check if the pod was created
         assertEquals(1, retrievePods().getItems().size());
 
+        // Check if the replica set was created
+        assertEquals(1, retrieveReplicaSets().getItems().size());
+
         // Delete deployment
         deploymentResource.delete();
 
@@ -115,6 +129,9 @@ public class DeploymentResourceTest extends TestCase {
 
         // Check that all pods were deleted
         assertEquals(0, retrievePods().getItems().size());
+
+        // Check that the replica set was deleted
+        assertEquals(0, retrieveReplicaSets().getItems().size());
 
         // Check that deployment doesn't exist anymore
         deployment = retrieveDeployment();
@@ -127,5 +144,9 @@ public class DeploymentResourceTest extends TestCase {
 
     private PodList retrievePods() {
         return kubernetesClient.pods().inNamespace(deploymentResource.getNamespace()).list();
+    }
+
+    private ReplicaSetList retrieveReplicaSets() {
+        return kubernetesClient.extensions().replicaSets().inNamespace(deploymentResource.getNamespace()).list();
     }
 }

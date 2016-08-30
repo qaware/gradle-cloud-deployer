@@ -24,11 +24,20 @@ import retrofit2.Call;
 
 public class DeploymentResource extends BaseResource {
 
-    private final DeploymentClient deploymentClient;
+    public static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
 
-    public DeploymentResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
+    private final DeploymentClient deploymentClient;
+    private final ReplicaSetClient replicaSetClient;
+
+    public DeploymentResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) throws ResourceException {
         super(namespace, resourceConfig, clientFactory);
+
+        // Replace the config content with a new marked version
+        DeploymentLabelUtil.addLabel(getResourceConfig(), DEPLOYMENT_MARKER_LABEL, getId());
+
+        // Create the clients
         this.deploymentClient = createClient(DeploymentClient.class);
+        this.replicaSetClient = createClient(ReplicaSetClient.class);
     }
 
     @Override
@@ -46,13 +55,19 @@ public class DeploymentResource extends BaseResource {
     @Override
     public void delete() throws ResourceException {
         // Scale down pods
+        // TODO: what happens if the deployment exists but no pods
         DeploymentScaleDescription scaleDescription = new DeploymentScaleDescription(getId(), getNamespace(), 0);
         Call<ResponseBody> updateScaleCall = deploymentClient.updateScale(getId(), getNamespace(), scaleDescription);
         executeCall(updateScaleCall);
 
         // Delete deployment
-        Call<ResponseBody> deleteCall = deploymentClient.delete(getId(), getNamespace());
-        executeDeleteCallAndBlock(deleteCall);
+        Call<ResponseBody> deploymentDeleteCall = deploymentClient.delete(getId(), getNamespace());
+        executeDeleteCallAndBlock(deploymentDeleteCall);
+
+        // Delete the replica set
+        // TODO: what happens if the deployment exists but no replica set
+        Call<ResponseBody> replicaSetDeleteCall = replicaSetClient.delete(getNamespace(), DEPLOYMENT_MARKER_LABEL + "=" + getId());
+        executeDeleteCallAndBlock(replicaSetDeleteCall);
     }
 
     @Override
