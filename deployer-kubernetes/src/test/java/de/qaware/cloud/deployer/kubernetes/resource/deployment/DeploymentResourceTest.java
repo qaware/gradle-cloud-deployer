@@ -111,7 +111,7 @@ public class DeploymentResourceTest extends TestCase {
         deploymentResource.delete();
 
         // TODO: remove waiting for deletion...
-        Thread.sleep(30000);
+        Thread.sleep(60000);
 
         // Check that all pods were deleted
         assertEquals(0, retrievePods().getItems().size());
