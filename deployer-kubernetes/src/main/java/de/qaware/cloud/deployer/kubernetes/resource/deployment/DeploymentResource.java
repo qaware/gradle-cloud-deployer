@@ -55,7 +55,6 @@ public class DeploymentResource extends BaseResource {
     @Override
     public void delete() throws ResourceException {
         // Scale down pods
-        // TODO: what happens if the deployment exists but no pods
         DeploymentScaleDescription scaleDescription = new DeploymentScaleDescription(getId(), getNamespace(), 0);
         Call<ResponseBody> updateScaleCall = deploymentClient.updateScale(getId(), getNamespace(), scaleDescription);
         executeCall(updateScaleCall);
@@ -65,7 +64,6 @@ public class DeploymentResource extends BaseResource {
         executeDeleteCallAndBlock(deploymentDeleteCall);
 
         // Delete the replica set
-        // TODO: what happens if the deployment exists but no replica set
         Call<ResponseBody> replicaSetDeleteCall = replicaSetClient.delete(getNamespace(), DEPLOYMENT_MARKER_LABEL + "=" + getId());
         executeDeleteCallAndBlock(replicaSetDeleteCall);
     }
