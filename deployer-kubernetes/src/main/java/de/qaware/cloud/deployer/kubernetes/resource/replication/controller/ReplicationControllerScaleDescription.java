@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource.scale;
+package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScaleDescription {
+public class ReplicationControllerScaleDescription {
 
     private final String apiVersion = "autoscaling/v1";
     private final String kind = "Scale";
@@ -37,7 +37,7 @@ public class ScaleDescription {
         }
     }
 
-    public ScaleDescription(String name, String namespace, int replicas) {
+    public ReplicationControllerScaleDescription(String name, String namespace, int replicas) {
         spec = new ScaleSpec(replicas);
         metadata.put("name", name);
         metadata.put("namespace", namespace);
