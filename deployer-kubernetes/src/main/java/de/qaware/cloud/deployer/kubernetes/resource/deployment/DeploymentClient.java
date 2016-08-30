@@ -30,4 +30,7 @@ public interface DeploymentClient {
 
     @DELETE("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
+
+    @PUT("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}/scale")
+    Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body DeploymentScaleDescription scaleDescription);
 }

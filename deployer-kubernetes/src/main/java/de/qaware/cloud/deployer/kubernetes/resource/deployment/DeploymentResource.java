@@ -45,6 +45,12 @@ public class DeploymentResource extends BaseResource {
 
     @Override
     public void delete() throws ResourceException {
+        // Scale down pods
+        DeploymentScaleDescription scaleDescription = new DeploymentScaleDescription(getId(), getNamespace(), 0);
+        Call<ResponseBody> updateScaleCall = deploymentClient.updateScale(getId(), getNamespace(), scaleDescription);
+        executeCall(updateScaleCall);
+
+        // Delete deployment
         Call<ResponseBody> deleteCall = deploymentClient.delete(getId(), getNamespace());
         executeDeleteCallAndBlock(deleteCall);
     }

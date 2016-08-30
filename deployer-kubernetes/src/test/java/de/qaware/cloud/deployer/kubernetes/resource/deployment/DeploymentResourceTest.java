@@ -22,6 +22,7 @@ import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -85,13 +86,16 @@ public class DeploymentResourceTest extends TestCase {
         deployment = retrieveDeployment();
         assertNotNull(deployment);
 
+        // Check if the pod was created
+        assertEquals(1, retrievePods().getItems().size());
+
         // Compare deployments
         assertEquals(deployment.getMetadata().getName(), deploymentResource.getId());
         assertEquals(deployment.getApiVersion(), deploymentResource.getResourceConfig().getResourceVersion());
         assertEquals(deployment.getKind(), deploymentResource.getResourceConfig().getResourceType());
     }
 
-    public void testDelete() throws ResourceException {
+    public void testDelete() throws ResourceException, InterruptedException {
 
         // Create deployment
         deploymentResource.create();
@@ -100,8 +104,17 @@ public class DeploymentResourceTest extends TestCase {
         Deployment deployment = retrieveDeployment();
         assertNotNull(deployment);
 
+        // Check if the pod was created
+        assertEquals(1, retrievePods().getItems().size());
+
         // Delete deployment
         deploymentResource.delete();
+
+        // TODO: remove waiting for deletion...
+        Thread.sleep(30000);
+
+        // Check that all pods were deleted
+        assertEquals(0, retrievePods().getItems().size());
 
         // Check that deployment doesn't exist anymore
         deployment = retrieveDeployment();
@@ -110,5 +123,9 @@ public class DeploymentResourceTest extends TestCase {
 
     private Deployment retrieveDeployment() {
         return kubernetesClient.extensions().deployments().inNamespace(deploymentResource.getNamespace()).withName(deploymentResource.getId()).get();
+    }
+
+    private PodList retrievePods() {
+        return kubernetesClient.pods().inNamespace(deploymentResource.getNamespace()).list();
     }
 }
