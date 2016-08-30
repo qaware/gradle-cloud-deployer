@@ -111,7 +111,7 @@ public class ReplicationControllerResourceTest extends TestCase {
         replicationControllerResource.delete();
 
         // TODO: remove waiting for deletion...
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
         // Check that all pods were deleted
         assertEquals(0, retrievePods().getItems().size());
