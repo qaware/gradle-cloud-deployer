@@ -22,8 +22,6 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 
-import java.io.IOException;
-
 public class NamespaceConfigFactory {
 
     private NamespaceConfigFactory() {
@@ -35,13 +33,12 @@ public class NamespaceConfigFactory {
             throw new ResourceConfigException("Please specify a valid namespace");
         }
 
-        NamespaceDescription namespaceDescription = new NamespaceDescription(name);
-        String namespaceDescriptionContent;
         try {
-            namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespaceDescription);
+            NamespaceDescription namespaceDescription = new NamespaceDescription(name);
+            String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespaceDescription);
+            return new ResourceConfig(ContentType.JSON, namespaceDescriptionContent);
         } catch (JsonProcessingException e) {
             throw new ResourceConfigException("Couldn't create namespace content", e);
         }
-        return new ResourceConfig(ContentType.JSON, namespaceDescriptionContent);
     }
 }
