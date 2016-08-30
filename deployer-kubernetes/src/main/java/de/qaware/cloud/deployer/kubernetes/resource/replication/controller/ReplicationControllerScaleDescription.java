@@ -15,6 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
+import de.qaware.cloud.deployer.kubernetes.resource.base.ScaleSpecDescription;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,23 +24,11 @@ public class ReplicationControllerScaleDescription {
 
     private final String apiVersion = "autoscaling/v1";
     private final String kind = "Scale";
+    private final ScaleSpecDescription spec;
     private Map<String, String> metadata = new HashMap<>();
-    private final ScaleSpec spec;
-
-    class ScaleSpec {
-        private final int replicas;
-
-        ScaleSpec(int replicas) {
-            this.replicas = replicas;
-        }
-
-        public int getReplicas() {
-            return replicas;
-        }
-    }
 
     public ReplicationControllerScaleDescription(String name, String namespace, int replicas) {
-        spec = new ScaleSpec(replicas);
+        spec = new ScaleSpecDescription(replicas);
         metadata.put("name", name);
         metadata.put("namespace", namespace);
     }
@@ -55,7 +45,7 @@ public class ReplicationControllerScaleDescription {
         return metadata;
     }
 
-    public ScaleSpec getSpec() {
+    public ScaleSpecDescription getSpec() {
         return spec;
     }
 }

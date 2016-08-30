@@ -45,9 +45,12 @@ public class ReplicationControllerResource extends BaseResource {
 
     @Override
     public void delete() throws ResourceException {
+        // Scale down pods
         ReplicationControllerScaleDescription scaleDescription = new ReplicationControllerScaleDescription(getId(), getNamespace(), 0);
         Call<ResponseBody> updateScaleCall = replicationControllerClient.updateScale(getId(), getNamespace(), scaleDescription);
         executeCall(updateScaleCall);
+
+        // Delete controller
         Call<ResponseBody> deleteCall = replicationControllerClient.delete(getId(), getNamespace());
         executeDeleteCallAndBlock(deleteCall);
     }
