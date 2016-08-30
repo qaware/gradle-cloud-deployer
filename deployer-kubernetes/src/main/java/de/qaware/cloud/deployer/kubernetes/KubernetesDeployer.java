@@ -23,6 +23,7 @@ import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
 import de.qaware.cloud.deployer.kubernetes.update.HardUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategyFactory;
@@ -40,7 +41,7 @@ public class KubernetesDeployer {
         NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
 
         // 3. Delete the namespace
-        HardUpdateStrategy.deleteNamespace(namespaceResource);
+        NamespaceUtil.safeDeleteNamespace(namespaceResource);
     }
 
     public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
