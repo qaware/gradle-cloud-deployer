@@ -26,8 +26,6 @@ import java.util.List;
 
 public class ResourceConfigFactoryTest extends TestCase {
 
-    // TODO: check exception messages!?
-
     public void testCreateConfigsWithExistingJsonFile() throws ResourceConfigException, IOException {
         String testFile = "/pod.json";
 
