@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
+import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 
 public interface Resource {
@@ -24,4 +25,10 @@ public interface Resource {
     void create() throws ResourceException;
 
     void delete() throws ResourceException;
+
+    String getId();
+
+    String getNamespace();
+
+    ResourceConfig getResourceConfig();
 }

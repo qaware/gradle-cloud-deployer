@@ -37,14 +37,17 @@ public abstract class BaseResource implements Resource {
         this.clientFactory = clientFactory;
     }
 
+    @Override
     public String getId() {
         return resourceConfig.getResourceId();
     }
 
+    @Override
     public String getNamespace() {
         return namespace;
     }
 
+    @Override
     public ResourceConfig getResourceConfig() {
         return resourceConfig;
     }
