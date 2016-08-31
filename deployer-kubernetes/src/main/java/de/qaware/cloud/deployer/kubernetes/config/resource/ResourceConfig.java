@@ -62,6 +62,6 @@ public class ResourceConfig {
 
     @Override
     public String toString() {
-        return "ResourceConfig: " + getResourceId() + " - " + getResourceType();
+        return "Config: " + getResourceId() + " - " + getResourceType();
     }
 }

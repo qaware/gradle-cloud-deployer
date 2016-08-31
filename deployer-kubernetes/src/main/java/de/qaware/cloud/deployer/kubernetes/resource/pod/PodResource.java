@@ -51,6 +51,6 @@ public class PodResource extends BaseResource {
 
     @Override
     public String toString() {
-        return "PodResource: " + getNamespace() + "/" + getId();
+        return "Pod: " + getNamespace() + "/" + getId();
     }
 }

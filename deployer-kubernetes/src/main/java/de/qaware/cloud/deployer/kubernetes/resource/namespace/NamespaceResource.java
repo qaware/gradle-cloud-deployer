@@ -51,6 +51,6 @@ public class NamespaceResource extends BaseResource {
 
     @Override
     public String toString() {
-        return "NamespaceResource: " + getNamespace();
+        return "Namespace: " + getNamespace();
     }
 }

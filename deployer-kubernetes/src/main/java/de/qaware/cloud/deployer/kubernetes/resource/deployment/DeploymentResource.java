@@ -70,6 +70,6 @@ public class DeploymentResource extends BaseResource {
 
     @Override
     public String toString() {
-        return "DeploymentResource: " + getNamespace() + "/" + getId();
+        return "Deployment: " + getNamespace() + "/" + getId();
     }
 }

@@ -60,13 +60,16 @@ public class ResourceConfigFactory {
         for (ResourceConfig resourceConfig : resourceConfigs) {
             List<String> splitContents = splitContent(resourceConfig.getContent(), splitString);
             for (String splitContent : splitContents) {
+                ResourceConfig splitResourceConfig;
                 if (resourceConfig instanceof FileResourceConfig) {
                     FileResourceConfig fileResourceConfig = (FileResourceConfig) resourceConfig;
-                    splitResourceConfigs.add(new FileResourceConfig(fileResourceConfig.getFilename(), resourceConfig.getContentType(), splitContent));
+                    splitResourceConfig = new FileResourceConfig(fileResourceConfig.getFilename(), resourceConfig.getContentType(), splitContent);
+                    splitResourceConfigs.add(splitResourceConfig);
                 } else {
-                    splitResourceConfigs.add(new ResourceConfig(resourceConfig.getContentType(), splitContent));
+                    splitResourceConfig = new ResourceConfig(resourceConfig.getContentType(), splitContent);
+                    splitResourceConfigs.add(splitResourceConfig);
                 }
-                LOGGER.info("- " + resourceConfig);
+                LOGGER.info("- " + splitResourceConfig);
             }
         }
         return splitResourceConfigs;

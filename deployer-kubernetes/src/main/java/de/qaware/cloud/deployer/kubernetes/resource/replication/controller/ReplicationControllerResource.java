@@ -57,6 +57,6 @@ public class ReplicationControllerResource extends BaseResource {
 
     @Override
     public String toString() {
-        return "ReplicationControllerResource: " + getNamespace() + "/" + getId();
+        return "ReplicationController: " + getNamespace() + "/" + getId();
     }
 }

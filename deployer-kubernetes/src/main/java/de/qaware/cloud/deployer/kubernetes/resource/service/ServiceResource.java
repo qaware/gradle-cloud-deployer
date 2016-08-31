@@ -51,6 +51,6 @@ public class ServiceResource extends BaseResource {
 
     @Override
     public String toString() {
-        return "ServiceResource: " + getNamespace() + "/" + getId();
+        return "Service: " + getNamespace() + "/" + getId();
     }
 }
