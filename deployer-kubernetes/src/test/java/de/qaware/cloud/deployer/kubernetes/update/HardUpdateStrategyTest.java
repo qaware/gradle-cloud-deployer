@@ -45,6 +45,7 @@ public class HardUpdateStrategyTest extends TestCase {
     private HardUpdateStrategy hardUpdateStrategy;
     private List<Resource> resourcesV1;
     private List<Resource> resourcesV2;
+    private List<Resource> resourcesV3;
     private KubernetesClient kubernetesClient;
 
     @Override
@@ -73,6 +74,12 @@ public class HardUpdateStrategyTest extends TestCase {
         filesV2.add(new File(this.getClass().getResource("/resource/update/update-v2.yml").getPath()));
         List<ResourceConfig> configsV2 = ResourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
+
+        // Create the resources for v3
+        List<File> filesV3 = new ArrayList<>();
+        filesV3.add(new File(this.getClass().getResource("/resource/update/update-v3.yml").getPath()));
+        List<ResourceConfig> configsV3 = ResourceConfigFactory.createConfigs(filesV3);
+        resourcesV3 = factory.createResources(configsV3);
     }
 
     @Override
@@ -89,6 +96,7 @@ public class HardUpdateStrategyTest extends TestCase {
         Resource deploymentResource = resourcesV1.get(1);
 
         // Check service
+        assertEquals(1, KubernetesClientUtil.retrieveServices(kubernetesClient, serviceResource).getItems().size());
         Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNotNull(service);
         ObjectMeta serviceMetadata = service.getMetadata();
@@ -97,6 +105,7 @@ public class HardUpdateStrategyTest extends TestCase {
         assertEquals(new Integer(8761), service.getSpec().getPorts().get(0).getPort());
 
         // Check deployment
+        assertEquals(1, KubernetesClientUtil.retrieveDeployments(kubernetesClient, deploymentResource).getItems().size());
         Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNotNull(deployment);
         ObjectMeta deploymentMetadata = deployment.getMetadata();
@@ -127,45 +136,90 @@ public class HardUpdateStrategyTest extends TestCase {
         // Deploy v1 - already tested above
         hardUpdateStrategy.deploy(namespaceResource, resourcesV1);
 
+
         // Deploy v2
         hardUpdateStrategy.deploy(namespaceResource, resourcesV2);
 
         // Check that everything was deployed correctly
-        Resource serviceResource1 = resourcesV2.get(0);
-        Resource deploymentResource1 = resourcesV2.get(1);
+        Resource serviceResource2 = resourcesV2.get(0);
+        Resource deploymentResource2 = resourcesV2.get(1);
 
-        // Check service1
-        Service service1 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource1);
-        assertNotNull(service1);
-        ObjectMeta serviceMetadata1 = service1.getMetadata();
-        assertEquals(deploymentResource1.getId(), serviceMetadata1.getName());
-        assertEquals(deploymentResource1.getNamespace(), serviceMetadata1.getNamespace());
-        assertEquals(new Integer(8762), service1.getSpec().getPorts().get(0).getPort());
+        // Check service2
+        assertEquals(1, KubernetesClientUtil.retrieveServices(kubernetesClient, serviceResource2).getItems().size());
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource2);
+        assertNotNull(service);
+        ObjectMeta serviceMetadata = service.getMetadata();
+        assertEquals(deploymentResource2.getId(), serviceMetadata.getName());
+        assertEquals(deploymentResource2.getNamespace(), serviceMetadata.getNamespace());
+        assertEquals(new Integer(8762), service.getSpec().getPorts().get(0).getPort());
 
-        // Check deployment1
-        Deployment deployment1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource1);
-        assertNotNull(deployment1);
-        ObjectMeta deploymentMetadata1 = deployment1.getMetadata();
-        assertEquals(deploymentResource1.getId(), deploymentMetadata1.getName());
-        assertEquals(deploymentResource1.getNamespace(), deploymentMetadata1.getNamespace());
-        assertEquals("v2", deploymentMetadata1.getLabels().get("version"));
+        // Check deployment2
+        assertEquals(1, KubernetesClientUtil.retrieveDeployments(kubernetesClient, deploymentResource2).getItems().size());
+        Deployment deployment2 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource2);
+        assertNotNull(deployment2);
+        ObjectMeta deploymentMetadata2 = deployment2.getMetadata();
+        assertEquals(deploymentResource2.getId(), deploymentMetadata2.getName());
+        assertEquals(deploymentResource2.getNamespace(), deploymentMetadata2.getNamespace());
+        assertEquals("v2", deploymentMetadata2.getLabels().get("version"));
 
-        // Check pods of deployment1
-        PodList podList1 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource1);
-        assertEquals(2, podList1.getItems().size());
-        Pod pod1 = podList1.getItems().get(0);
-        ObjectMeta podMetadata1 = pod1.getMetadata();
-        assertTrue(podMetadata1.getName().contains("zwitscher-eureka-"));
-        assertEquals(deploymentResource1.getNamespace(), podMetadata1.getNamespace());
-        assertEquals("v2", deploymentMetadata1.getLabels().get("version"));
+        // Check pods of deployment2
+        PodList podList2 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource2);
+        assertEquals(2, podList2.getItems().size());
+        Pod pod2a = podList2.getItems().get(0);
+        ObjectMeta podMetadata2a = pod2a.getMetadata();
+        assertTrue(podMetadata2a.getName().contains("zwitscher-eureka-"));
+        assertEquals(deploymentResource2.getNamespace(), podMetadata2a.getNamespace());
+        assertEquals("v2", podMetadata2a.getLabels().get("version"));
+        Pod pod2b = podList2.getItems().get(1);
+        ObjectMeta podMetadata2b = pod2b.getMetadata();
+        assertTrue(podMetadata2b.getName().contains("zwitscher-eureka-"));
+        assertEquals(deploymentResource2.getNamespace(), podMetadata2b.getNamespace());
+        assertEquals("v2", podMetadata2b.getLabels().get("version"));
 
-        // Check replica sets of deployment1
-        ReplicaSetList replicaSetList = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource1);
-        assertEquals(1, replicaSetList.getItems().size());
-        ReplicaSet replicaSet = replicaSetList.getItems().get(0);
-        ObjectMeta replicaSetMetadata = replicaSet.getMetadata();
-        assertTrue(replicaSetMetadata.getName().contains("zwitscher-eureka-"));
-        assertEquals(deploymentResource1.getNamespace(), replicaSetMetadata.getNamespace());
-        assertEquals("v2", deploymentMetadata1.getLabels().get("version"));
+        // Check replica sets of deployment2
+        ReplicaSetList replicaSetList2 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource2);
+        assertEquals(1, replicaSetList2.getItems().size());
+        ReplicaSet replicaSet2 = replicaSetList2.getItems().get(0);
+        ObjectMeta replicaSetMetadata2 = replicaSet2.getMetadata();
+        assertTrue(replicaSetMetadata2.getName().contains("zwitscher-eureka-"));
+        assertEquals(deploymentResource2.getNamespace(), replicaSetMetadata2.getNamespace());
+        assertEquals("v2", replicaSetMetadata2.getLabels().get("version"));
+
+
+        // Deploy v3
+        hardUpdateStrategy.deploy(namespaceResource, resourcesV3);
+
+        // Check that everything was deployed correctly
+        Resource deploymentResource3 = resourcesV3.get(0);
+
+        // Check that no service exists
+        assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, deploymentResource3).getItems().size());
+
+        // Check deployment3
+        assertEquals(1, KubernetesClientUtil.retrieveDeployments(kubernetesClient, deploymentResource3).getItems().size());
+        Deployment deployment3 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource3);
+        assertNotNull(deployment3);
+        ObjectMeta deploymentMetadata3 = deployment3.getMetadata();
+        assertEquals(deploymentResource3.getId(), deploymentMetadata3.getName());
+        assertEquals(deploymentResource3.getNamespace(), deploymentMetadata3.getNamespace());
+        assertEquals("v3", deploymentMetadata3.getLabels().get("version"));
+
+        // Check pods of deployment3
+        PodList podList3 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource3);
+        assertEquals(1, podList3.getItems().size());
+        Pod pod3 = podList3.getItems().get(0);
+        ObjectMeta podMetadata3 = pod3.getMetadata();
+        assertTrue(podMetadata3.getName().contains("zwitscher-eureka-"));
+        assertEquals(deploymentResource3.getNamespace(), podMetadata3.getNamespace());
+        assertEquals("v3", podMetadata3.getLabels().get("version"));
+
+        // Check replica sets of deployment3
+        ReplicaSetList replicaSetList3 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource3);
+        assertEquals(1, replicaSetList3.getItems().size());
+        ReplicaSet replicaSet3 = replicaSetList3.getItems().get(0);
+        ObjectMeta replicaSetMetadata3 = replicaSet3.getMetadata();
+        assertTrue(replicaSetMetadata3.getName().contains("zwitscher-eureka-"));
+        assertEquals(deploymentResource3.getNamespace(), replicaSetMetadata3.getNamespace());
+        assertEquals("v3", replicaSetMetadata3.getLabels().get("version"));
     }
 }
