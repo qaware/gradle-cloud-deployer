@@ -16,8 +16,9 @@
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -29,7 +30,7 @@ public class NamespaceResourceTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
     }
@@ -44,7 +45,7 @@ public class NamespaceResourceTest extends TestCase {
     public void testExists() throws ResourceException {
 
         // Check that the namespace doesn't exist already
-        Namespace namespace = retrieveNamespace();
+        Namespace namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
         assertNull(namespace);
 
         // Test exists method
@@ -54,7 +55,7 @@ public class NamespaceResourceTest extends TestCase {
         namespaceResource.create();
 
         // Check that the namespace exists
-        namespace = retrieveNamespace();
+        namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
         assertNotNull(namespace);
 
         // Test exists method
@@ -67,37 +68,33 @@ public class NamespaceResourceTest extends TestCase {
         namespaceResource.create();
 
         // Check that the namespace exists
-        Namespace namespace = retrieveNamespace();
+        Namespace namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
         assertNotNull(namespace);
 
         // Delete namespace
         namespaceResource.delete();
 
         // Check that namespace doesn't exist anymore
-        namespace = retrieveNamespace();
+        namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
         assertNull(namespace);
     }
 
     public void testCreate() throws ResourceException {
 
         // Check that the namespace doesn't exist already
-        Namespace namespace = retrieveNamespace();
+        Namespace namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
         assertNull(namespace);
 
         // Create namespace
         namespaceResource.create();
 
         // Check that the namespace exists
-        namespace = retrieveNamespace();
+        namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
         assertNotNull(namespace);
 
         // Compare namespaces
         assertEquals(namespace.getMetadata().getName(), namespaceResource.getId());
         assertEquals(namespace.getApiVersion(), namespaceResource.getResourceConfig().getResourceVersion());
         assertEquals(namespace.getKind(), namespaceResource.getResourceConfig().getResourceType());
-    }
-
-    private Namespace retrieveNamespace() {
-        return kubernetesClient.namespaces().withName(namespaceResource.getId()).get();
     }
 }

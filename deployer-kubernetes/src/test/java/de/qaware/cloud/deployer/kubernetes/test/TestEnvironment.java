@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource;
+package de.qaware.cloud.deployer.kubernetes.test;
 
+import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
-public class ResourceTestEnvironment {
+public class TestEnvironment {
 
     private NamespaceResource namespaceResource;
     private ClientFactory clientFactory;
     private KubernetesClient kubernetesClient;
+    private CloudConfig cloudConfig;
 
-    public ResourceTestEnvironment(NamespaceResource namespaceResource, ClientFactory clientFactory, KubernetesClient kubernetesClient) {
+    public TestEnvironment(NamespaceResource namespaceResource, ClientFactory clientFactory, KubernetesClient kubernetesClient, CloudConfig cloudConfig) {
         this.namespaceResource = namespaceResource;
         this.clientFactory = clientFactory;
         this.kubernetesClient = kubernetesClient;
+        this.cloudConfig = cloudConfig;
     }
 
     public NamespaceResource getNamespaceResource() {
@@ -41,5 +44,9 @@ public class ResourceTestEnvironment {
 
     public KubernetesClient getKubernetesClient() {
         return kubernetesClient;
+    }
+
+    public CloudConfig getCloudConfig() {
+        return cloudConfig;
     }
 }

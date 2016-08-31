@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource;
+package de.qaware.cloud.deployer.kubernetes.test;
 
-import de.qaware.cloud.deployer.kubernetes.FileUtil;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
@@ -34,7 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ResourceTestUtil {
+public class TestEnvironmentUtil {
+
+    private TestEnvironmentUtil() {
+    }
 
     private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
 
@@ -74,22 +76,31 @@ public class ResourceTestUtil {
         return new NamespaceResource(namespaceResourceConfig, clientFactory);
     }
 
-    public static ResourceTestEnvironment createTestEnvironment() throws IOException, ResourceConfigException, ResourceException {
+    private static CloudConfig createCloudConfig(Map<String, String> environmentProperties, String updateStrategy) {
+        return new CloudConfig(environmentProperties.get("URL"),
+                environmentProperties.get("USERNAME"),
+                environmentProperties.get("PASSWORD"),
+                updateStrategy,
+                new SSLConfig(true, ""));
+    }
+
+    public static TestEnvironment createTestEnvironment() throws IOException, ResourceConfigException, ResourceException {
+        return createTestEnvironment("HARD");
+    }
+
+    public static TestEnvironment createTestEnvironment(String updateStrategy) throws IOException, ResourceConfigException {
         Map<String, String> environmentVariables = loadEnvironmentVariables();
         KubernetesClient kubernetesClient = createKubernetesClient(environmentVariables);
         ClientFactory clientFactory = createClientFactory(environmentVariables);
         NamespaceResource namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
-        return new ResourceTestEnvironment(namespaceResource, clientFactory, kubernetesClient);
+        CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
+        return new TestEnvironment(namespaceResource, clientFactory, kubernetesClient, cloudConfig);
     }
 
-    public static void createNamespace(NamespaceResource namespaceResource) throws ResourceException {
+    public static void createTestNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
             namespaceResource.delete();
         }
         namespaceResource.create();
-    }
-
-    public static String readFile(String filename) throws IOException {
-        return FileUtil.readFile(filename);
     }
 }

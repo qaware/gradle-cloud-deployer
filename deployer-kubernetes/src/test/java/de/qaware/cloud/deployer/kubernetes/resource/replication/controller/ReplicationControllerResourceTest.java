@@ -18,11 +18,12 @@ package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import io.fabric8.kubernetes.api.model.PodList;
+import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -36,14 +37,14 @@ public class ReplicationControllerResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        ResourceTestUtil.createNamespace(namespaceResource);
+        TestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the ReplicationControllerResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String controllerDescription = ResourceTestUtil.readFile("/replication-controller.yml");
+        String controllerDescription = FileUtil.readFile("/replication-controller.yml");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.YAML, controllerDescription);
         replicationControllerResource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
@@ -56,7 +57,7 @@ public class ReplicationControllerResourceTest extends TestCase {
     public void testExists() throws ResourceException, InterruptedException {
 
         // Check that the controller doesn't exist already
-        ReplicationController controller = retrieveReplicationController();
+        ReplicationController controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResource);
         assertNull(controller);
 
         // Test exists method
@@ -66,7 +67,7 @@ public class ReplicationControllerResourceTest extends TestCase {
         replicationControllerResource.create();
 
         // Check that the controller exists
-        controller = retrieveReplicationController();
+        controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResource);
         assertNotNull(controller);
 
         // Test exists method
@@ -76,18 +77,18 @@ public class ReplicationControllerResourceTest extends TestCase {
     public void testCreate() throws ResourceException, InterruptedException {
 
         // Check that the controller doesn't exist already
-        ReplicationController controller = retrieveReplicationController();
+        ReplicationController controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResource);
         assertNull(controller);
 
         // Create controller
         replicationControllerResource.create();
 
         // Check that the controller exists
-        controller = retrieveReplicationController();
+        controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResource);
         assertNotNull(controller);
 
         // Check if the pods were created
-        assertEquals(3, retrievePods().getItems().size());
+        assertEquals(3, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResource).getItems().size());
 
         // Compare services
         assertEquals(controller.getMetadata().getName(), replicationControllerResource.getId());
@@ -101,11 +102,11 @@ public class ReplicationControllerResourceTest extends TestCase {
         replicationControllerResource.create();
 
         // Check that the controller exists
-        ReplicationController controller = retrieveReplicationController();
+        ReplicationController controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResource);
         assertNotNull(controller);
 
         // Check if the pods were created
-        assertEquals(3, retrievePods().getItems().size());
+        assertEquals(3, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResource).getItems().size());
 
         // Delete controller
         replicationControllerResource.delete();
@@ -114,18 +115,10 @@ public class ReplicationControllerResourceTest extends TestCase {
         Thread.sleep(10000);
 
         // Check that all pods were deleted
-        assertEquals(0, retrievePods().getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResource).getItems().size());
 
         // Check that controller doesn't exist anymore
-        controller = retrieveReplicationController();
+        controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResource);
         assertNull(controller);
-    }
-
-    private ReplicationController retrieveReplicationController() {
-        return kubernetesClient.replicationControllers().inNamespace(replicationControllerResource.getNamespace()).withName(replicationControllerResource.getId()).get();
-    }
-
-    private PodList retrievePods() {
-        return kubernetesClient.pods().inNamespace(replicationControllerResource.getNamespace()).list();
     }
 }

@@ -18,10 +18,12 @@ package de.qaware.cloud.deployer.kubernetes.resource.pod;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -35,14 +37,14 @@ public class PodResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        ResourceTestUtil.createNamespace(namespaceResource);
+        TestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the PodResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String podDescription = ResourceTestUtil.readFile("/pod.json");
+        String podDescription = FileUtil.readFile("/pod.json");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.JSON, podDescription);
         podResource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
@@ -55,7 +57,7 @@ public class PodResourceTest extends TestCase {
     public void testExists() throws ResourceException, InterruptedException {
 
         // Check that the pod doesn't exist already
-        Pod pod = retrievePod();
+        Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
         assertNull(pod);
 
         // Test exists method
@@ -65,7 +67,7 @@ public class PodResourceTest extends TestCase {
         podResource.create();
 
         // Check that the pod exists
-        pod = retrievePod();
+        pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
         assertNotNull(pod);
 
         // Test exists method
@@ -75,14 +77,14 @@ public class PodResourceTest extends TestCase {
     public void testCreate() throws ResourceException, InterruptedException {
 
         // Check that the pod doesn't exist already
-        Pod pod = retrievePod();
+        Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
         assertNull(pod);
 
         // Create pod
         podResource.create();
 
         // Check that the pod exists
-        pod = retrievePod();
+        pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
         assertNotNull(pod);
 
         // Compare services
@@ -97,18 +99,14 @@ public class PodResourceTest extends TestCase {
         podResource.create();
 
         // Check that the pod exists
-        Pod pod = retrievePod();
+        Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
         assertNotNull(pod);
 
         // Delete pod
         podResource.delete();
 
         // Check that pod doesn't exist anymore
-        pod = retrievePod();
+        pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
         assertNull(pod);
-    }
-
-    private Pod retrievePod() {
-        return kubernetesClient.pods().inNamespace(podResource.getNamespace()).withName(podResource.getId()).get();
     }
 }

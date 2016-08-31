@@ -18,10 +18,12 @@ package de.qaware.cloud.deployer.kubernetes.resource.service;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -35,14 +37,14 @@ public class ServiceResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        ResourceTestUtil.createNamespace(namespaceResource);
+        TestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the ServiceResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String serviceDescription = ResourceTestUtil.readFile("/service.yml");
+        String serviceDescription = FileUtil.readFile("/service.yml");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.YAML, serviceDescription);
         serviceResource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
@@ -55,7 +57,7 @@ public class ServiceResourceTest extends TestCase {
     public void testExists() throws ResourceException {
 
         // Check that the service doesn't exist already
-        Service service = retrieveService();
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNull(service);
 
         // Test exists method
@@ -65,7 +67,7 @@ public class ServiceResourceTest extends TestCase {
         serviceResource.create();
 
         // Check that the service exists
-        service = retrieveService();
+        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNotNull(service);
 
         // Test exists method
@@ -75,14 +77,14 @@ public class ServiceResourceTest extends TestCase {
     public void testCreate() throws ResourceException {
 
         // Check that the service doesn't exist already
-        Service service = retrieveService();
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNull(service);
 
         // Create service
         serviceResource.create();
 
         // Check that the service exists
-        service = retrieveService();
+        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNotNull(service);
 
         // Compare services
@@ -97,18 +99,14 @@ public class ServiceResourceTest extends TestCase {
         serviceResource.create();
 
         // Check that the service exists
-        Service service = retrieveService();
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNotNull(service);
 
         // Delete service
         serviceResource.delete();
 
         // Check that service doesn't exist anymore
-        service = retrieveService();
+        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
         assertNull(service);
-    }
-
-    private Service retrieveService() {
-        return kubernetesClient.services().inNamespace(serviceResource.getNamespace()).withName(serviceResource.getId()).get();
     }
 }

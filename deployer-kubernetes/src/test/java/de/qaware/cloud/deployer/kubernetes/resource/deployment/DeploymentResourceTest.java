@@ -18,14 +18,14 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceTestUtil;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import io.fabric8.kubernetes.api.model.PodList;
+import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.api.model.extensions.ReplicaSet;
-import io.fabric8.kubernetes.api.model.extensions.ReplicaSetList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
 
@@ -42,14 +42,14 @@ public class DeploymentResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        ResourceTestEnvironment testEnvironment = ResourceTestUtil.createTestEnvironment();
+        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        ResourceTestUtil.createNamespace(namespaceResource);
+        TestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the DeploymentResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String deploymentDescription = ResourceTestUtil.readFile("/deployment.yml");
+        String deploymentDescription = FileUtil.readFile("/deployment.yml");
         ResourceConfig resourceConfig = new ResourceConfig(ContentType.YAML, deploymentDescription);
         deploymentResource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
@@ -62,7 +62,7 @@ public class DeploymentResourceTest extends TestCase {
     public void testExists() throws ResourceException {
 
         // Check that the deployment doesn't exist already
-        Deployment deployment = retrieveDeployment();
+        Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNull(deployment);
 
         // Test exists method
@@ -72,7 +72,7 @@ public class DeploymentResourceTest extends TestCase {
         deploymentResource.create();
 
         // Check that the deployment exists
-        deployment = retrieveDeployment();
+        deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNotNull(deployment);
 
         // Test exists method
@@ -82,21 +82,21 @@ public class DeploymentResourceTest extends TestCase {
     public void testCreate() throws ResourceException {
 
         // Check that the deployment doesn't exist already
-        Deployment deployment = retrieveDeployment();
+        Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNull(deployment);
 
         // Create deployment
         deploymentResource.create();
 
         // Check that the deployment exists
-        deployment = retrieveDeployment();
+        deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNotNull(deployment);
 
         // Check if the pod was created
-        assertEquals(1, retrievePods().getItems().size());
+        assertEquals(1, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource).getItems().size());
 
         // Check if the replica set was created
-        List<ReplicaSet> replicaSets = retrieveReplicaSets().getItems();
+        List<ReplicaSet> replicaSets = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource).getItems();
         assertEquals(1, replicaSets.size());
         assertEquals("zwitscher-eureka", replicaSets.get(0).getMetadata().getLabels().get(DEPLOYMENT_MARKER_LABEL));
 
@@ -112,14 +112,14 @@ public class DeploymentResourceTest extends TestCase {
         deploymentResource.create();
 
         // Check that the deployment exists
-        Deployment deployment = retrieveDeployment();
+        Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNotNull(deployment);
 
         // Check if the pod was created
-        assertEquals(1, retrievePods().getItems().size());
+        assertEquals(1, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource).getItems().size());
 
         // Check if the replica set was created
-        assertEquals(1, retrieveReplicaSets().getItems().size());
+        assertEquals(1, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource).getItems().size());
 
         // Delete deployment
         deploymentResource.delete();
@@ -128,25 +128,13 @@ public class DeploymentResourceTest extends TestCase {
         Thread.sleep(60000);
 
         // Check that all pods were deleted
-        assertEquals(0, retrievePods().getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource).getItems().size());
 
         // Check that the replica set was deleted
-        assertEquals(0, retrieveReplicaSets().getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource).getItems().size());
 
         // Check that deployment doesn't exist anymore
-        deployment = retrieveDeployment();
+        deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResource);
         assertNull(deployment);
-    }
-
-    private Deployment retrieveDeployment() {
-        return kubernetesClient.extensions().deployments().inNamespace(deploymentResource.getNamespace()).withName(deploymentResource.getId()).get();
-    }
-
-    private PodList retrievePods() {
-        return kubernetesClient.pods().inNamespace(deploymentResource.getNamespace()).list();
-    }
-
-    private ReplicaSetList retrieveReplicaSets() {
-        return kubernetesClient.extensions().replicaSets().inNamespace(deploymentResource.getNamespace()).list();
     }
 }
