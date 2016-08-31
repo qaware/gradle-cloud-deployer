@@ -22,10 +22,7 @@ import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.CheckUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.*;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.Service;
@@ -38,6 +35,7 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public class SoftUpdateStrategyTest extends TestCase {
@@ -137,19 +135,33 @@ public class SoftUpdateStrategyTest extends TestCase {
         CheckUtil.checkReplicaSet(deploymentResource2, replicaSet2, version);
     }
 
-    public void testMultipleDeployments() throws ResourceException {
+    public void testMultipleDeployments() throws ResourceException, TimeoutException, InterruptedException {
         // Deploy v1 - already tested above
         softUpdateStrategy.deploy(namespaceResource, resourcesV1);
         String version1 = "v1";
 
+        Resource deploymentResource0 = resourcesV1.get(1);
+        List<Pod> pods0 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource0).getItems();
+        assertEquals(3, pods0.size());
+        Pod pod0a = pods0.get(0);
+        Pod pod0b = pods0.get(1);
+        Pod pod0c = pods0.get(1);
+        PodDeletionBlocker podDeletionBlocker0a = new PodDeletionBlocker(kubernetesClient, pod0a);
+        PodDeletionBlocker podDeletionBlocker0b = new PodDeletionBlocker(kubernetesClient, pod0b);
+        PodDeletionBlocker podDeletionBlocker0c = new PodDeletionBlocker(kubernetesClient, pod0c);
 
         // Deploy v2
         softUpdateStrategy.deploy(namespaceResource, resourcesV2);
         String version2 = "v2";
 
+        // Wait until the pods are deleted
+        podDeletionBlocker0a.block();
+        podDeletionBlocker0b.block();
+        podDeletionBlocker0c.block();
+
         // Check that everything was deployed correctly
-        Resource serviceResource1 = resourcesV1.get(0);
-        Resource deploymentResource1 = resourcesV1.get(1);
+        Resource serviceResource1 = resourcesV1.get(2);
+        Resource deploymentResource1 = resourcesV1.get(3);
         Resource serviceResource2 = resourcesV2.get(0);
         Resource deploymentResource2 = resourcesV2.get(1);
 
