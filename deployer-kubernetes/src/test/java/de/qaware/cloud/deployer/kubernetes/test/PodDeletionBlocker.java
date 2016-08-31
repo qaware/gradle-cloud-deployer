@@ -43,11 +43,11 @@ public class PodDeletionBlocker {
 
     public void block() throws InterruptedException, TimeoutException {
         while (block[0]) {
-            Thread.sleep(1000);
             timeoutCounter++;
             if (timeoutCounter > TIMEOUT) {
                 throw new TimeoutException("No pod deletion occurred in the last " + timeoutCounter + " seconds");
             }
+            Thread.sleep(1000);
         }
         watcher.close();
     }
