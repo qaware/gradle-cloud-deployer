@@ -65,19 +65,19 @@ public class HardUpdateStrategyTest extends TestCase {
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/resource/update/update-v1.yml").getPath()));
+        filesV1.add(new File(this.getClass().getResource("/resource/update/hard-update-v1.yml").getPath()));
         List<ResourceConfig> configsV1 = ResourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/resource/update/update-v2.yml").getPath()));
+        filesV2.add(new File(this.getClass().getResource("/resource/update/hard-update-v2.yml").getPath()));
         List<ResourceConfig> configsV2 = ResourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
 
         // Create the resources for v3
         List<File> filesV3 = new ArrayList<>();
-        filesV3.add(new File(this.getClass().getResource("/resource/update/update-v3.yml").getPath()));
+        filesV3.add(new File(this.getClass().getResource("/resource/update/hard-update-v3.yml").getPath()));
         List<ResourceConfig> configsV3 = ResourceConfigFactory.createConfigs(filesV3);
         resourcesV3 = factory.createResources(configsV3);
     }
