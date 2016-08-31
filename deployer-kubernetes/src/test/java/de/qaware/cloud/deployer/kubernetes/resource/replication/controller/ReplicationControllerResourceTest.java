@@ -20,13 +20,14 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.*;
+import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
+
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class ReplicationControllerResourceTest extends TestCase {
 
@@ -96,7 +97,7 @@ public class ReplicationControllerResourceTest extends TestCase {
         assertEquals(controller.getKind(), replicationControllerResource.getResourceConfig().getResourceType());
     }
 
-    public void testDelete() throws ResourceException, InterruptedException {
+    public void testDelete() throws ResourceException, InterruptedException, TimeoutException {
 
         // Create controller
         replicationControllerResource.create();
@@ -106,13 +107,24 @@ public class ReplicationControllerResourceTest extends TestCase {
         assertNotNull(controller);
 
         // Check if the pods were created
-        assertEquals(3, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResource).getItems().size());
+        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResource).getItems();
+        assertEquals(3, pods.size());
+
+        // Create event blockers
+        Pod pod0 = pods.get(0);
+        PodDeletionBlocker deleteBlocker0 = new PodDeletionBlocker(kubernetesClient, pod0);
+        Pod pod1 = pods.get(1);
+        PodDeletionBlocker deleteBlocker1 = new PodDeletionBlocker(kubernetesClient, pod1);
+        Pod pod2 = pods.get(2);
+        PodDeletionBlocker deleteBlocker2 = new PodDeletionBlocker(kubernetesClient, pod2);
 
         // Delete controller
         replicationControllerResource.delete();
 
-        // TODO: remove waiting for deletion...
-        Thread.sleep(10000);
+        // Block until deletion
+        deleteBlocker0.block();
+        deleteBlocker1.block();
+        deleteBlocker2.block();
 
         // Check that all pods were deleted
         assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResource).getItems().size());

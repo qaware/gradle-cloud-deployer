@@ -20,16 +20,15 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.*;
+import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.api.model.extensions.ReplicaSet;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource.DEPLOYMENT_MARKER_LABEL;
 
@@ -106,7 +105,7 @@ public class DeploymentResourceTest extends TestCase {
         assertEquals(deployment.getKind(), deploymentResource.getResourceConfig().getResourceType());
     }
 
-    public void testDelete() throws ResourceException, InterruptedException {
+    public void testDelete() throws ResourceException, InterruptedException, TimeoutException {
 
         // Create deployment
         deploymentResource.create();
@@ -116,16 +115,21 @@ public class DeploymentResourceTest extends TestCase {
         assertNotNull(deployment);
 
         // Check if the pod was created
-        assertEquals(1, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource).getItems().size());
+        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource).getItems();
+        assertEquals(1, pods.size());
 
         // Check if the replica set was created
         assertEquals(1, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResource).getItems().size());
 
+        // Create event blocker
+        Pod pod = pods.get(0);
+        PodDeletionBlocker deleteBlocker = new PodDeletionBlocker(kubernetesClient, pod);
+
         // Delete deployment
         deploymentResource.delete();
 
-        // TODO: remove waiting for deletion...
-        Thread.sleep(60000);
+        // Block until deletion
+        deleteBlocker.block();
 
         // Check that all pods were deleted
         assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource).getItems().size());
