@@ -27,6 +27,10 @@ import java.io.IOException;
 
 public abstract class BaseResource implements Resource {
 
+    // Maximum call-duration in seconds
+    private static final int TIMEOUT = 300;
+    private static final double INTERVAL = 0.5;
+
     private final String namespace;
     private final ResourceConfig resourceConfig;
     private final ClientFactory clientFactory;
@@ -101,13 +105,14 @@ public abstract class BaseResource implements Resource {
         try {
             Response<ResponseBody> response = createCall.execute();
             if (isSuccessResponse(response)) {
+                Blocker blocker = new Blocker(TIMEOUT, INTERVAL, "Resource wasn't created within specified time (" + createCall.request().url() + ")");
                 while (!this.exists()) {
-                    Thread.sleep(500);
+                    blocker.block();
                 }
             } else {
                 throw new ResourceException("Received a unhandled http status code: " + response.code());
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             throw new ResourceException(e);
         }
     }
@@ -116,13 +121,14 @@ public abstract class BaseResource implements Resource {
         try {
             Response<ResponseBody> response = deleteCall.execute();
             if (isSuccessResponse(response)) {
+                Blocker blocker = new Blocker(TIMEOUT, INTERVAL, "Resource wasn't deleted within specified time (" + deleteCall.request().url() + ")");
                 while (this.exists()) {
-                    Thread.sleep(500);
+                    blocker.block();
                 }
             } else {
                 throw new ResourceException("Received a unhandled http status code: " + response.code());
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             throw new ResourceException(e);
         }
     }
@@ -136,5 +142,31 @@ public abstract class BaseResource implements Resource {
 
     private boolean isSuccessResponse(Response<ResponseBody> response) {
         return response.code() == 200 || response.code() == 201;
+    }
+
+    private class Blocker {
+
+        private final int timeout;
+        private final int interval;
+        private final String errorMessage;
+        private int timeoutCounter = 0;
+
+        Blocker(int timeout, double interval, String errorMessage) {
+            this.timeout = timeout * 1000;
+            this.interval = (int) (interval * 1000);
+            this.errorMessage = errorMessage;
+        }
+
+        void block() throws ResourceException {
+            try {
+                timeoutCounter += interval;
+                if (timeoutCounter > timeout) {
+                    throw new ResourceException(errorMessage);
+                }
+                Thread.sleep(interval);
+            } catch (InterruptedException e) {
+                throw new ResourceException(e);
+            }
+        }
     }
 }
