@@ -92,17 +92,24 @@ public class HardUpdateStrategyTest extends TestCase {
         hardUpdateStrategy.deploy(namespaceResource, resourcesV1);
 
         // Check that everything was deployed correctly
-        Resource serviceResource = resourcesV1.get(0);
+        Resource serviceResource1 = resourcesV1.get(0);
         Resource deploymentResource = resourcesV1.get(1);
+        Resource serviceResource2 = resourcesV1.get(2);
 
-        // Check service
-        assertEquals(1, KubernetesClientUtil.retrieveServices(kubernetesClient, serviceResource).getItems().size());
-        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
-        assertNotNull(service);
-        ObjectMeta serviceMetadata = service.getMetadata();
-        assertEquals(deploymentResource.getId(), serviceMetadata.getName());
-        assertEquals(deploymentResource.getNamespace(), serviceMetadata.getNamespace());
-        assertEquals(new Integer(8761), service.getSpec().getPorts().get(0).getPort());
+        // Check services
+        assertEquals(2, KubernetesClientUtil.retrieveServices(kubernetesClient, serviceResource1).getItems().size());
+        Service service1 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource1);
+        assertNotNull(service1);
+        ObjectMeta serviceMetadata1 = service1.getMetadata();
+        assertEquals(serviceResource1.getId(), serviceMetadata1.getName());
+        assertEquals(serviceResource1.getNamespace(), serviceMetadata1.getNamespace());
+        assertEquals(new Integer(8761), service1.getSpec().getPorts().get(0).getPort());
+        Service service2 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource2);
+        assertNotNull(service2);
+        ObjectMeta serviceMetadata2 = service2.getMetadata();
+        assertEquals(serviceResource2.getId(), serviceMetadata2.getName());
+        assertEquals(serviceResource2.getNamespace(), serviceMetadata2.getNamespace());
+        assertEquals(new Integer(8765), service2.getSpec().getPorts().get(0).getPort());
 
         // Check deployment
         assertEquals(1, KubernetesClientUtil.retrieveDeployments(kubernetesClient, deploymentResource).getItems().size());

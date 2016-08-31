@@ -47,3 +47,17 @@ spec:
         env:
         - name: JAVA_OPTS
           value: -Xmx128m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zwitscher-config
+  labels:
+    zwitscher: config
+spec:
+  # use NodePort here to be able to access the port on each node
+  type: NodePort
+  ports:
+  - port: 8765
+  selector:
+    zwitscher: config
