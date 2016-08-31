@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: zwitscher-eureka
   labels:
+    version: v2
     zwitscher: eureka
 spec:
   # use NodePort here to be able to access the port on each node
