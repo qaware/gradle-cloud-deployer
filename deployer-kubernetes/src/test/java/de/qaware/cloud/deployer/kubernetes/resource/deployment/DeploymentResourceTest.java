@@ -49,7 +49,7 @@ public class DeploymentResourceTest extends TestCase {
         // Create the DeploymentResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
         String deploymentDescription = FileUtil.readFile("/deployment.yml");
-        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig(ContentType.YAML, deploymentDescription);
+        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescription);
         deploymentResource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
 

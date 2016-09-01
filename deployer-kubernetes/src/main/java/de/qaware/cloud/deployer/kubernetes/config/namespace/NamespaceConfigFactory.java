@@ -18,8 +18,8 @@ package de.qaware.cloud.deployer.kubernetes.config.namespace;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
 public class NamespaceConfigFactory {
@@ -36,7 +36,7 @@ public class NamespaceConfigFactory {
         try {
             NamespaceDescription namespaceDescription = new NamespaceDescription(name);
             String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespaceDescription);
-            return new KubernetesResourceConfig(ContentType.JSON, namespaceDescriptionContent);
+            return new KubernetesResourceConfig("temporary", ContentType.JSON, namespaceDescriptionContent);
         } catch (JsonProcessingException e) {
             throw new ResourceConfigException("Couldn't create namespace content", e);
         }

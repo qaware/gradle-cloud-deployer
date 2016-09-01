@@ -45,7 +45,7 @@ public class PodResourceTest extends TestCase {
         // Create the PodResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
         String podDescription = FileUtil.readFile("/pod.json");
-        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig(ContentType.JSON, podDescription);
+        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.JSON, podDescription);
         podResource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
 

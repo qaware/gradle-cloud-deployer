@@ -17,21 +17,19 @@ package de.qaware.cloud.deployer.commons.config.resource;
 
 public abstract class BaseResourceConfig {
 
+    private final String filename;
     private final ContentType contentType;
     private String resourceId;
     private String content;
 
-    public BaseResourceConfig(ContentType contentType, String content) {
+    public BaseResourceConfig(String filename, ContentType contentType, String content) {
+        this.filename = filename;
         this.content = content;
         this.contentType = contentType;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public String getFilename() {
+        return filename;
     }
 
     public ContentType getContentType() {
@@ -44,5 +42,18 @@ public abstract class BaseResourceConfig {
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "Config: " + getResourceId() + " (File: " + filename + ")";
     }
 }

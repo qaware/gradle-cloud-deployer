@@ -26,8 +26,8 @@ public class KubernetesResourceConfig extends BaseResourceConfig {
     private final String resourceVersion;
     private final String resourceType;
 
-    public KubernetesResourceConfig(ContentType contentType, String content) throws ResourceConfigException {
-        super(contentType, content);
+    public KubernetesResourceConfig(String filename, ContentType contentType, String content) throws ResourceConfigException {
+        super(filename, contentType, content);
 
         JsonNode contentObjectTree = ContentTreeUtil.createObjectTree(contentType, content);
         this.setResourceId(ContentTreeUtil.readStringValue(ContentTreeUtil.readNodeValue(contentObjectTree, "metadata"), "name"));
@@ -41,10 +41,5 @@ public class KubernetesResourceConfig extends BaseResourceConfig {
 
     public String getResourceType() {
         return resourceType;
-    }
-
-    @Override
-    public String toString() {
-        return "Config: " + getResourceId() + " - " + getResourceType();
     }
 }

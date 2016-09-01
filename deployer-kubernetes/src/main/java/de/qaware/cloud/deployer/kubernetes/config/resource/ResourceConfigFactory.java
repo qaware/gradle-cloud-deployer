@@ -46,7 +46,7 @@ public class ResourceConfigFactory {
             String filename = file.getName();
             ContentType contentType = retrieveContentType(file);
             String content = readFileContent(file);
-            resourceConfigs.add(new FileResourceConfig(filename, contentType, content));
+            resourceConfigs.add(new KubernetesResourceConfig(filename, contentType, content));
         }
 
         resourceConfigs = splitConfigs(resourceConfigs, KUBERNETES_CONFIG_SEPARATOR);
@@ -61,15 +61,8 @@ public class ResourceConfigFactory {
         for (KubernetesResourceConfig resourceConfig : resourceConfigs) {
             List<String> splitContents = splitContent(resourceConfig.getContent(), splitString);
             for (String splitContent : splitContents) {
-                KubernetesResourceConfig splitResourceConfig;
-                if (resourceConfig instanceof FileResourceConfig) {
-                    FileResourceConfig fileResourceConfig = (FileResourceConfig) resourceConfig;
-                    splitResourceConfig = new FileResourceConfig(fileResourceConfig.getFilename(), resourceConfig.getContentType(), splitContent);
-                    splitResourceConfigs.add(splitResourceConfig);
-                } else {
-                    splitResourceConfig = new KubernetesResourceConfig(resourceConfig.getContentType(), splitContent);
-                    splitResourceConfigs.add(splitResourceConfig);
-                }
+                KubernetesResourceConfig splitResourceConfig = new KubernetesResourceConfig(resourceConfig.getFilename(), resourceConfig.getContentType(), splitContent);
+                splitResourceConfigs.add(splitResourceConfig);
                 LOGGER.info("- " + splitResourceConfig);
             }
         }
