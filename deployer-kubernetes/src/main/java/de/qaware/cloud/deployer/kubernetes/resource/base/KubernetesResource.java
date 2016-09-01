@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import okhttp3.MediaType;

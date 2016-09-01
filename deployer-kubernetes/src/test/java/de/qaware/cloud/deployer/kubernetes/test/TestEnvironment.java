@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.test;
 
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.client.KubernetesClient;
 

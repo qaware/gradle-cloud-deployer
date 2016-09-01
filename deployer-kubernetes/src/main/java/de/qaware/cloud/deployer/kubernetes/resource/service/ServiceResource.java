@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.service;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
