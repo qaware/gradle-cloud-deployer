@@ -5,7 +5,6 @@ jar {
 
 dependencies {
     compile project(':deployer-commons')
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.1'
 
     testCompile 'io.fabric8:kubernetes-client:1.4.4'
 }

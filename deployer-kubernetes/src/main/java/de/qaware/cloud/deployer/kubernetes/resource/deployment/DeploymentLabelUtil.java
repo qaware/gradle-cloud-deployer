@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ContentTreeUtil;
+import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
 import java.util.Objects;
