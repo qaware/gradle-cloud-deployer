@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource.base;
+package de.qaware.cloud.deployer.commons.resource;
 
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
+
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 
 public interface Resource {
 
@@ -25,10 +25,4 @@ public interface Resource {
     void create() throws ResourceException;
 
     void delete() throws ResourceException;
-
-    String getId();
-
-    String getNamespace();
-
-    ResourceConfig getResourceConfig();
 }
