@@ -39,7 +39,7 @@ public class DeploymentLabelUtil {
                 ContentTreeUtil.addField(labelsNode, label, value);
                 resourceConfig.setContent(objectTree.toString());
             } catch (ResourceConfigException e) {
-                throw new ResourceException("Can't add label to deployment", e);
+                throw new ResourceException("Can't add label to deployment - the path spec/template/metadata/labels doesn't exist in your deployment config (Config: " + resourceConfig.getResourceId() + ")", e);
             }
         } else {
             throw new ResourceException("Can't add label to a " + resourceConfig.getResourceType());
