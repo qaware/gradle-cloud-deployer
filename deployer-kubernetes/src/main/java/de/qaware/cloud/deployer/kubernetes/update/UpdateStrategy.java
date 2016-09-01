@@ -15,8 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.update;
 
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 
 import java.util.List;

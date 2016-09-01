@@ -15,8 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 import junit.framework.TestCase;
 
 import java.io.File;

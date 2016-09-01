@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
 import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
 import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;

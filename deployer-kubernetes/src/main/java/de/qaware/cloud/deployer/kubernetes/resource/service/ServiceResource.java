@@ -15,14 +15,14 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.service;
 
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class ServiceResource extends BaseResource {
+public class ServiceResource extends KubernetesResource {
 
     private final ServiceClient serviceClient;
 

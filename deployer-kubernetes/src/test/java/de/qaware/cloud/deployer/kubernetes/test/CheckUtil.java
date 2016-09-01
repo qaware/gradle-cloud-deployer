@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.test;
 
-import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.Service;
@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 public class CheckUtil {
 
-    public static void checkService(Resource serviceResource, Service service, String version, int port) {
+    public static void checkService(KubernetesResource serviceResource, Service service, String version, int port) {
         TestCase.assertNotNull(service);
         ObjectMeta serviceMetadata = service.getMetadata();
         TestCase.assertEquals(serviceResource.getId(), serviceMetadata.getName());
@@ -34,7 +34,7 @@ public class CheckUtil {
         TestCase.assertEquals(version, serviceMetadata.getLabels().get("version"));
     }
 
-    public static void checkDeployment(Resource deploymentResource, Deployment deployment, String version) {
+    public static void checkDeployment(KubernetesResource deploymentResource, Deployment deployment, String version) {
         TestCase.assertNotNull(deployment);
         ObjectMeta deploymentMetadata = deployment.getMetadata();
         TestCase.assertEquals(deploymentResource.getId(), deploymentMetadata.getName());
@@ -42,14 +42,14 @@ public class CheckUtil {
         TestCase.assertEquals(version, deploymentMetadata.getLabels().get("version"));
     }
 
-    public static void checkPod(Resource deploymentResource, Pod pod, String version) {
+    public static void checkPod(KubernetesResource deploymentResource, Pod pod, String version) {
         ObjectMeta podMetadata = pod.getMetadata();
         TestCase.assertTrue(podMetadata.getName().contains(deploymentResource.getId() + "-"));
         TestCase.assertEquals(deploymentResource.getNamespace(), podMetadata.getNamespace());
         TestCase.assertEquals(version, podMetadata.getLabels().get("version"));
     }
 
-    public static void checkReplicaSet(Resource deploymentResource, ReplicaSet replicaSet, String version) {
+    public static void checkReplicaSet(KubernetesResource deploymentResource, ReplicaSet replicaSet, String version) {
         ObjectMeta replicaSetMetadata = replicaSet.getMetadata();
         TestCase.assertTrue(replicaSetMetadata.getName().contains(deploymentResource.getId() + "-"));
         TestCase.assertEquals(deploymentResource.getNamespace(), replicaSetMetadata.getNamespace());

@@ -15,8 +15,9 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
+import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -25,7 +26,7 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-public abstract class BaseResource implements Resource {
+public abstract class KubernetesResource implements Resource {
 
     // Maximum call-duration in seconds
     private static final int TIMEOUT = 300;
@@ -35,23 +36,20 @@ public abstract class BaseResource implements Resource {
     private final ResourceConfig resourceConfig;
     private final ClientFactory clientFactory;
 
-    public BaseResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
+    public KubernetesResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
         this.namespace = namespace;
         this.resourceConfig = resourceConfig;
         this.clientFactory = clientFactory;
     }
 
-    @Override
     public String getId() {
         return resourceConfig.getResourceId();
     }
 
-    @Override
     public String getNamespace() {
         return namespace;
     }
 
-    @Override
     public ResourceConfig getResourceConfig() {
         return resourceConfig;
     }

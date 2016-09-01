@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.test;
 
-import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentList;
@@ -27,39 +27,39 @@ public class KubernetesClientUtil {
     private KubernetesClientUtil() {
     }
 
-    public static DeploymentList retrieveDeployments(KubernetesClient kubernetesClient, Resource resource) {
+    public static DeploymentList retrieveDeployments(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.extensions().deployments().inNamespace(resource.getNamespace()).list();
     }
 
-    public static Deployment retrieveDeployment(KubernetesClient kubernetesClient, Resource resource) {
+    public static Deployment retrieveDeployment(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.extensions().deployments().inNamespace(resource.getNamespace()).withName(resource.getId()).get();
     }
 
-    public static PodList retrievePods(KubernetesClient kubernetesClient, Resource resource) {
+    public static PodList retrievePods(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.pods().inNamespace(resource.getNamespace()).list();
     }
 
-    public static Pod retrievePod(KubernetesClient kubernetesClient, Resource resource) {
+    public static Pod retrievePod(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.pods().inNamespace(resource.getNamespace()).withName(resource.getId()).get();
     }
 
-    public static ReplicaSetList retrieveReplicaSets(KubernetesClient kubernetesClient, Resource resource) {
+    public static ReplicaSetList retrieveReplicaSets(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.extensions().replicaSets().inNamespace(resource.getNamespace()).list();
     }
 
-    public static Namespace retrieveNamespace(KubernetesClient kubernetesClient, Resource resource) {
+    public static Namespace retrieveNamespace(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.namespaces().withName(resource.getNamespace()).get();
     }
 
-    public static ServiceList retrieveServices(KubernetesClient kubernetesClient, Resource resource) {
+    public static ServiceList retrieveServices(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.services().inNamespace(resource.getNamespace()).list();
     }
 
-    public static Service retrieveService(KubernetesClient kubernetesClient, Resource resource) {
+    public static Service retrieveService(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.services().inNamespace(resource.getNamespace()).withName(resource.getId()).get();
     }
 
-    public static ReplicationController retrieveReplicationController(KubernetesClient kubernetesClient, Resource resource) {
+    public static ReplicationController retrieveReplicationController(KubernetesClient kubernetesClient, KubernetesResource resource) {
         return kubernetesClient.replicationControllers().inNamespace(resource.getNamespace()).withName(resource.getId()).get();
     }
 }

@@ -15,13 +15,13 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource;
 
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.base.Resource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.pod.PodResource;

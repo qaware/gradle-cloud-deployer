@@ -15,14 +15,14 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.pod;
 
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.base.BaseResource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.base.ClientFactory;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
-public class PodResource extends BaseResource {
+public class PodResource extends KubernetesResource {
 
     private final PodClient podClient;
 

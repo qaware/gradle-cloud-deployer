@@ -15,9 +15,9 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
 import junit.framework.TestCase;
 
 public class NamespaceConfigFactoryTest extends TestCase {

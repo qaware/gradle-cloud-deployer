@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
 public class ResourceConfig {
 

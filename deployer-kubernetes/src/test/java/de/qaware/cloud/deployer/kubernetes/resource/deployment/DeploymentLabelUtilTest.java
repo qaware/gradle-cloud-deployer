@@ -18,11 +18,11 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceConfigException;
-import de.qaware.cloud.deployer.kubernetes.error.ResourceException;
 import junit.framework.TestCase;
 
 import java.io.IOException;
