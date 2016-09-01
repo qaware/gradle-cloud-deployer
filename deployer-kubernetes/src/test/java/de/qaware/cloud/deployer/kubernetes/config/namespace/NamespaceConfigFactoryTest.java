@@ -17,14 +17,14 @@ package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import junit.framework.TestCase;
 
 public class NamespaceConfigFactoryTest extends TestCase {
 
     public void testValidNamespace() throws ResourceConfigException {
         // Create config
-        ResourceConfig namespaceResource = NamespaceConfigFactory.create("test");
+        KubernetesResourceConfig namespaceResource = NamespaceConfigFactory.create("test");
 
         // Check config
         assertEquals("test", namespaceResource.getResourceId());

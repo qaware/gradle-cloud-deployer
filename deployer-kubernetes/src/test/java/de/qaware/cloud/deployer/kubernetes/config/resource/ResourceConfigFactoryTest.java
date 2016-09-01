@@ -34,13 +34,13 @@ public class ResourceConfigFactoryTest extends TestCase {
         File file = new File(this.getClass().getResource(testFile).getPath());
         List<File> files = new ArrayList<>();
         files.add(file);
-        List<ResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(1, configs.size());
 
         // Check config
-        ResourceConfig config = configs.get(0);
+        KubernetesResourceConfig config = configs.get(0);
         assertEquals("nginx-mysql", config.getResourceId());
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
@@ -55,13 +55,13 @@ public class ResourceConfigFactoryTest extends TestCase {
         File file = new File(this.getClass().getResource(testFile).getPath());
         List<File> files = new ArrayList<>();
         files.add(file);
-        List<ResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(1, configs.size());
 
         // Check config
-        ResourceConfig config = configs.get(0);
+        KubernetesResourceConfig config = configs.get(0);
         assertEquals("zwitscher-eureka", config.getResourceId());
         assertEquals("Service", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
@@ -79,13 +79,13 @@ public class ResourceConfigFactoryTest extends TestCase {
         List<File> files = new ArrayList<>();
         files.add(file1);
         files.add(file2);
-        List<ResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(2, configs.size());
 
         // Check configs
-        ResourceConfig config = configs.get(0);
+        KubernetesResourceConfig config = configs.get(0);
         assertEquals("nginx-mysql", config.getResourceId());
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
@@ -107,7 +107,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         File file = new File(this.getClass().getResource(testFile).getPath());
         List<File> files = new ArrayList<>();
         files.add(file);
-        List<ResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(2, configs.size());
@@ -119,7 +119,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         File pod2 = new File(this.getClass().getResource(pod2Filename).getPath());
 
         // Check configs
-        ResourceConfig config = configs.get(0);
+        KubernetesResourceConfig config = configs.get(0);
         assertEquals("nginx-mysql", config.getResourceId());
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());

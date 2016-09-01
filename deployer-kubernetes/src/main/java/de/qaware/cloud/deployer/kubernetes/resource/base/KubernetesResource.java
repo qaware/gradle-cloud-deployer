@@ -17,16 +17,16 @@ package de.qaware.cloud.deployer.kubernetes.resource.base;
 
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 public abstract class KubernetesResource extends BaseResource {
 
     private final String namespace;
-    private final ResourceConfig resourceConfig;
+    private final KubernetesResourceConfig resourceConfig;
 
-    public KubernetesResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
+    public KubernetesResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(clientFactory);
         this.namespace = namespace;
         this.resourceConfig = resourceConfig;
@@ -40,7 +40,7 @@ public abstract class KubernetesResource extends BaseResource {
         return namespace;
     }
 
-    public ResourceConfig getResourceConfig() {
+    public KubernetesResourceConfig getResourceConfig() {
         return resourceConfig;
     }
 
@@ -48,7 +48,7 @@ public abstract class KubernetesResource extends BaseResource {
         return RequestBody.create(createMediaType(), resourceConfig.getContent());
     }
 
-    public MediaType createMediaType() {
+    private MediaType createMediaType() {
         switch (resourceConfig.getContentType()) {
             case JSON:
                 return MediaType.parse("application/json");

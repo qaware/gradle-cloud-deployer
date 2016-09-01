@@ -17,7 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.pod;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
@@ -45,7 +45,7 @@ public class PodResourceTest extends TestCase {
         // Create the PodResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
         String podDescription = FileUtil.readFile("/pod.json");
-        ResourceConfig resourceConfig = new ResourceConfig(ContentType.JSON, podDescription);
+        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig(ContentType.JSON, podDescription);
         podResource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
 

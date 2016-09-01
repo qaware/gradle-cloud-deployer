@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ContentTreeUtil;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class DeploymentLabelUtil {
     private DeploymentLabelUtil() {
     }
 
-    public static void addLabel(ResourceConfig resourceConfig, String label, String value) throws ResourceException {
+    public static void addLabel(KubernetesResourceConfig resourceConfig, String label, String value) throws ResourceException {
         if (Objects.equals(resourceConfig.getResourceVersion(), "extensions/v1beta1") && Objects.equals(resourceConfig.getResourceType(), "Deployment")) {
             try {
                 JsonNode objectTree = ContentTreeUtil.createObjectTree(resourceConfig.getContentType(), resourceConfig.getContent());

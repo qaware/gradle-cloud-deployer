@@ -19,7 +19,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -45,7 +45,7 @@ public class KubernetesDeployer {
 
     public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
-        List<ResourceConfig> resourceConfigs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> resourceConfigs = ResourceConfigFactory.createConfigs(files);
 
         // 2. Create a resource factory for the specified namespace
         ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);

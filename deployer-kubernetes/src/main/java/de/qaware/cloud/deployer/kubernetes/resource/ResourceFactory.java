@@ -20,7 +20,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -41,7 +41,7 @@ public class ResourceFactory {
 
     public ResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException {
         this.clientFactory = new ClientFactory(cloudConfig);
-        ResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
+        KubernetesResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
     }
 
@@ -49,12 +49,12 @@ public class ResourceFactory {
         return namespaceResource;
     }
 
-    public List<Resource> createResources(List<ResourceConfig> resourceConfigs) throws ResourceException {
+    public List<Resource> createResources(List<KubernetesResourceConfig> resourceConfigs) throws ResourceException {
 
         LOGGER.info("Creating resources...");
 
         List<Resource> resources = new ArrayList<>();
-        for (ResourceConfig resourceConfig : resourceConfigs) {
+        for (KubernetesResourceConfig resourceConfig : resourceConfigs) {
             resources.add(createResource(resourceConfig));
         }
 
@@ -63,7 +63,7 @@ public class ResourceFactory {
         return resources;
     }
 
-    public Resource createResource(ResourceConfig resourceConfig) throws ResourceException {
+    public Resource createResource(KubernetesResourceConfig resourceConfig) throws ResourceException {
         String resourceVersion = resourceConfig.getResourceVersion();
         String resourceType = resourceConfig.getResourceType();
         Resource resource;
@@ -74,7 +74,7 @@ public class ResourceFactory {
                         resource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                         break;
                     default:
-                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(ResourceConfig: " + resourceConfig + ")");
+                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(KubernetesResourceConfig: " + resourceConfig + ")");
                 }
                 break;
             case "v1":
@@ -89,11 +89,11 @@ public class ResourceFactory {
                         resource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
                         break;
                     default:
-                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(ResourceConfig: " + resourceConfig + ")");
+                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(KubernetesResourceConfig: " + resourceConfig + ")");
                 }
                 break;
             default:
-                throw new ResourceException("Unknown Kubernetes api version (ResourceConfig: " + resourceConfig + ")");
+                throw new ResourceException("Unknown Kubernetes api version (KubernetesResourceConfig: " + resourceConfig + ")");
         }
 
         LOGGER.info("- " + resource);

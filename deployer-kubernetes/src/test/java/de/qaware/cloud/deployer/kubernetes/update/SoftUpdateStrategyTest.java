@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.kubernetes.update;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
@@ -65,13 +65,13 @@ public class SoftUpdateStrategyTest extends TestCase {
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
         filesV1.add(new File(this.getClass().getResource("/resource/update/soft-update-v1.yml").getPath()));
-        List<ResourceConfig> configsV1 = ResourceConfigFactory.createConfigs(filesV1);
+        List<KubernetesResourceConfig> configsV1 = ResourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
         filesV2.add(new File(this.getClass().getResource("/resource/update/soft-update-v2.yml").getPath()));
-        List<ResourceConfig> configsV2 = ResourceConfigFactory.createConfigs(filesV2);
+        List<KubernetesResourceConfig> configsV2 = ResourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
     }
 

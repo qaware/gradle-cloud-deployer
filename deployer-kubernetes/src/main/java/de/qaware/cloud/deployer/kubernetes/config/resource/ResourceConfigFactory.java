@@ -32,16 +32,16 @@ import java.util.List;
 public class ResourceConfigFactory {
 
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
     private ResourceConfigFactory() {
     }
 
-    public static List<ResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
+    public static List<KubernetesResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
 
         LOGGER.info("Reading config files...");
 
-        List<ResourceConfig> resourceConfigs = new ArrayList<>();
+        List<KubernetesResourceConfig> resourceConfigs = new ArrayList<>();
         for (File file : files) {
             String filename = file.getName();
             ContentType contentType = retrieveContentType(file);
@@ -56,18 +56,18 @@ public class ResourceConfigFactory {
         return resourceConfigs;
     }
 
-    private static List<ResourceConfig> splitConfigs(List<ResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {
-        List<ResourceConfig> splitResourceConfigs = new ArrayList<>();
-        for (ResourceConfig resourceConfig : resourceConfigs) {
+    private static List<KubernetesResourceConfig> splitConfigs(List<KubernetesResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {
+        List<KubernetesResourceConfig> splitResourceConfigs = new ArrayList<>();
+        for (KubernetesResourceConfig resourceConfig : resourceConfigs) {
             List<String> splitContents = splitContent(resourceConfig.getContent(), splitString);
             for (String splitContent : splitContents) {
-                ResourceConfig splitResourceConfig;
+                KubernetesResourceConfig splitResourceConfig;
                 if (resourceConfig instanceof FileResourceConfig) {
                     FileResourceConfig fileResourceConfig = (FileResourceConfig) resourceConfig;
                     splitResourceConfig = new FileResourceConfig(fileResourceConfig.getFilename(), resourceConfig.getContentType(), splitContent);
                     splitResourceConfigs.add(splitResourceConfig);
                 } else {
-                    splitResourceConfig = new ResourceConfig(resourceConfig.getContentType(), splitContent);
+                    splitResourceConfig = new KubernetesResourceConfig(resourceConfig.getContentType(), splitContent);
                     splitResourceConfigs.add(splitResourceConfig);
                 }
                 LOGGER.info("- " + splitResourceConfig);

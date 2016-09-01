@@ -16,33 +16,22 @@
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
-public class ResourceConfig {
+public class KubernetesResourceConfig extends BaseResourceConfig {
 
-    private final ContentType contentType;
     private final String resourceVersion;
-    private final String resourceId;
     private final String resourceType;
-    private String content;
 
-    public ResourceConfig(ContentType contentType, String content) throws ResourceConfigException {
-        this.content = content;
-        this.contentType = contentType;
+    public KubernetesResourceConfig(ContentType contentType, String content) throws ResourceConfigException {
+        super(contentType, content);
 
         JsonNode contentObjectTree = ContentTreeUtil.createObjectTree(contentType, content);
-        this.resourceId = ContentTreeUtil.readStringValue(ContentTreeUtil.readNodeValue(contentObjectTree, "metadata"), "name");
+        this.setResourceId(ContentTreeUtil.readStringValue(ContentTreeUtil.readNodeValue(contentObjectTree, "metadata"), "name"));
         this.resourceType = ContentTreeUtil.readStringValue(contentObjectTree, "kind");
         this.resourceVersion = ContentTreeUtil.readStringValue(contentObjectTree, "apiVersion");
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public ContentType getContentType() {
-        return contentType;
     }
 
     public String getResourceVersion() {
@@ -51,14 +40,6 @@ public class ResourceConfig {
 
     public String getResourceType() {
         return resourceType;
-    }
-
-    public String getResourceId() {
-        return resourceId;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     @Override

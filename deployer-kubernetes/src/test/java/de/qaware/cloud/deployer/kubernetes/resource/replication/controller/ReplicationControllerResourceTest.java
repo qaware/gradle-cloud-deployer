@@ -17,7 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.test.*;
@@ -46,7 +46,7 @@ public class ReplicationControllerResourceTest extends TestCase {
         // Create the ReplicationControllerResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
         String controllerDescription = FileUtil.readFile("/replication-controller.yml");
-        ResourceConfig resourceConfig = new ResourceConfig(ContentType.YAML, controllerDescription);
+        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig(ContentType.YAML, controllerDescription);
         replicationControllerResource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
 

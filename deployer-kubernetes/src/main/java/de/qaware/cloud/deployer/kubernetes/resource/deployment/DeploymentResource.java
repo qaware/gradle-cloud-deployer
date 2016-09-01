@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import okhttp3.ResponseBody;
@@ -29,7 +29,7 @@ public class DeploymentResource extends KubernetesResource {
     private final DeploymentClient deploymentClient;
     private final ReplicaSetClient replicaSetClient;
 
-    public DeploymentResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) throws ResourceException {
+    public DeploymentResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) throws ResourceException {
         super(namespace, resourceConfig, clientFactory);
 
         // Replace the config content with a new marked version

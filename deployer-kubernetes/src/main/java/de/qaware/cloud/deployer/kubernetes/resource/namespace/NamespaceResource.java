@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import okhttp3.ResponseBody;
@@ -26,7 +26,7 @@ public class NamespaceResource extends KubernetesResource {
 
     private final NamespaceClient namespaceClient;
 
-    public NamespaceResource(ResourceConfig resourceConfig, ClientFactory clientFactory) {
+    public NamespaceResource(KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig.getResourceId(), resourceConfig, clientFactory);
         this.namespaceClient = createClient(NamespaceClient.class);
     }

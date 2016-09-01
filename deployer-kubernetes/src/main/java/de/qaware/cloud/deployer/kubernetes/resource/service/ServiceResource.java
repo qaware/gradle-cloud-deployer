@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource.service;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import okhttp3.ResponseBody;
@@ -26,7 +26,7 @@ public class ServiceResource extends KubernetesResource {
 
     private final ServiceClient serviceClient;
 
-    public ServiceResource(String namespace, ResourceConfig resourceConfig, ClientFactory clientFactory) {
+    public ServiceResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(namespace, resourceConfig, clientFactory);
         this.serviceClient = createClient(ServiceClient.class);
     }
