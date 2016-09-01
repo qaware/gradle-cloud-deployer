@@ -5,13 +5,7 @@ jar {
 
 dependencies {
     compile project(':deployer-commons')
-
-    compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.1'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
 
     testCompile 'io.fabric8:kubernetes-client:1.4.4'
 }
