@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.kubernetes;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;

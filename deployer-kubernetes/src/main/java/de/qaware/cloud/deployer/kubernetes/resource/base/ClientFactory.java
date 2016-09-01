@@ -15,8 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
-import de.qaware.cloud.deployer.kubernetes.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.SSLConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
