@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfig;
 import junit.framework.TestCase;
 

@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
+import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
