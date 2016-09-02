@@ -2,3 +2,5 @@ include ':deployer-commons'
 include ':deployer-kubernetes'
 include ':deployer-plugin'
 include 'deployer-marathon'
+
+rootProject.name = 'QAware GradleCloudDeployer'
