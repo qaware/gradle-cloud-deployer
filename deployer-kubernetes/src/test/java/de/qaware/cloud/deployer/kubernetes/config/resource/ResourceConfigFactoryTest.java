@@ -34,7 +34,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         File file = new File(this.getClass().getResource(testFile).getPath());
         List<File> files = new ArrayList<>();
         files.add(file);
-        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = KubernetesResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(1, configs.size());
@@ -55,7 +55,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         File file = new File(this.getClass().getResource(testFile).getPath());
         List<File> files = new ArrayList<>();
         files.add(file);
-        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = KubernetesResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(1, configs.size());
@@ -79,7 +79,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         List<File> files = new ArrayList<>();
         files.add(file1);
         files.add(file2);
-        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = KubernetesResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(2, configs.size());
@@ -107,7 +107,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         File file = new File(this.getClass().getResource(testFile).getPath());
         List<File> files = new ArrayList<>();
         files.add(file);
-        List<KubernetesResourceConfig> configs = ResourceConfigFactory.createConfigs(files);
+        List<KubernetesResourceConfig> configs = KubernetesResourceConfigFactory.createConfigs(files);
 
         // Check createConfigs result
         assertEquals(2, configs.size());
@@ -217,7 +217,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         List<File> files = new ArrayList<>();
         files.add(file);
         try {
-            ResourceConfigFactory.createConfigs(files);
+            KubernetesResourceConfigFactory.createConfigs(files);
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
         }
@@ -240,7 +240,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         files.add(file2);
 
         try {
-            ResourceConfigFactory.createConfigs(files);
+            KubernetesResourceConfigFactory.createConfigs(files);
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
         }

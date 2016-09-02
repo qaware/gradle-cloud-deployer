@@ -19,7 +19,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.config.resource.ResourceConfigFactory;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -67,19 +67,19 @@ public class HardUpdateStrategyTest extends TestCase {
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
         filesV1.add(new File(this.getClass().getResource("/resource/update/hard-update-v1.yml").getPath()));
-        List<KubernetesResourceConfig> configsV1 = ResourceConfigFactory.createConfigs(filesV1);
+        List<KubernetesResourceConfig> configsV1 = KubernetesResourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
         filesV2.add(new File(this.getClass().getResource("/resource/update/hard-update-v2.yml").getPath()));
-        List<KubernetesResourceConfig> configsV2 = ResourceConfigFactory.createConfigs(filesV2);
+        List<KubernetesResourceConfig> configsV2 = KubernetesResourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
 
         // Create the resources for v3
         List<File> filesV3 = new ArrayList<>();
         filesV3.add(new File(this.getClass().getResource("/resource/update/hard-update-v3.yml").getPath()));
-        List<KubernetesResourceConfig> configsV3 = ResourceConfigFactory.createConfigs(filesV3);
+        List<KubernetesResourceConfig> configsV3 = KubernetesResourceConfigFactory.createConfigs(filesV3);
         resourcesV3 = factory.createResources(configsV3);
     }
 

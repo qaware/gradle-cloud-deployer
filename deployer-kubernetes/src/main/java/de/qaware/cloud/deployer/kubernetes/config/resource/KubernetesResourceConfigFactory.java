@@ -29,12 +29,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResourceConfigFactory {
+public class KubernetesResourceConfigFactory {
 
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
-    private ResourceConfigFactory() {
+    private KubernetesResourceConfigFactory() {
     }
 
     public static List<KubernetesResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
