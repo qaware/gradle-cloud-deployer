@@ -18,6 +18,7 @@ package de.qaware.cloud.deployer.marathon.config.resource;
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfigFactory;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,5 +38,16 @@ public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<Mar
         ContentType contentType = retrieveContentType(file);
         String content = readFileContent(file);
         return new MarathonResourceConfig(filename, contentType, content);
+    }
+
+    @Override
+    protected ContentType retrieveContentType(File file) throws ResourceConfigException {
+        String fileEnding = FilenameUtils.getExtension(file.getName());
+        switch (fileEnding) {
+            case "json":
+                return ContentType.JSON;
+            default:
+                throw new ResourceConfigException("Unsupported content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
+        }
     }
 }
