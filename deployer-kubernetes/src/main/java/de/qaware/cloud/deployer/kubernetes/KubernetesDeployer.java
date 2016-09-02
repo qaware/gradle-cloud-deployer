@@ -21,7 +21,7 @@ import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
 import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategy;
@@ -34,7 +34,7 @@ public class KubernetesDeployer {
 
     public void delete(CloudConfig cloudConfig, String namespace) throws ResourceConfigException, ResourceException {
         // 1. Create a resource factory for the specified namespace
-        ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
+        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(namespace, cloudConfig);
 
         // 2. Create the namespace resource
         NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
@@ -49,7 +49,7 @@ public class KubernetesDeployer {
         List<KubernetesResourceConfig> resourceConfigs = resourceConfigFactory.createConfigs(files);
 
         // 2. Create a resource factory for the specified namespace
-        ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
+        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(namespace, cloudConfig);
 
         // 3. Create the resources for the configs out of step 1.
         List<Resource> resources = resourceFactory.createResources(resourceConfigs);

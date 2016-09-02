@@ -20,7 +20,7 @@ import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.ResourceFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.test.CheckUtil;
@@ -63,7 +63,7 @@ public class HardUpdateStrategyTest extends TestCase {
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
-        ResourceFactory factory = new ResourceFactory(namespaceResource.getNamespace(), cloudConfig);
+        KubernetesResourceFactory factory = new KubernetesResourceFactory(namespaceResource.getNamespace(), cloudConfig);
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();

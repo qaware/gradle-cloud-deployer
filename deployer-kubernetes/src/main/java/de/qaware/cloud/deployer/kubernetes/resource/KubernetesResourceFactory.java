@@ -33,13 +33,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceFactory {
+public class KubernetesResourceFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceFactory.class);
     private final NamespaceResource namespaceResource;
     private final ClientFactory clientFactory;
 
-    public ResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException {
+    public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException {
         this.clientFactory = new ClientFactory(cloudConfig);
         KubernetesResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
