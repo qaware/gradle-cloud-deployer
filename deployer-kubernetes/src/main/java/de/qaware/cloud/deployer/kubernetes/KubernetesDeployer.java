@@ -22,6 +22,7 @@ import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
 import de.qaware.cloud.deployer.kubernetes.update.UpdateStrategy;
@@ -52,7 +53,7 @@ public class KubernetesDeployer {
         KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(namespace, cloudConfig);
 
         // 3. Create the resources for the configs out of step 1.
-        List<Resource> resources = resourceFactory.createResources(resourceConfigs);
+        List<KubernetesResource> resources = resourceFactory.createResources(resourceConfigs);
 
         // 4. Create the namespace resource
         NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();

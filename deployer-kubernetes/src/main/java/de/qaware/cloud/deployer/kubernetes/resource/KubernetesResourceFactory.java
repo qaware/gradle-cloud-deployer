@@ -15,13 +15,14 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource;
 
+import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.resource.BaseResourceFactory;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.pod.PodResource;
@@ -30,48 +31,31 @@ import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class KubernetesResourceFactory {
+public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesResource, KubernetesResourceConfig> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceFactory.class);
     private final NamespaceResource namespaceResource;
-    private final ClientFactory clientFactory;
 
     public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException {
-        this.clientFactory = new ClientFactory(cloudConfig);
+        super(LOGGER, new ClientFactory(cloudConfig));
         KubernetesResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
-        this.namespaceResource = new NamespaceResource(namespaceResourceConfig, this.clientFactory);
+        this.namespaceResource = new NamespaceResource(namespaceResourceConfig, getClientFactory());
     }
 
     public NamespaceResource getNamespaceResource() {
         return namespaceResource;
     }
 
-    public List<Resource> createResources(List<KubernetesResourceConfig> resourceConfigs) throws ResourceException {
-
-        LOGGER.info("Creating resources...");
-
-        List<Resource> resources = new ArrayList<>();
-        for (KubernetesResourceConfig resourceConfig : resourceConfigs) {
-            resources.add(createResource(resourceConfig));
-        }
-
-        LOGGER.info("Finished creating resources...");
-
-        return resources;
-    }
-
-    public Resource createResource(KubernetesResourceConfig resourceConfig) throws ResourceException {
+    @Override
+    public KubernetesResource createResource(KubernetesResourceConfig resourceConfig) throws ResourceException {
         String resourceVersion = resourceConfig.getResourceVersion();
         String resourceType = resourceConfig.getResourceType();
-        Resource resource;
+        KubernetesResource resource;
         switch (resourceVersion) {
             case "extensions/v1beta1":
                 switch (resourceType) {
                     case "Deployment":
-                        resource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+                        resource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, getClientFactory());
                         break;
                     default:
                         throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(KubernetesResourceConfig: " + resourceConfig + ")");
@@ -80,13 +64,13 @@ public class KubernetesResourceFactory {
             case "v1":
                 switch (resourceType) {
                     case "Pod":
-                        resource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+                        resource = new PodResource(namespaceResource.getNamespace(), resourceConfig, getClientFactory());
                         break;
                     case "Service":
-                        resource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+                        resource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, getClientFactory());
                         break;
                     case "ReplicationController":
-                        resource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+                        resource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, getClientFactory());
                         break;
                     default:
                         throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(KubernetesResourceConfig: " + resourceConfig + ")");

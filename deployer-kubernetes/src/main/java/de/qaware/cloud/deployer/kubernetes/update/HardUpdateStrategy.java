@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class HardUpdateStrategy implements UpdateStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HardUpdateStrategy.class);
 
-    private static void deployResources(List<Resource> resources) throws ResourceException {
+    private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
         LOGGER.info("Deploying resources...");
 
         for (Resource resource : resources) {
@@ -40,7 +41,7 @@ public class HardUpdateStrategy implements UpdateStrategy {
     }
 
     @Override
-    public void deploy(NamespaceResource namespaceResource, List<Resource> resources) throws ResourceException {
+    public void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
         // 1. Delete the old namespace
         NamespaceUtil.safeDeleteNamespace(namespaceResource);
 

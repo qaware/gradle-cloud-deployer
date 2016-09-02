@@ -15,9 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.update;
 
-import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
@@ -43,8 +42,8 @@ public class SoftUpdateStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
     private SoftUpdateStrategy softUpdateStrategy;
-    private List<Resource> resourcesV1;
-    private List<Resource> resourcesV2;
+    private List<KubernetesResource> resourcesV1;
+    private List<KubernetesResource> resourcesV2;
     private KubernetesClient kubernetesClient;
 
     @Override
@@ -87,10 +86,10 @@ public class SoftUpdateStrategyTest extends TestCase {
         String version = "v1";
 
         // Check that everything was deployed correctly
-        KubernetesResource serviceResource1 = (KubernetesResource) resourcesV1.get(0);
-        KubernetesResource deploymentResource1 = (KubernetesResource) resourcesV1.get(1);
-        KubernetesResource serviceResource2 = (KubernetesResource) resourcesV1.get(2);
-        KubernetesResource deploymentResource2 = (KubernetesResource) resourcesV1.get(3);
+        KubernetesResource serviceResource1 = resourcesV1.get(0);
+        KubernetesResource deploymentResource1 = resourcesV1.get(1);
+        KubernetesResource serviceResource2 = resourcesV1.get(2);
+        KubernetesResource deploymentResource2 = resourcesV1.get(3);
 
         // Check services
         assertEquals(2, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
@@ -142,7 +141,7 @@ public class SoftUpdateStrategyTest extends TestCase {
         softUpdateStrategy.deploy(namespaceResource, resourcesV1);
         String version1 = "v1";
 
-        KubernetesResource deploymentResource0 = (KubernetesResource) resourcesV1.get(1);
+        KubernetesResource deploymentResource0 = resourcesV1.get(1);
         List<Pod> pods0 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource0).getItems();
         assertEquals(3, pods0.size());
         Pod pod0a = pods0.get(0);
@@ -162,10 +161,10 @@ public class SoftUpdateStrategyTest extends TestCase {
         podDeletionBlocker0c.block();
 
         // Check that everything was deployed correctly
-        KubernetesResource serviceResource1 = (KubernetesResource) resourcesV1.get(2);
-        KubernetesResource deploymentResource1 = (KubernetesResource) resourcesV1.get(3);
-        KubernetesResource serviceResource2 = (KubernetesResource) resourcesV2.get(0);
-        KubernetesResource deploymentResource2 = (KubernetesResource) resourcesV2.get(1);
+        KubernetesResource serviceResource1 = resourcesV1.get(2);
+        KubernetesResource deploymentResource1 = resourcesV1.get(3);
+        KubernetesResource serviceResource2 = resourcesV2.get(0);
+        KubernetesResource deploymentResource2 = resourcesV2.get(1);
 
         // Check services
         assertEquals(2, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());

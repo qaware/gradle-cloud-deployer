@@ -15,9 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.update;
 
-import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
@@ -44,9 +43,9 @@ public class HardUpdateStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
     private HardUpdateStrategy hardUpdateStrategy;
-    private List<Resource> resourcesV1;
-    private List<Resource> resourcesV2;
-    private List<Resource> resourcesV3;
+    private List<KubernetesResource> resourcesV1;
+    private List<KubernetesResource> resourcesV2;
+    private List<KubernetesResource> resourcesV3;
     private KubernetesClient kubernetesClient;
 
     @Override
@@ -95,9 +94,9 @@ public class HardUpdateStrategyTest extends TestCase {
         String version = "v1";
 
         // Check that everything was deployed correctly
-        KubernetesResource serviceResource1 = (KubernetesResource) resourcesV1.get(0);
-        KubernetesResource deploymentResource = (KubernetesResource) resourcesV1.get(1);
-        KubernetesResource serviceResource2 = (KubernetesResource) resourcesV1.get(2);
+        KubernetesResource serviceResource1 = resourcesV1.get(0);
+        KubernetesResource deploymentResource = resourcesV1.get(1);
+        KubernetesResource serviceResource2 = resourcesV1.get(2);
 
         // Check services
         assertEquals(2, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
@@ -134,8 +133,8 @@ public class HardUpdateStrategyTest extends TestCase {
         String version = "v2";
 
         // Check that everything was deployed correctly
-        KubernetesResource serviceResource2 = (KubernetesResource) resourcesV2.get(0);
-        KubernetesResource deploymentResource2 = (KubernetesResource) resourcesV2.get(1);
+        KubernetesResource serviceResource2 = resourcesV2.get(0);
+        KubernetesResource deploymentResource2 = resourcesV2.get(1);
 
         // Check service2
         assertEquals(1, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
@@ -167,7 +166,7 @@ public class HardUpdateStrategyTest extends TestCase {
         version = "v3";
 
         // Check that everything was deployed correctly
-        KubernetesResource deploymentResource3 = (KubernetesResource) resourcesV3.get(0);
+        KubernetesResource deploymentResource3 = resourcesV3.get(0);
 
         // Check that no service exists
         assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, deploymentResource3).getItems().size());
