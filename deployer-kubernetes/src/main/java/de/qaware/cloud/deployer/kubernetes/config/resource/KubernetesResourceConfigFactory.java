@@ -31,24 +31,23 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
+    public KubernetesResourceConfigFactory() {
+        super(LOGGER);
+    }
+
     @Override
     public List<KubernetesResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
-
-        LOGGER.info("Reading kubernetes config files...");
-
-        List<KubernetesResourceConfig> resourceConfigs = new ArrayList<>();
-        for (File file : files) {
-            String filename = file.getName();
-            ContentType contentType = retrieveContentType(file);
-            String content = readFileContent(file);
-            resourceConfigs.add(new KubernetesResourceConfig(filename, contentType, content));
-        }
-
+        List<KubernetesResourceConfig> resourceConfigs = super.createConfigs(files);
         resourceConfigs = splitConfigs(resourceConfigs, KUBERNETES_CONFIG_SEPARATOR);
-
-        LOGGER.info("Finished reading kubernetes config files...");
-
         return resourceConfigs;
+    }
+
+    @Override
+    public KubernetesResourceConfig createConfig(File file) throws ResourceConfigException {
+        String filename = file.getName();
+        ContentType contentType = retrieveContentType(file);
+        String content = readFileContent(file);
+        return new KubernetesResourceConfig(filename, contentType, content);
     }
 
     private List<KubernetesResourceConfig> splitConfigs(List<KubernetesResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {

@@ -18,15 +18,37 @@ package de.qaware.cloud.deployer.commons.config.resource;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseResourceConfigFactory<T extends BaseResourceConfig> {
 
-    public abstract List<T> createConfigs(List<File> files) throws ResourceConfigException;
+    private final Logger logger;
+
+    protected BaseResourceConfigFactory(Logger logger) {
+        this.logger = logger;
+    }
+
+    public List<T> createConfigs(List<File> files) throws ResourceConfigException {
+
+        logger.info("Reading config files...");
+
+        List<T> resourceConfigs = new ArrayList<>();
+        for (File file : files) {
+            resourceConfigs.add(createConfig(file));
+        }
+
+        logger.info("Finished reading config files...");
+
+        return resourceConfigs;
+    }
+
+    public abstract T createConfig(File file) throws ResourceConfigException;
 
     protected ContentType retrieveContentType(File file) throws ResourceConfigException {
         String fileEnding = FilenameUtils.getExtension(file.getName());

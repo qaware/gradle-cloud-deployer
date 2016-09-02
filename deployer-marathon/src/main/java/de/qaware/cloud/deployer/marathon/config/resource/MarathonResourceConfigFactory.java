@@ -22,28 +22,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<MarathonResourceConfig> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MarathonResourceConfigFactory.class);
 
+    public MarathonResourceConfigFactory() {
+        super(LOGGER);
+    }
+
     @Override
-    public List<MarathonResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
-
-        LOGGER.info("Reading marathon config files...");
-
-        List<MarathonResourceConfig> resourceConfigs = new ArrayList<>();
-        for (File file : files) {
-            String filename = file.getName();
-            ContentType contentType = retrieveContentType(file);
-            String content = readFileContent(file);
-            resourceConfigs.add(new MarathonResourceConfig(filename, contentType, content));
-        }
-
-        LOGGER.info("Finished reading marathon config files...");
-
-        return resourceConfigs;
+    public MarathonResourceConfig createConfig(File file) throws ResourceConfigException {
+        String filename = file.getName();
+        ContentType contentType = retrieveContentType(file);
+        String content = readFileContent(file);
+        return new MarathonResourceConfig(filename, contentType, content);
     }
 }
