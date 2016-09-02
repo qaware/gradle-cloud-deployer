@@ -15,31 +15,26 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
+import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfigFactory;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class KubernetesResourceConfigFactory {
+public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<KubernetesResourceConfig> {
 
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
-    private KubernetesResourceConfigFactory() {
-    }
+    @Override
+    public List<KubernetesResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
 
-    public static List<KubernetesResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
-
-        LOGGER.info("Reading config files...");
+        LOGGER.info("Reading kubernetes config files...");
 
         List<KubernetesResourceConfig> resourceConfigs = new ArrayList<>();
         for (File file : files) {
@@ -51,12 +46,12 @@ public class KubernetesResourceConfigFactory {
 
         resourceConfigs = splitConfigs(resourceConfigs, KUBERNETES_CONFIG_SEPARATOR);
 
-        LOGGER.info("Finished reading config files...");
+        LOGGER.info("Finished reading kubernetes config files...");
 
         return resourceConfigs;
     }
 
-    private static List<KubernetesResourceConfig> splitConfigs(List<KubernetesResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {
+    private List<KubernetesResourceConfig> splitConfigs(List<KubernetesResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {
         List<KubernetesResourceConfig> splitResourceConfigs = new ArrayList<>();
         for (KubernetesResourceConfig resourceConfig : resourceConfigs) {
             List<String> splitContents = splitContent(resourceConfig.getContent(), splitString);
@@ -69,28 +64,7 @@ public class KubernetesResourceConfigFactory {
         return splitResourceConfigs;
     }
 
-    private static ContentType retrieveContentType(File file) throws ResourceConfigException {
-        String fileEnding = FilenameUtils.getExtension(file.getName());
-        switch (fileEnding) {
-            case "json":
-                return ContentType.JSON;
-            case "yml":
-                return ContentType.YAML;
-            default:
-                throw new ResourceConfigException("Unsupported content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
-        }
-    }
-
-    // TODO: charset correct?
-    private static String readFileContent(File file) throws ResourceConfigException {
-        try {
-            return FileUtils.readFileToString(file, Charset.defaultCharset()).trim();
-        } catch (IOException e) {
-            throw new ResourceConfigException(e.getMessage(), e);
-        }
-    }
-
-    private static List<String> splitContent(String content, String splitString) {
+    private List<String> splitContent(String content, String splitString) {
         List<String> splitContents = new ArrayList<>();
         List<String> tempSplitContents = Arrays.asList(content.split(splitString));
         // Remove whitespaces
