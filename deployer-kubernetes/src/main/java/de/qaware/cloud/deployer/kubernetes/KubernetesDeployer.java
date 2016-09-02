@@ -45,7 +45,8 @@ public class KubernetesDeployer {
 
     public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
-        List<KubernetesResourceConfig> resourceConfigs = KubernetesResourceConfigFactory.createConfigs(files);
+        KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
+        List<KubernetesResourceConfig> resourceConfigs = resourceConfigFactory.createConfigs(files);
 
         // 2. Create a resource factory for the specified namespace
         ResourceFactory resourceFactory = new ResourceFactory(namespace, cloudConfig);
