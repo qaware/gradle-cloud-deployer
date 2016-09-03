@@ -2,13 +2,19 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+
+        }
+    }
+    dependencies {
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1-rc2"
+        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1"
     }
 }
 
-plugins {
-    id "org.sonarqube" version "2.1-rc2"
-    id "com.github.hierynomus.license" version "0.13.1"
-}
+apply plugin: "org.sonarqube"
+apply plugin: "com.github.hierynomus.license"
 
 subprojects {
     apply plugin: 'java'
