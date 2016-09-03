@@ -16,17 +16,20 @@ buildscript {
 apply plugin: "org.sonarqube"
 apply plugin: "com.github.hierynomus.license"
 
+description = 'Gradle plugin to deploy applications to Kubernetes and DC/OS Marathon'
+
+allprojects {
+    group = 'de.qaware.cloud'
+    version = '1.0.0'
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'idea'
-    apply plugin: "com.github.hierynomus.license"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
-    group = 'de.qaware.cloud.deployer'
-    version = '1.0.0'
 
     repositories {
         mavenLocal()
