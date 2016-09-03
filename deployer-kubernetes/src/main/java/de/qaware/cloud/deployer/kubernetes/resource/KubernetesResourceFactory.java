@@ -36,7 +36,7 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceFactory.class);
     private final NamespaceResource namespaceResource;
 
-    public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException {
+    public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException, ResourceException {
         super(LOGGER, new ClientFactory(cloudConfig));
         KubernetesResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, getClientFactory());

@@ -49,7 +49,7 @@ public class TestEnvironmentUtil {
         return environmentVariables;
     }
 
-    private static ClientFactory createClientFactory(Map<String, String> environmentProperties) {
+    private static ClientFactory createClientFactory(Map<String, String> environmentProperties) throws ResourceException {
         SSLConfig sslConfig = new SSLConfig(true, null);
         CloudConfig cloudConfig = new CloudConfig(environmentProperties.get("URL"),
                 environmentProperties.get("USERNAME"),
@@ -88,7 +88,7 @@ public class TestEnvironmentUtil {
         return createTestEnvironment("HARD");
     }
 
-    public static TestEnvironment createTestEnvironment(String updateStrategy) throws IOException, ResourceConfigException {
+    public static TestEnvironment createTestEnvironment(String updateStrategy) throws IOException, ResourceConfigException, ResourceException {
         Map<String, String> environmentVariables = loadEnvironmentVariables();
         KubernetesClient kubernetesClient = createKubernetesClient(environmentVariables);
         ClientFactory clientFactory = createClientFactory(environmentVariables);

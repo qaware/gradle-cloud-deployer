@@ -28,7 +28,7 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MarathonResourceFactory.class);
 
-    public MarathonResourceFactory(CloudConfig cloudConfig) {
+    public MarathonResourceFactory(CloudConfig cloudConfig) throws ResourceException {
         super(LOGGER, new ClientFactory(cloudConfig));
     }
 

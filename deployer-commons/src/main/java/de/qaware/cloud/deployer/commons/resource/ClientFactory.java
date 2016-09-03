@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.commons.resource;
 
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,7 +41,7 @@ public class ClientFactory {
 
     private final Retrofit retrofit;
 
-    public ClientFactory(CloudConfig cloudConfig) {
+    public ClientFactory(CloudConfig cloudConfig) throws ResourceException {
         this.retrofit = createRetrofit(cloudConfig);
     }
 
@@ -48,7 +49,7 @@ public class ClientFactory {
         return retrofit.create(serviceClass);
     }
 
-    private Retrofit createRetrofit(CloudConfig cloudConfig) {
+    private Retrofit createRetrofit(CloudConfig cloudConfig) throws ResourceException {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(chain -> {
@@ -68,7 +69,7 @@ public class ClientFactory {
                 builder = addTrustCertTrustManager(builder, sslConfig.getCertificate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ResourceException(e);
         }
 
         OkHttpClient client = builder.build();
