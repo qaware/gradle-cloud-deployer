@@ -22,7 +22,7 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
-public class NamespaceConfigFactory {
+public final class NamespaceConfigFactory {
 
     private NamespaceConfigFactory() {
     }
