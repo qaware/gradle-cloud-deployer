@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.marathon.config.resource;
 
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfigFactory;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<Mar
     public MarathonResourceConfig createConfig(File file) throws ResourceConfigException {
         String filename = file.getName();
         ContentType contentType = retrieveContentType(file);
-        String content = readFileContent(file);
+        String content = FileUtil.readFileContent(file);
         return new MarathonResourceConfig(filename, contentType, content);
     }
 

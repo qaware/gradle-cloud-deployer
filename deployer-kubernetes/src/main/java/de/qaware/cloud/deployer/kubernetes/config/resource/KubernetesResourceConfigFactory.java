@@ -18,6 +18,7 @@ package de.qaware.cloud.deployer.kubernetes.config.resource;
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfigFactory;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
     public KubernetesResourceConfig createConfig(File file) throws ResourceConfigException {
         String filename = file.getName();
         ContentType contentType = retrieveContentType(file);
-        String content = readFileContent(file);
+        String content = FileUtil.readFileContent(file);
         return new KubernetesResourceConfig(filename, contentType, content);
     }
 

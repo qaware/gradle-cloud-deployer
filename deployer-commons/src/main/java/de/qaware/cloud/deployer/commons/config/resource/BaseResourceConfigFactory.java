@@ -16,13 +16,10 @@
 package de.qaware.cloud.deployer.commons.config.resource;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,14 +56,6 @@ public abstract class BaseResourceConfigFactory<T extends BaseResourceConfig> {
                 return ContentType.YAML;
             default:
                 throw new ResourceConfigException("Unsupported content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
-        }
-    }
-
-    protected String readFileContent(File file) throws ResourceConfigException {
-        try {
-            return FileUtils.readFileToString(file, Charset.defaultCharset()).trim();
-        } catch (IOException e) {
-            throw new ResourceConfigException(e.getMessage(), e);
         }
     }
 }
