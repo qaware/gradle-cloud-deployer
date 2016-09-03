@@ -23,7 +23,7 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 
 import java.util.Objects;
 
-public class DeploymentLabelUtil {
+public final class DeploymentLabelUtil {
 
     private DeploymentLabelUtil() {
     }
