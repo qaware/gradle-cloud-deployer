@@ -28,7 +28,7 @@ import java.util.List;
 public class ResourceConfigFactoryTest extends TestCase {
 
     public void testCreateConfigsWithExistingJsonFile() throws ResourceConfigException, IOException {
-        String testFile = "/pod.json";
+        String testFile = "/config/resource/pod.json";
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -50,7 +50,7 @@ public class ResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithExistingYamlFile() throws ResourceConfigException, IOException {
-        String testFile = "/service.yml";
+        String testFile = "/config/resource/service.yml";
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -72,8 +72,8 @@ public class ResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithMultipleExistingJsonFiles() throws ResourceConfigException, IOException {
-        String testFile1 = "/pod.json";
-        String testFile2 = "/pod2.json";
+        String testFile1 = "/config/resource/pod.json";
+        String testFile2 = "/config/resource/pod2.json";
 
         // Create config
         File file1 = new File(this.getClass().getResource(testFile1).getPath());
@@ -104,7 +104,7 @@ public class ResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithMultipleResourcesInOneJsonFile() throws ResourceConfigException, IOException {
-        String testFile = "/pods.json";
+        String testFile = "/config/resource/pods.json";
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -117,8 +117,8 @@ public class ResourceConfigFactoryTest extends TestCase {
         assertEquals(2, configs.size());
 
         // Load single configs
-        String pod1Filename = "/pod.json";
-        String pod2Filename = "/pod2.json";
+        String pod1Filename = "/config/resource/pod.json";
+        String pod2Filename = "/config/resource/pod2.json";
         File pod1 = new File(this.getClass().getResource(pod1Filename).getPath());
         File pod2 = new File(this.getClass().getResource(pod2Filename).getPath());
 
@@ -139,73 +139,73 @@ public class ResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithExistingAndNonExistingFiles() {
-        File nonExistingFile = new File("/service-non-existing.yml");
-        File existingFile = new File("/service.yml");
+        File nonExistingFile = new File("/config/resource/service-non-existing.yml");
+        File existingFile = new File("/config/resource/service.yml");
         assertExceptionOnCreation(nonExistingFile, existingFile);
     }
 
     public void testCreateConfigsWithExistingAndEmptyFiles() {
-        String emptyFile = "/service-empty.yml";
-        String validFile = "/service.yml";
+        String emptyFile = "/config/resource/service-empty.yml";
+        String validFile = "/config/resource/service.yml";
         assertExceptionOnCreation(emptyFile, validFile);
     }
 
     public void testCreateConfigsWithExistingEmptyFiles() {
-        String testFile = "/service-empty.yml";
+        String testFile = "/config/resource/service-empty.yml";
         assertExceptionOnCreation(testFile);
-        testFile = "/service-empty.json";
+        testFile = "/config/resource/service-empty.json";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithNonExistingFile() {
-        File testFile = new File("/service-non-existing.yml");
+        File testFile = new File("/config/resource/service-non-existing.yml");
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithExistingUnsupportedFiles() {
-        String testFile = "/service.xml";
+        String testFile = "/config/resource/service.xml";
         assertExceptionOnCreation(testFile);
-        testFile = "/service";
+        testFile = "/config/resource/service";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithMissingResourceVersionFromJson() {
-        String testFile = "/pod-missing-version.json";
+        String testFile = "/config/resource/pod-missing-version.json";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithMissingResourceTypeFromJson() {
-        String testFile = "/pod-missing-type.json";
+        String testFile = "/config/resource/pod-missing-type.json";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithMissingResourceIdFromJson() {
-        String testFile = "/pod-missing-id.json";
+        String testFile = "/config/resource/pod-missing-id.json";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithMissingResourceVersionFromYaml() {
-        String testFile = "/service-missing-version.yml";
+        String testFile = "/config/resource/service-missing-version.yml";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithMissingResourceTypeFromYaml() {
-        String testFile = "/service-missing-type.yml";
+        String testFile = "/config/resource/service-missing-type.yml";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithMissingResourceIdFromYaml() {
-        String testFile = "/service-missing-id.yml";
+        String testFile = "/config/resource/service-missing-id.yml";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithInvalidJson() {
-        String testFile = "/pod-invalid.json";
+        String testFile = "/config/resource/pod-invalid.json";
         assertExceptionOnCreation(testFile);
     }
 
     public void testCreateConfigsWithInvalidYaml() {
-        String testFile = "/service-invalid.yml";
+        String testFile = "/config/resource/service-invalid.yml";
         assertExceptionOnCreation(testFile);
     }
 

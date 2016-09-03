@@ -45,7 +45,7 @@ public class ReplicationControllerResourceTest extends TestCase {
 
         // Create the ReplicationControllerResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String controllerDescription = FileUtil.readFile("/replication-controller.yml");
+        String controllerDescription = FileUtil.readFile("/resource/replication/controller/replication-controller.yml");
         KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, controllerDescription);
         replicationControllerResource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }

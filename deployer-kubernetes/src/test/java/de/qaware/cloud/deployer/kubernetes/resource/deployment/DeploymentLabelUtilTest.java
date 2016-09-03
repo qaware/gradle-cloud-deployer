@@ -33,7 +33,7 @@ public class DeploymentLabelUtilTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        String deploymentDescription = FileUtil.readFile("/deployment.yml");
+        String deploymentDescription = FileUtil.readFile("/resource/deployment/deployment.yml");
         resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescription);
     }
 
