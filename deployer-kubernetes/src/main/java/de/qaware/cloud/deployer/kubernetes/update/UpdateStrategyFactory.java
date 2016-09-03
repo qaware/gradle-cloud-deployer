@@ -17,7 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
-public class UpdateStrategyFactory {
+public final class UpdateStrategyFactory {
 
     private UpdateStrategyFactory() {
     }
