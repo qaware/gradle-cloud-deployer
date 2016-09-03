@@ -25,7 +25,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
 import java.io.IOException;
 
-public class ContentTreeUtil {
+public final class ContentTreeUtil {
 
     private ContentTreeUtil() {
     }
