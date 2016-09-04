@@ -15,6 +15,7 @@ buildscript {
 
 apply plugin: "org.sonarqube"
 apply plugin: "com.github.hierynomus.license"
+apply plugin: "jacoco"
 
 description = 'Gradle plugin to deploy applications to Kubernetes and DC/OS Marathon'
 
