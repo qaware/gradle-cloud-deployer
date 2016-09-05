@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/schema#",
-  "id": "https://raw.githubusercontent.com/mesosphere/marathon/master/docs/docs/rest-api/public/api/v2/schema/Group.json",
   "additionalProperties": false,
   "definitions": {
     "pathType": {
@@ -20,7 +19,7 @@
       "type": "array",
       "description": "The list of AppDefinitions in this group. See AppDefinition.json for the schema.",
       "items": {
-        "$ref": "./AppDefinition.json"
+        "$ref": "/schemas/AppDefinition.json"
       }
     },
     "groups": {
