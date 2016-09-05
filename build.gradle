@@ -16,7 +16,6 @@ buildscript {
 }
 
 apply plugin: 'org.sonarqube'
-apply plugin: 'com.github.hierynomus.license'
 
 allprojects {
     group = 'de.qaware.cloud'
@@ -28,6 +27,7 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'idea'
     apply plugin: 'jacoco'
+    apply plugin: 'com.github.hierynomus.license'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
