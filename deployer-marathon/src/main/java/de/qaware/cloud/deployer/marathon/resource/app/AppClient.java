@@ -20,14 +20,35 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-public interface AppClient {
+/**
+ * App interface which will be used by retrofit to create an app client.
+ */
+interface AppClient {
 
+    /**
+     * Returns the http response for the app resource with the specified id.
+     *
+     * @param appId The app's id.
+     * @return The server's http response.
+     */
     @GET("/v2/apps/{appId}")
     Call<ResponseBody> get(@Path("appId") String appId);
 
+    /**
+     * Creates the specified app.
+     *
+     * @param appDescription The request body which contains the app.
+     * @return The server's http response.
+     */
     @POST("/v2/apps")
     Call<ResponseBody> create(@Body RequestBody appDescription);
 
+    /**
+     * Deletes the app resource with the specified id.
+     *
+     * @param appId The app's id.
+     * @return The server's http response.
+     */
     @DELETE("/v2/apps/{appId}")
     Call<ResponseBody> delete(@Path("appId") String appId);
 }
