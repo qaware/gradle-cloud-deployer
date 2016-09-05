@@ -22,8 +22,8 @@ import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -37,10 +37,10 @@ public class PodResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        TestEnvironmentUtil.createTestNamespace(namespaceResource);
+        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the PodResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();

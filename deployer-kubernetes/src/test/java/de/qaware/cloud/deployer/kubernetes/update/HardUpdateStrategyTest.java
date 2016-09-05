@@ -24,8 +24,8 @@ import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.test.CheckUtil;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.Service;
@@ -51,11 +51,11 @@ public class HardUpdateStrategyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment("HARD");
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment("HARD");
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
         CloudConfig cloudConfig = testEnvironment.getCloudConfig();
-        TestEnvironmentUtil.createTestNamespace(namespaceResource);
+        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
         hardUpdateStrategy = new HardUpdateStrategy();

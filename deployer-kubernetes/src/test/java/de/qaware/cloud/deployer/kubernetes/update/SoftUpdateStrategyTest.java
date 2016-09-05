@@ -49,11 +49,11 @@ public class SoftUpdateStrategyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment("SOFT");
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment("SOFT");
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
         CloudConfig cloudConfig = testEnvironment.getCloudConfig();
-        TestEnvironmentUtil.createTestNamespace(namespaceResource);
+        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
         softUpdateStrategy = new SoftUpdateStrategy();

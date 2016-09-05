@@ -38,10 +38,10 @@ public class ReplicationControllerResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        TestEnvironmentUtil.createTestNamespace(namespaceResource);
+        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the ReplicationControllerResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();

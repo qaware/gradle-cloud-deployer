@@ -41,10 +41,10 @@ public class DeploymentResourceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        TestEnvironmentUtil.createTestNamespace(namespaceResource);
+        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create the DeploymentResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();

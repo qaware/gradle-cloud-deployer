@@ -17,8 +17,8 @@ package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -30,7 +30,7 @@ public class NamespaceResourceTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        TestEnvironment testEnvironment = TestEnvironmentUtil.createTestEnvironment();
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
     }
