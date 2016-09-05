@@ -18,13 +18,21 @@ package de.qaware.cloud.deployer.marathon.resource.base;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
+import okhttp3.MediaType;
 
-public abstract class MarathonResource extends BaseResource {
-
-    private final MarathonResourceConfig resourceConfig;
+public abstract class MarathonResource extends BaseResource<MarathonResourceConfig> {
 
     public MarathonResource(MarathonResourceConfig resourceConfig, ClientFactory clientFactory) {
-        super(clientFactory);
-        this.resourceConfig = resourceConfig;
+        super(resourceConfig, clientFactory);
+    }
+
+    @Override
+    protected MediaType createMediaType() {
+        switch (getResourceConfig().getContentType()) {
+            case JSON:
+                return MediaType.parse("application/json");
+            default:
+                throw new IllegalArgumentException("Unknown type " + getResourceConfig().getContentType());
+        }
     }
 }

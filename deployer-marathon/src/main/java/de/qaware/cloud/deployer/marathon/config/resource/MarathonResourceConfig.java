@@ -15,13 +15,19 @@
  */
 package de.qaware.cloud.deployer.marathon.config.resource;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
+import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
 public class MarathonResourceConfig extends BaseResourceConfig {
 
-    public MarathonResourceConfig(String filename, ContentType contentType, String content) {
+    public MarathonResourceConfig(String filename, ContentType contentType, String content) throws ResourceConfigException {
         super(filename, contentType, content);
+
+        JsonNode contentObjectTree = ContentTreeUtil.createObjectTree(contentType, content);
+        this.setResourceId(ContentTreeUtil.readStringValue(contentObjectTree, "id"));
     }
 
     @Override
