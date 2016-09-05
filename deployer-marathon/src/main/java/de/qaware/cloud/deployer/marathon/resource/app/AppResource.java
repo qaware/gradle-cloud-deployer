@@ -20,8 +20,17 @@ import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 
+/**
+ * Represents a marathon app and offers methods for deletion and creation.
+ */
 public class AppResource extends MarathonResource {
 
+    /**
+     * Creates a marathon app resource for the specified config which uses the specified client factory to create a client for communication.
+     *
+     * @param resourceConfig The config which contains the resource metadata.
+     * @param clientFactory  The factory which is used to create a client for communication.
+     */
     public AppResource(MarathonResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig, clientFactory);
     }
