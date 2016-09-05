@@ -66,16 +66,4 @@ public class MarathonResourceFactoryTest extends TestCase {
         }
         assertTrue(exceptionThrown);
     }
-
-    public void testCreateResourceWithEmptyJson() throws ResourceConfigException, ResourceException {
-        boolean exceptionThrown = false;
-        MarathonResourceConfig config = new MarathonResourceConfig("", ContentType.JSON, "");
-        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(cloudConfig);
-        try {
-            resourceFactory.createResource(config);
-        } catch (ResourceException e) {
-            exceptionThrown = true;
-        }
-        assertTrue(exceptionThrown);
-    }
 }
