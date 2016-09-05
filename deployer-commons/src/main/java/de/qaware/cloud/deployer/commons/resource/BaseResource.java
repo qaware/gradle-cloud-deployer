@@ -15,23 +15,36 @@
  */
 package de.qaware.cloud.deployer.commons.resource;
 
+import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import java.io.IOException;
 
-public abstract class BaseResource implements Resource {
+public abstract class BaseResource<ConfigType extends BaseResourceConfig> implements Resource {
 
     // Maximum call-duration in seconds
     private static final int TIMEOUT = 300;
     private static final double INTERVAL = 0.5;
 
+    private final ConfigType resourceConfig;
     private final ClientFactory clientFactory;
 
-    public BaseResource(ClientFactory clientFactory) {
+    public BaseResource(ConfigType resourceConfig, ClientFactory clientFactory) {
+        this.resourceConfig = resourceConfig;
         this.clientFactory = clientFactory;
+    }
+
+    public String getId() {
+        return resourceConfig.getResourceId();
+    }
+
+    public ConfigType getResourceConfig() {
+        return resourceConfig;
     }
 
     public <T> T createClient(Class<T> serviceClass) {
@@ -98,6 +111,12 @@ public abstract class BaseResource implements Resource {
 
     @Override
     public abstract String toString();
+
+    protected RequestBody createRequestBody() {
+        return RequestBody.create(createMediaType(), getResourceConfig().getContent());
+    }
+
+    protected abstract MediaType createMediaType();
 
     private boolean isNotFoundResponse(Response<ResponseBody> response) {
         return response.code() == 404;

@@ -21,41 +21,28 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-public abstract class KubernetesResource extends BaseResource {
+public abstract class KubernetesResource extends BaseResource<KubernetesResourceConfig> {
 
     private final String namespace;
-    private final KubernetesResourceConfig resourceConfig;
 
     public KubernetesResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
-        super(clientFactory);
+        super(resourceConfig, clientFactory);
         this.namespace = namespace;
-        this.resourceConfig = resourceConfig;
-    }
-
-    public String getId() {
-        return resourceConfig.getResourceId();
     }
 
     public String getNamespace() {
         return namespace;
     }
 
-    public KubernetesResourceConfig getResourceConfig() {
-        return resourceConfig;
-    }
-
-    public RequestBody createRequestBody() {
-        return RequestBody.create(createMediaType(), resourceConfig.getContent());
-    }
-
-    private MediaType createMediaType() {
-        switch (resourceConfig.getContentType()) {
+    @Override
+    protected MediaType createMediaType() {
+        switch (getResourceConfig().getContentType()) {
             case JSON:
                 return MediaType.parse("application/json");
             case YAML:
                 return MediaType.parse("application/yaml");
             default:
-                throw new IllegalArgumentException("Unknown type " + resourceConfig.getContentType());
+                throw new IllegalArgumentException("Unknown type " + getResourceConfig().getContentType());
         }
     }
 }
