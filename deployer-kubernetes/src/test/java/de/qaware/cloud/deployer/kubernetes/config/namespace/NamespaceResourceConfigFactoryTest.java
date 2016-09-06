@@ -20,11 +20,11 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import junit.framework.TestCase;
 
-public class NamespaceConfigFactoryTest extends TestCase {
+public class NamespaceResourceConfigFactoryTest extends TestCase {
 
     public void testValidNamespace() throws ResourceConfigException {
         // Create config
-        KubernetesResourceConfig namespaceResource = NamespaceConfigFactory.create("test");
+        KubernetesResourceConfig namespaceResource = NamespaceResourceConfigFactory.create("test");
 
         // Check config
         assertEquals("test", namespaceResource.getResourceId());
@@ -37,7 +37,7 @@ public class NamespaceConfigFactoryTest extends TestCase {
     public void testEmptyNamespace() {
         boolean exceptionThrown = false;
         try {
-            NamespaceConfigFactory.create("");
+            NamespaceResourceConfigFactory.create("");
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
         }
@@ -47,7 +47,7 @@ public class NamespaceConfigFactoryTest extends TestCase {
     public void testNullNamespace() {
         boolean exceptionThrown = false;
         try {
-            NamespaceConfigFactory.create(null);
+            NamespaceResourceConfigFactory.create(null);
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
         }

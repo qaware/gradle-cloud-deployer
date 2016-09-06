@@ -21,7 +21,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
-import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceConfigFactory;
+import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.client.Config;
@@ -73,7 +73,7 @@ public class KubernetesTestEnvironmentUtil {
 
     private static NamespaceResource createNamespaceResource(ClientFactory clientFactory, Map<String, String> environmentProperties) throws ResourceConfigException {
         String namespace = environmentProperties.get(KUBERNETES_NAMESPACE_PREFIX_ENV) + "-" + subNamespaceCounter.getAndIncrement();
-        KubernetesResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
+        KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(namespace);
         return new NamespaceResource(namespaceResourceConfig, clientFactory);
     }
 
