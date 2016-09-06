@@ -20,6 +20,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
+import de.qaware.cloud.deployer.plugin.CloudConfigFactory;
 import de.qaware.cloud.deployer.plugin.DeployerExtension;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -33,15 +34,8 @@ public class DeployTask extends DefaultTask {
     @TaskAction
     public void deploy() throws ResourceException, ResourceConfigException {
         DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);
-        SSLConfig sslConfig = new SSLConfig(extension.isTrustAll(), extension.getCertificate());
-        CloudConfig cloudConfig = new CloudConfig(extension.getBaseUrl(),
-                extension.getUsername(),
-                extension.getPassword(),
-                extension.getToken(),
-                extension.getUpdateStrategy(),
-                sslConfig);
+        CloudConfig cloudConfig = CloudConfigFactory.create(extension);
         String namespace = extension.getNamespace();
-
         List<File> files = Arrays.asList(extension.getFiles());
         KubernetesDeployer deployer = new KubernetesDeployer();
         deployer.deploy(cloudConfig, namespace, files);
