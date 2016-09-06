@@ -101,13 +101,13 @@ public class ClientFactory {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
         // Add credentials header if credentials are specified.
-        builder = addCredentials(cloudConfig, builder);
+        addCredentials(cloudConfig, builder);
 
         // Add token header if token is specified.
-        builder = addToken(cloudConfig, builder);
+        addToken(cloudConfig, builder);
 
         // Add ssl config if specified.
-        builder = addSSLConfig(cloudConfig, builder);
+        addSSLConfig(cloudConfig, builder);
 
         // Build the client.
         OkHttpClient client = builder.build();
@@ -124,23 +124,21 @@ public class ClientFactory {
      *
      * @param cloudConfig The config which specifies how to configure ssl.
      * @param builder     The builder which will be configured.
-     * @return The configured builder or the original builder if no ssl config is specified in the config.
      * @throws ResourceException If an error during trust manager creation occurs.
      */
-    private OkHttpClient.Builder addSSLConfig(CloudConfig cloudConfig, OkHttpClient.Builder builder) throws ResourceException {
+    private void addSSLConfig(CloudConfig cloudConfig, OkHttpClient.Builder builder) throws ResourceException {
         SSLConfig sslConfig = cloudConfig.getSslConfig();
         if (sslConfig != null) {
             try {
                 if (sslConfig.isTrustAll()) {
-                    builder = addTrustAllTrustManager(builder);
+                    addTrustAllTrustManager(builder);
                 } else if (sslConfig.hasCertificate()) {
-                    builder = addTrustCertTrustManager(builder, sslConfig.getCertificate());
+                    addTrustCertTrustManager(builder, sslConfig.getCertificate());
                 }
             } catch (Exception e) {
                 throw new ResourceException(e);
             }
         }
-        return builder;
     }
 
     /**
@@ -148,9 +146,8 @@ public class ClientFactory {
      *
      * @param cloudConfig The config which specifies the credentials.
      * @param builder     The builder which will be configured.
-     * @return The configured builder or the original builder if no credentials are specified in the config.
      */
-    private OkHttpClient.Builder addCredentials(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
+    private void addCredentials(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
         String username = cloudConfig.getUsername();
         String password = cloudConfig.getPassword();
         if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
@@ -163,7 +160,6 @@ public class ClientFactory {
                 return chain.proceed(request);
             });
         }
-        return builder;
     }
 
     /**
@@ -171,9 +167,8 @@ public class ClientFactory {
      *
      * @param cloudConfig The config which specifies the token.
      * @param builder     The builder which will be configured.
-     * @return The configured builder or the original builder if no token is specified in the config.
      */
-    private OkHttpClient.Builder addToken(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
+    private void addToken(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
         String token = cloudConfig.getToken();
         if (token != null && !token.isEmpty()) {
             builder.addInterceptor(chain -> {
@@ -184,18 +179,16 @@ public class ClientFactory {
                 return chain.proceed(request);
             });
         }
-        return builder;
     }
 
     /**
      * Adds a trust manager which trusts all certificates to the specified builder.
      *
      * @param builder The builder which will use the all-trusting trust manager.
-     * @return The builder with the all-trusting trust manager.
      * @throws NoSuchAlgorithmException If the ssl algorithm doesn't exist - shouldn't occur.
      * @throws KeyManagementException   If a problem during trust manager creation occurs - shouldn't occur.
      */
-    private OkHttpClient.Builder addTrustAllTrustManager(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
+    private void addTrustAllTrustManager(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
         final TrustManager[] trustManagers = new TrustManager[]{
                 new X509TrustManager() {
                     @Override
@@ -220,8 +213,6 @@ public class ClientFactory {
 
         builder.sslSocketFactory(sslContext.getSocketFactory(), reqLogger);
         builder.hostnameVerifier((hostname, sslSession) -> true);
-
-        return builder;
     }
 
     /**
@@ -229,14 +220,13 @@ public class ClientFactory {
      *
      * @param builder  The builder which will use the trust manager.
      * @param certData The certificate to use.
-     * @return The builder with the custom trust manager.
      * @throws NoSuchAlgorithmException If the ssl algorithm doesn't exist - shouldn't occur.
      * @throws KeyStoreException        If a problem with the key store occurs.
      * @throws CertificateException     If a problem with the certificate exists.
      * @throws IOException              If a problem during trust store loading occurs - shouldn't occur.
      * @throws KeyManagementException   If a problem during trust manager creation occurs - shouldn't occur.
      */
-    private OkHttpClient.Builder addTrustCertTrustManager(OkHttpClient.Builder builder, String certData) throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException, KeyManagementException {
+    private void addTrustCertTrustManager(OkHttpClient.Builder builder, String certData) throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException, KeyManagementException {
 
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         CertificateFactory certFactory = CertificateFactory.getInstance(CERTIFICATE_FACTORY_TYPE);
@@ -257,8 +247,6 @@ public class ClientFactory {
         X509TrustManager reqLogger = (X509TrustManager) trustManagers[0];
 
         builder.sslSocketFactory(sslContext.getSocketFactory(), reqLogger);
-
-        return builder;
     }
 
     /**
