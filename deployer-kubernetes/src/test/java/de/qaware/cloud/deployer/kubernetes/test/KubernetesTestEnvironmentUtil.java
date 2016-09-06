@@ -49,12 +49,12 @@ public class KubernetesTestEnvironmentUtil {
     private KubernetesTestEnvironmentUtil() {
     }
 
-    private static KubernetesClient createKubernetesClient(Map<String, String> environmentProperties) {
+    private static KubernetesClient createKubernetesClient(CloudConfig cloudConfig) {
         Config config = new ConfigBuilder()
-                .withMasterUrl(environmentProperties.get(KUBERNETES_URL_ENV))
+                .withMasterUrl(cloudConfig.getBaseUrl())
                 .withTrustCerts(true)
-                .withUsername(environmentProperties.get(KUBERNETES_USERNAME_ENV))
-                .withPassword(environmentProperties.get(KUBERNETES_PASSWORD_ENV))
+                .withUsername(cloudConfig.getUsername())
+                .withPassword(cloudConfig.getPassword())
                 .build();
         return new DefaultKubernetesClient(config);
     }
@@ -67,11 +67,7 @@ public class KubernetesTestEnvironmentUtil {
         return cloudConfig;
     }
 
-    private static ClientFactory createClientFactory(Map<String, String> environmentVariables) throws ResourceException {
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV), KUBERNETES_DEFAULT_UPDATE_STRATEGY);
-        cloudConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
-        cloudConfig.setPassword(environmentVariables.get(KUBERNETES_PASSWORD_ENV));
-        cloudConfig.setSslConfig(new SSLConfig(true));
+    private static ClientFactory createClientFactory(CloudConfig cloudConfig) throws ResourceException {
         return new ClientFactory(cloudConfig);
     }
 
@@ -93,10 +89,10 @@ public class KubernetesTestEnvironmentUtil {
                 KUBERNETES_NAMESPACE_PREFIX_ENV
         );
 
-        ClientFactory clientFactory = createClientFactory(environmentVariables);
         CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
+        ClientFactory clientFactory = createClientFactory(cloudConfig);
 
-        KubernetesClient kubernetesClient = createKubernetesClient(environmentVariables);
+        KubernetesClient kubernetesClient = createKubernetesClient(cloudConfig);
         NamespaceResource namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
         return new KubernetesTestEnvironment(clientFactory, cloudConfig, namespaceResource, kubernetesClient);
     }
