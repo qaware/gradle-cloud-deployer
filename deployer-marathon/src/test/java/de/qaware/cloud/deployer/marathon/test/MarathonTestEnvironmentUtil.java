@@ -23,7 +23,6 @@ import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
 import de.qaware.cloud.deployer.marathon.config.cloud.MarathonCloudConfigTokenUtil;
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.MarathonClient;
 
 import java.io.IOException;
 import java.util.Map;
