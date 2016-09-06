@@ -47,7 +47,7 @@ public class MarathonTestEnvironmentUtil {
     }
 
     private static Marathon createMarathonClient(CloudConfig cloudConfig) {
-        return AuthorizedMarathonClient.createInstance(cloudConfig.getBaseUrl(), cloudConfig.getToken());
+        return AuthorizedMarathonClient.createInstance(cloudConfig.getBaseUrl() + "/service/marathon", cloudConfig.getToken());
     }
 
     public static MarathonTestEnvironment createTestEnvironment() throws ResourceConfigException, ResourceException, IOException, CloudConfigException {
@@ -61,10 +61,11 @@ public class MarathonTestEnvironmentUtil {
         );
 
         CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
-        ClientFactory clientFactory = createClientFactory(cloudConfig);
 
         // Replace the token.
         MarathonCloudConfigTokenUtil.retrieveApiToken(cloudConfig);
+
+        ClientFactory clientFactory = createClientFactory(cloudConfig);
 
         Marathon marathonClient = createMarathonClient(cloudConfig);
         return new MarathonTestEnvironment(clientFactory, cloudConfig, marathonClient);
