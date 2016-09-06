@@ -41,14 +41,13 @@ public class AppResourceTest extends TestCase {
         String appDescription = FileUtil.readFileContent("/resource/app.json");
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, appDescription);
         appResource = new AppResource(resourceConfig, clientFactory);
+
+        removeApp();
     }
 
     @Override
     public void tearDown() throws Exception {
-        try {
-            marathonClient.deleteApp(appResource.getId());
-        } catch (MarathonException e) {
-        }
+        removeApp();
     }
 
     public void testExists() throws ResourceException, MarathonException {
@@ -111,5 +110,12 @@ public class AppResourceTest extends TestCase {
             assertTrue(e.getMessage().contains("404"));
         }
         assertTrue(exceptionThrown);
+    }
+
+    private void removeApp() {
+        try {
+            marathonClient.deleteApp(appResource.getId());
+        } catch (MarathonException e) {
+        }
     }
 }
