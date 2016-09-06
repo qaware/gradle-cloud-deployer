@@ -15,12 +15,13 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
+import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-public interface DeploymentClient {
+interface DeploymentClient {
 
     @GET("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
@@ -32,5 +33,5 @@ public interface DeploymentClient {
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 
     @PUT("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}/scale")
-    Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body DeploymentScaleDescription scaleDescription);
+    Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body Scale scale);
 }

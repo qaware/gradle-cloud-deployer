@@ -16,14 +16,17 @@
 package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class ReplicationControllerResource extends KubernetesResource {
 
+    private final static String SCALE_KIND = "Scale";
+    private final static String SCALE_VERSION = "autoscaling/v1";
     private final ReplicationControllerClient replicationControllerClient;
 
     public ReplicationControllerResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
@@ -46,8 +49,8 @@ public class ReplicationControllerResource extends KubernetesResource {
     @Override
     public void delete() throws ResourceException {
         // Scale down pods
-        ReplicationControllerScaleDescription scaleDescription = new ReplicationControllerScaleDescription(getId(), getNamespace(), 0);
-        Call<ResponseBody> updateScaleCall = replicationControllerClient.updateScale(getId(), getNamespace(), scaleDescription);
+        Scale scale = new Scale(getId(), getNamespace(), 0, SCALE_VERSION, SCALE_KIND);
+        Call<ResponseBody> updateScaleCall = replicationControllerClient.updateScale(getId(), getNamespace(), scale);
         executeCall(updateScaleCall);
 
         // Delete controller

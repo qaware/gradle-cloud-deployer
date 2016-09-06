@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-public interface ServiceClient {
+interface ServiceClient {
 
     @GET("/api/v1/namespaces/{namespace}/services/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);

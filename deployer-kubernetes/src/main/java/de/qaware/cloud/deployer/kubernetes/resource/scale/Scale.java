@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource.deployment;
-
-import de.qaware.cloud.deployer.kubernetes.resource.base.ScaleSpecDescription;
+package de.qaware.cloud.deployer.kubernetes.resource.scale;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeploymentScaleDescription {
+public class Scale {
 
-    private final String apiVersion = "extensions/v1beta1";
-    private final String kind = "Scale";
-    private final ScaleSpecDescription spec;
-    private Map<String, String> metadata = new HashMap<>();
+    private final String apiVersion;
+    private final String kind;
+    private final ScaleSpec spec;
+    private final Map<String, String> metadata = new HashMap<>();
 
-    public DeploymentScaleDescription(String name, String namespace, int replicas) {
-        spec = new ScaleSpecDescription(replicas);
+    public Scale(String name, String namespace, int replicas, String apiVersion, String kind) {
+        spec = new ScaleSpec(replicas);
         metadata.put("name", name);
         metadata.put("namespace", namespace);
+        this.apiVersion = apiVersion;
+        this.kind = kind;
     }
 
     public String getApiVersion() {
@@ -45,7 +45,7 @@ public class DeploymentScaleDescription {
         return metadata;
     }
 
-    public ScaleSpecDescription getSpec() {
+    public ScaleSpec getSpec() {
         return spec;
     }
 }

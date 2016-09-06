@@ -16,15 +16,19 @@
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class DeploymentResource extends KubernetesResource {
 
     public static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
+
+    private final static String SCALE_KIND = "Scale";
+    private final static String SCALE_VERSION = "extensions/v1beta1";
 
     private final DeploymentClient deploymentClient;
     private final ReplicaSetClient replicaSetClient;
@@ -55,8 +59,8 @@ public class DeploymentResource extends KubernetesResource {
     @Override
     public void delete() throws ResourceException {
         // Scale down pods
-        DeploymentScaleDescription scaleDescription = new DeploymentScaleDescription(getId(), getNamespace(), 0);
-        Call<ResponseBody> updateScaleCall = deploymentClient.updateScale(getId(), getNamespace(), scaleDescription);
+        Scale scale = new Scale(getId(), getNamespace(), 0, SCALE_VERSION, SCALE_KIND);
+        Call<ResponseBody> updateScaleCall = deploymentClient.updateScale(getId(), getNamespace(), scale);
         executeCall(updateScaleCall);
 
         // Delete deployment

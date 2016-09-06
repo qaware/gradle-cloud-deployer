@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource.base;
+package de.qaware.cloud.deployer.kubernetes.resource.scale;
 
-public class ScaleSpecDescription {
+class ScaleSpec {
     private final int replicas;
 
-    public ScaleSpecDescription(int replicas) {
+    ScaleSpec(int replicas) {
         this.replicas = replicas;
     }
 

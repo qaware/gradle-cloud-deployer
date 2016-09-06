@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-public interface PodClient {
+interface PodClient {
 
     @GET("/api/v1/namespaces/{namespace}/pods/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
