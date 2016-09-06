@@ -20,7 +20,7 @@ import de.qaware.cloud.deployer.kubernetes.update.HardUpdateStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NamespaceUtil {
+public final class NamespaceUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HardUpdateStrategy.class);
 
