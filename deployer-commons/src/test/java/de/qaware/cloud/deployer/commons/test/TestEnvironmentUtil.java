@@ -15,11 +15,6 @@
  */
 package de.qaware.cloud.deployer.commons.test;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
-import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,33 +28,11 @@ public class TestEnvironmentUtil {
         return System.getenv(key);
     }
 
-    public static CloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy) {
-        return new CloudConfig(environmentVariables.get("URL"),
-                environmentVariables.get("USERNAME"),
-                environmentVariables.get("PASSWORD"),
-                "",
-                updateStrategy,
-                new SSLConfig(true, ""));
-    }
-
-    public static ClientFactory createClientFactory(Map<String, String> environmentVariables) throws ResourceException {
-        SSLConfig sslConfig = new SSLConfig(true, null);
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get("URL"),
-                environmentVariables.get("USERNAME"),
-                environmentVariables.get("PASSWORD"),
-                "",
-                "HARD",
-                sslConfig
-        );
-        return new ClientFactory(cloudConfig);
-    }
-
-    public static Map<String, String> loadEnvironmentVariables() throws IOException {
+    public static Map<String, String> loadEnvironmentVariables(String... args) throws IOException {
         Map<String, String> environmentVariables = new HashMap<>();
-        environmentVariables.put("URL", loadEnvironmentVariable("URL"));
-        environmentVariables.put("USERNAME", loadEnvironmentVariable("USERNAME"));
-        environmentVariables.put("PASSWORD", loadEnvironmentVariable("PASSWORD"));
-        environmentVariables.put("TEST_NAMESPACE_PREFIX", loadEnvironmentVariable("TEST_NAMESPACE_PREFIX"));
+        for (String arg : args) {
+            environmentVariables.put(arg, loadEnvironmentVariable(arg));
+        }
         return environmentVariables;
     }
 }

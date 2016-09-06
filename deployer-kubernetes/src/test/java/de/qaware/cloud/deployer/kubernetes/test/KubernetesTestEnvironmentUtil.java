@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.test;
 
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
@@ -34,6 +35,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class KubernetesTestEnvironmentUtil {
 
+    // Environment variables.
+    private static final String KUBERNETES_NAMESPACE_PREFIX_ENV = "KUBERNETES_NAMESPACE_PREFIX";
+    private static final String KUBERNETES_URL_ENV = "KUBERNETES_URL";
+    private static final String KUBERNETES_USERNAME_ENV = "KUBERNETES_USERNAME";
+    private static final String KUBERNETES_PASSWORD_ENV = "KUBERNETES_PASSWORD";
+
+    // Constants.
+    private static final String KUBERNETES_DEFAULT_UPDATE_STRATEGY = "HARD";
+    private static final String KUBERNETES_TOKEN = "";
+    private static final String KUBERNETES_CUSTOM_SSL = "";
+
     private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
 
     private KubernetesTestEnvironmentUtil() {
@@ -41,28 +53,55 @@ public class KubernetesTestEnvironmentUtil {
 
     private static KubernetesClient createKubernetesClient(Map<String, String> environmentProperties) {
         Config config = new ConfigBuilder()
-                .withMasterUrl(environmentProperties.get("URL"))
+                .withMasterUrl(environmentProperties.get(KUBERNETES_URL_ENV))
                 .withTrustCerts(true)
-                .withUsername(environmentProperties.get("USERNAME"))
-                .withPassword(environmentProperties.get("PASSWORD"))
+                .withUsername(environmentProperties.get(KUBERNETES_USERNAME_ENV))
+                .withPassword(environmentProperties.get(KUBERNETES_PASSWORD_ENV))
                 .build();
         return new DefaultKubernetesClient(config);
     }
 
+    private static CloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy) {
+        return new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV),
+                environmentVariables.get(KUBERNETES_USERNAME_ENV),
+                environmentVariables.get(KUBERNETES_PASSWORD_ENV),
+                KUBERNETES_TOKEN,
+                updateStrategy,
+                new SSLConfig(true, KUBERNETES_CUSTOM_SSL));
+    }
+
+    private static ClientFactory createClientFactory(Map<String, String> environmentVariables) throws ResourceException {
+        SSLConfig sslConfig = new SSLConfig(true, null);
+        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV),
+                environmentVariables.get(KUBERNETES_USERNAME_ENV),
+                environmentVariables.get(KUBERNETES_PASSWORD_ENV),
+                KUBERNETES_TOKEN,
+                KUBERNETES_DEFAULT_UPDATE_STRATEGY,
+                sslConfig
+        );
+        return new ClientFactory(cloudConfig);
+    }
+
     private static NamespaceResource createNamespaceResource(ClientFactory clientFactory, Map<String, String> environmentProperties) throws ResourceConfigException {
-        String namespace = environmentProperties.get("TEST_NAMESPACE_PREFIX") + "-" + subNamespaceCounter.getAndIncrement();
+        String namespace = environmentProperties.get(KUBERNETES_NAMESPACE_PREFIX_ENV) + "-" + subNamespaceCounter.getAndIncrement();
         KubernetesResourceConfig namespaceResourceConfig = NamespaceConfigFactory.create(namespace);
         return new NamespaceResource(namespaceResourceConfig, clientFactory);
     }
 
     public static KubernetesTestEnvironment createTestEnvironment() throws IOException, ResourceConfigException, ResourceException {
-        return createTestEnvironment("HARD");
+        return createTestEnvironment(KUBERNETES_TOKEN);
     }
 
     public static KubernetesTestEnvironment createTestEnvironment(String updateStrategy) throws IOException, ResourceConfigException, ResourceException {
-        Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables();
-        ClientFactory clientFactory = TestEnvironmentUtil.createClientFactory(environmentVariables);
-        CloudConfig cloudConfig = TestEnvironmentUtil.createCloudConfig(environmentVariables, updateStrategy);
+        Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
+                KUBERNETES_URL_ENV,
+                KUBERNETES_USERNAME_ENV,
+                KUBERNETES_PASSWORD_ENV,
+                KUBERNETES_NAMESPACE_PREFIX_ENV
+        );
+
+        ClientFactory clientFactory = createClientFactory(environmentVariables);
+        CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
 
         KubernetesClient kubernetesClient = createKubernetesClient(environmentVariables);
         NamespaceResource namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
