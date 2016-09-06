@@ -19,21 +19,25 @@ import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.CloudConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import de.qaware.cloud.deployer.marathon.resource.app.AppResource;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import de.qaware.cloud.deployer.marathon.resource.group.GroupResource;
+import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironmentUtil;
 import junit.framework.TestCase;
+
+import java.io.IOException;
 
 public class MarathonResourceFactoryTest extends TestCase {
 
     private CloudConfig cloudConfig;
 
     @Override
-    public void setUp() throws Exception {
-        cloudConfig = new CloudConfig("http://test", "", "", "", "", new SSLConfig(true, ""));
+    public void setUp() throws ResourceConfigException, ResourceException, CloudConfigException, IOException {
+        cloudConfig = MarathonTestEnvironmentUtil.createTestEnvironment().getCloudConfig();
     }
 
     @Override
