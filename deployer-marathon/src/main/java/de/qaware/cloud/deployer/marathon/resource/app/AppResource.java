@@ -27,6 +27,9 @@ import retrofit2.Call;
  */
 public class AppResource extends MarathonResource {
 
+    /**
+     * The client which is used for communication with the backend.
+     */
     private final AppClient appClient;
 
     /**

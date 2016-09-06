@@ -22,10 +22,22 @@ import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+/**
+ * Represents a marathon group and offers methods for deletion and creation.
+ */
 public class GroupResource extends MarathonResource {
 
+    /**
+     * The client which is used for communication with the backend.
+     */
     private final GroupClient groupClient;
 
+    /**
+     * Creates a marathon group resource for the specified config which uses the specified client factory to create a client for communication.
+     *
+     * @param resourceConfig The config which contains the group's metadata.
+     * @param clientFactory  The factory which is used to create a client for communication.
+     */
     public GroupResource(MarathonResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig, clientFactory);
         groupClient = createClient(GroupClient.class);
