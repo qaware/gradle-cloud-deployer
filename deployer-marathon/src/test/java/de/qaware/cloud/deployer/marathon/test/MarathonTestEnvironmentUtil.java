@@ -43,14 +43,12 @@ public class MarathonTestEnvironmentUtil {
         return cloudConfig;
     }
 
-    private static ClientFactory createClientFactory(Map<String, String> environmentVariables) throws ResourceException {
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(MARATHON_URL_ENV), MARATHON_DEFAULT_UPDATE_STRATEGY);
-        cloudConfig.setToken(environmentVariables.get(MARATHON_TOKEN_ENV));
+    private static ClientFactory createClientFactory(CloudConfig cloudConfig) throws ResourceException {
         return new ClientFactory(cloudConfig);
     }
 
-    private static Marathon createMarathonClient(Map<String, String> environmentVariables) {
-        return AuthorizedMarathonClient.createInstance(environmentVariables.get(MARATHON_URL_ENV), environmentVariables.get(MARATHON_TOKEN_ENV));
+    private static Marathon createMarathonClient(CloudConfig cloudConfig) {
+        return AuthorizedMarathonClient.createInstance(cloudConfig.getBaseUrl(), cloudConfig.getToken());
     }
 
     public static MarathonTestEnvironment createTestEnvironment() throws ResourceConfigException, ResourceException, IOException, CloudConfigException {
@@ -63,13 +61,13 @@ public class MarathonTestEnvironmentUtil {
                 MARATHON_URL_ENV
         );
 
-        ClientFactory clientFactory = createClientFactory(environmentVariables);
         CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
+        ClientFactory clientFactory = createClientFactory(cloudConfig);
 
         // Replace the token.
         MarathonCloudConfigTokenUtil.retrieveApiToken(cloudConfig);
 
-        Marathon marathonClient = createMarathonClient(environmentVariables);
+        Marathon marathonClient = createMarathonClient(cloudConfig);
         return new MarathonTestEnvironment(clientFactory, cloudConfig, marathonClient);
     }
 }
