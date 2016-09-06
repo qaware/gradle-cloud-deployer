@@ -20,9 +20,14 @@ public class SSLConfig {
     private final boolean trustAll;
     private final String certificate;
 
-    public SSLConfig(boolean trustAll, String certificate) {
+    public SSLConfig(boolean trustAll) {
         this.trustAll = trustAll;
+        this.certificate = "";
+    }
+
+    public SSLConfig(String certificate) {
         this.certificate = certificate;
+        this.trustAll = false;
     }
 
     public boolean isTrustAll() {

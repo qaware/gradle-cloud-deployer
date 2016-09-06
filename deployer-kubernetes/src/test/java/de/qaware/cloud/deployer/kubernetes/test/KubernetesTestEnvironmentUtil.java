@@ -43,8 +43,6 @@ public class KubernetesTestEnvironmentUtil {
 
     // Constants.
     private static final String KUBERNETES_DEFAULT_UPDATE_STRATEGY = "HARD";
-    private static final String KUBERNETES_TOKEN = "";
-    private static final String KUBERNETES_CUSTOM_SSL = "";
 
     private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
 
@@ -62,23 +60,18 @@ public class KubernetesTestEnvironmentUtil {
     }
 
     private static CloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy) {
-        return new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV),
-                environmentVariables.get(KUBERNETES_USERNAME_ENV),
-                environmentVariables.get(KUBERNETES_PASSWORD_ENV),
-                KUBERNETES_TOKEN,
-                updateStrategy,
-                new SSLConfig(true, KUBERNETES_CUSTOM_SSL));
+        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV), updateStrategy);
+        cloudConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
+        cloudConfig.setPassword(environmentVariables.get(KUBERNETES_PASSWORD_ENV));
+        cloudConfig.setSslConfig(new SSLConfig(true));
+        return cloudConfig;
     }
 
     private static ClientFactory createClientFactory(Map<String, String> environmentVariables) throws ResourceException {
-        SSLConfig sslConfig = new SSLConfig(true, null);
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV),
-                environmentVariables.get(KUBERNETES_USERNAME_ENV),
-                environmentVariables.get(KUBERNETES_PASSWORD_ENV),
-                KUBERNETES_TOKEN,
-                KUBERNETES_DEFAULT_UPDATE_STRATEGY,
-                sslConfig
-        );
+        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV), KUBERNETES_DEFAULT_UPDATE_STRATEGY);
+        cloudConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
+        cloudConfig.setPassword(environmentVariables.get(KUBERNETES_PASSWORD_ENV));
+        cloudConfig.setSslConfig(new SSLConfig(true));
         return new ClientFactory(cloudConfig);
     }
 
@@ -89,7 +82,7 @@ public class KubernetesTestEnvironmentUtil {
     }
 
     public static KubernetesTestEnvironment createTestEnvironment() throws IOException, ResourceConfigException, ResourceException {
-        return createTestEnvironment(KUBERNETES_TOKEN);
+        return createTestEnvironment(KUBERNETES_DEFAULT_UPDATE_STRATEGY);
     }
 
     public static KubernetesTestEnvironment createTestEnvironment(String updateStrategy) throws IOException, ResourceConfigException, ResourceException {

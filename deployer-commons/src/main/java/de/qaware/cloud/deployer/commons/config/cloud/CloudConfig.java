@@ -18,42 +18,54 @@ package de.qaware.cloud.deployer.commons.config.cloud;
 public class CloudConfig {
 
     private final String baseUrl;
-    private final String username;
-    private final String password;
-    private final String token;
     private final String updateStrategy;
-    private final SSLConfig sslConfig;
+    private String username;
+    private String password;
+    private String token;
+    private SSLConfig sslConfig;
 
-    public CloudConfig(String baseUrl, String username, String password, String token, String updateStrategy, SSLConfig sslConfig) {
+    public CloudConfig(String baseUrl, String updateStrategy) {
         this.baseUrl = baseUrl;
-        this.username = username;
-        this.password = password;
-        this.token = token;
         this.updateStrategy = updateStrategy;
-        this.sslConfig = sslConfig;
     }
 
     public String getBaseUrl() {
         return baseUrl;
     }
 
+    public String getUpdateStrategy() {
+        return updateStrategy;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public SSLConfig getSslConfig() {
         return sslConfig;
     }
 
-    public String getUpdateStrategy() {
-        return updateStrategy;
+    public void setSslConfig(SSLConfig sslConfig) {
+        this.sslConfig = sslConfig;
     }
 }
