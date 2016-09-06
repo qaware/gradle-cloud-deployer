@@ -37,6 +37,7 @@ public class TestEnvironmentUtil {
         return new CloudConfig(environmentVariables.get("URL"),
                 environmentVariables.get("USERNAME"),
                 environmentVariables.get("PASSWORD"),
+                "",
                 updateStrategy,
                 new SSLConfig(true, ""));
     }
@@ -46,6 +47,7 @@ public class TestEnvironmentUtil {
         CloudConfig cloudConfig = new CloudConfig(environmentVariables.get("URL"),
                 environmentVariables.get("USERNAME"),
                 environmentVariables.get("PASSWORD"),
+                "",
                 "HARD",
                 sslConfig
         );

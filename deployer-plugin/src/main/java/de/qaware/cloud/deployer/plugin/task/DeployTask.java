@@ -37,6 +37,7 @@ public class DeployTask extends DefaultTask {
         CloudConfig cloudConfig = new CloudConfig(extension.getBaseUrl(),
                 extension.getUsername(),
                 extension.getPassword(),
+                extension.getToken(),
                 extension.getUpdateStrategy(),
                 sslConfig);
         String namespace = extension.getNamespace();

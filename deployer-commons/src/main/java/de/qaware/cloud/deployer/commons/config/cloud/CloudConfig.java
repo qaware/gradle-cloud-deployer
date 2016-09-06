@@ -20,13 +20,15 @@ public class CloudConfig {
     private final String baseUrl;
     private final String username;
     private final String password;
+    private final String token;
     private final String updateStrategy;
     private final SSLConfig sslConfig;
 
-    public CloudConfig(String baseUrl, String username, String password, String updateStrategy, SSLConfig sslConfig) {
+    public CloudConfig(String baseUrl, String username, String password, String token, String updateStrategy, SSLConfig sslConfig) {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
+        this.token = token;
         this.updateStrategy = updateStrategy;
         this.sslConfig = sslConfig;
     }
@@ -41,6 +43,10 @@ public class CloudConfig {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public SSLConfig getSslConfig() {

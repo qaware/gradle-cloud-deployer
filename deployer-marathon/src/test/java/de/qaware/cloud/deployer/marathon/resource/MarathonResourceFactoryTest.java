@@ -33,7 +33,7 @@ public class MarathonResourceFactoryTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        cloudConfig = new CloudConfig("http://test", "", "", "", new SSLConfig(true, ""));
+        cloudConfig = new CloudConfig("http://test", "", "", "", "", new SSLConfig(true, ""));
     }
 
     @Override

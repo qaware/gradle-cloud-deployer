@@ -22,6 +22,7 @@ public class DeployerExtension {
     private String baseUrl;
     private String username;
     private String password;
+    private String token;
     private String updateStrategy;
 
     private boolean trustAll;
@@ -53,6 +54,14 @@ public class DeployerExtension {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public boolean isTrustAll() {
