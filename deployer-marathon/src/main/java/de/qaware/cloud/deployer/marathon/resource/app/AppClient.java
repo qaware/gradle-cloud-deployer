@@ -26,12 +26,12 @@ import retrofit2.http.*;
 interface AppClient {
 
     /**
-     * Returns the http response for the app resource with the specified id.
+     * Returns the http response for a request to the app resource with the specified id.
      *
      * @param appId The app's id.
      * @return The server's http response.
      */
-    @GET("/v2/apps/{appId}")
+    @GET("/service/marathon/v2/apps/{appId}")
     Call<ResponseBody> get(@Path("appId") String appId);
 
     /**
@@ -40,7 +40,7 @@ interface AppClient {
      * @param appDescription The request body which contains the app.
      * @return The server's http response.
      */
-    @POST("/v2/apps")
+    @POST("/service/marathon/v2/apps")
     Call<ResponseBody> create(@Body RequestBody appDescription);
 
     /**
@@ -49,6 +49,6 @@ interface AppClient {
      * @param appId The app's id.
      * @return The server's http response.
      */
-    @DELETE("/v2/apps/{appId}")
+    @DELETE("/service/marathon/v2/apps/{appId}")
     Call<ResponseBody> delete(@Path("appId") String appId);
 }

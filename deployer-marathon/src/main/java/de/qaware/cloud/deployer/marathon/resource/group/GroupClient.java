@@ -20,14 +20,35 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+/**
+ * Group interface which will be used by retrofit to create a group client.
+ */
 public interface GroupClient {
 
-    @GET("/v2/groups/{groupId}")
+    /**
+     * Returns the http response for a request to the group resource with the specified id.
+     *
+     * @param groupId The groups's id.
+     * @return The server's http response.
+     */
+    @GET("/service/marathon/v2/groups/{groupId}")
     Call<ResponseBody> get(@Path("groupId") String groupId);
 
-    @POST("/v2/groups")
+    /**
+     * Creates the specified group.
+     *
+     * @param groupDescription The request body which contains the group.
+     * @return The server's http response.
+     */
+    @POST("/service/marathon/v2/groups")
     Call<ResponseBody> create(@Body RequestBody groupDescription);
 
-    @DELETE("/v2/groups/{groupId}")
+    /**
+     * Deletes the group resource with the specified id.
+     *
+     * @param groupId The group's id.
+     * @return The server's http response.
+     */
+    @DELETE("/service/marathon/v2/groups/{groupId}")
     Call<ResponseBody> delete(@Path("groupId") String groupId);
 }
