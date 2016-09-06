@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.plugin;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 
-public class CloudConfigFactory {
+public final class CloudConfigFactory {
 
     private CloudConfigFactory() {
     }
