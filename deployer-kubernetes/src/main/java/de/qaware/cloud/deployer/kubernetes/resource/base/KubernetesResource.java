@@ -19,7 +19,6 @@ import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 public abstract class KubernetesResource extends BaseResource<KubernetesResourceConfig> {
 
