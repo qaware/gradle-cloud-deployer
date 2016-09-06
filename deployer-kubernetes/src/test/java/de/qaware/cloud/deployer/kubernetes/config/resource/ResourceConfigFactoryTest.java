@@ -16,8 +16,8 @@
 package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
         assertEquals(ContentType.JSON, config.getContentType());
-        assertEquals(FileUtil.readFile(testFile), config.getContent());
+        assertEquals(FileUtil.readFileContent(testFile), config.getContent());
     }
 
     public void testCreateConfigsWithExistingYamlFile() throws ResourceConfigException, IOException {
@@ -68,7 +68,7 @@ public class ResourceConfigFactoryTest extends TestCase {
         assertEquals("Service", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
         assertEquals(ContentType.YAML, config.getContentType());
-        assertEquals(FileUtil.readFile(testFile), config.getContent());
+        assertEquals(FileUtil.readFileContent(testFile), config.getContent());
     }
 
     public void testCreateConfigsWithMultipleExistingJsonFiles() throws ResourceConfigException, IOException {
@@ -93,14 +93,14 @@ public class ResourceConfigFactoryTest extends TestCase {
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
         assertEquals(ContentType.JSON, config.getContentType());
-        assertEquals(FileUtil.readFile(testFile1), config.getContent());
+        assertEquals(FileUtil.readFileContent(testFile1), config.getContent());
 
         config = configs.get(1);
         assertEquals("nginx-mysql2", config.getResourceId());
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
         assertEquals(ContentType.JSON, config.getContentType());
-        assertEquals(FileUtil.readFile(testFile2), config.getContent());
+        assertEquals(FileUtil.readFileContent(testFile2), config.getContent());
     }
 
     public void testCreateConfigsWithMultipleResourcesInOneJsonFile() throws ResourceConfigException, IOException {
@@ -128,14 +128,14 @@ public class ResourceConfigFactoryTest extends TestCase {
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
         assertEquals(ContentType.JSON, config.getContentType());
-        assertEquals(FileUtil.readFile(pod1), config.getContent());
+        assertEquals(FileUtil.readFileContent(pod1), config.getContent());
 
         config = configs.get(1);
         assertEquals("nginx-mysql2", config.getResourceId());
         assertEquals("Pod", config.getResourceType());
         assertEquals("v1", config.getResourceVersion());
         assertEquals(ContentType.JSON, config.getContentType());
-        assertEquals(FileUtil.readFile(pod2), config.getContent());
+        assertEquals(FileUtil.readFileContent(pod2), config.getContent());
     }
 
     public void testCreateConfigsWithExistingAndNonExistingFiles() {

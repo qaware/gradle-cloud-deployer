@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
@@ -48,7 +49,7 @@ public class DeploymentResourceTest extends TestCase {
 
         // Create the DeploymentResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String deploymentDescription = FileUtil.readFile("/resource/deployment/deployment.yml");
+        String deploymentDescription = FileUtil.readFileContent("/resource/deployment/deployment.yml");
         KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescription);
         deploymentResource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }

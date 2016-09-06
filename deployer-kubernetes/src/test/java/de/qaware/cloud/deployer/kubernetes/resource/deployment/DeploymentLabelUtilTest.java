@@ -18,10 +18,10 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.test.FileUtil;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import junit.framework.TestCase;
 
@@ -33,7 +33,7 @@ public class DeploymentLabelUtilTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        String deploymentDescription = FileUtil.readFile("/resource/deployment/deployment.yml");
+        String deploymentDescription = FileUtil.readFileContent("/resource/deployment/deployment.yml");
         resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescription);
     }
 

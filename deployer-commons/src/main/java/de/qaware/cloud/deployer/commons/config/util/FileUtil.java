@@ -22,15 +22,32 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+/**
+ * Offers functionality to read the content of a file into a string.
+ */
 public class FileUtil {
 
     private FileUtil() {
     }
 
+    /**
+     * Reads the content of the file with the specified filename into a string.
+     *
+     * @param filename The name of the file whose content will be returned.
+     * @return The content of the file.
+     * @throws ResourceConfigException If a problem with the file occurs.
+     */
     public static String readFileContent(String filename) throws ResourceConfigException {
         return readFileContent(new File(FileUtil.class.getResource(filename).getPath()));
     }
 
+    /**
+     * Reads the content of the specified file into a string.
+     *
+     * @param file The file whose content will be returned.
+     * @return The content of the file.
+     * @throws ResourceConfigException If a problem with the file occurs.
+     */
     public static String readFileContent(File file) throws ResourceConfigException {
         try {
             return FileUtils.readFileToString(file, Charset.defaultCharset()).trim();
