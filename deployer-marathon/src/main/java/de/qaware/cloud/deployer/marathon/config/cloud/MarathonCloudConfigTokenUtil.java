@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * Utility that replaces a cloud config's dcos token with a marathon api token.
  */
-public class MarathonCloudConfigTokenUtil {
+public final class MarathonCloudConfigTokenUtil {
 
     /**
      * UTILITY.
@@ -64,7 +64,7 @@ public class MarathonCloudConfigTokenUtil {
                 // Replace token
                 cloudConfig.setToken(apiToken);
             } catch (IOException e) {
-                throw new ResourceException("Couldn't connect");
+                throw new ResourceException("Couldn't connect", e);
             }
         }
     }
