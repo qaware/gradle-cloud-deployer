@@ -28,5 +28,5 @@ interface TokenClient {
      * @return The server's http response.
      */
     @POST("/acs/api/v1/auth/login")
-    Call<TokenRequest> login(@Body TokenRequest token);
+    Call<Token> login(@Body Token token);
 }

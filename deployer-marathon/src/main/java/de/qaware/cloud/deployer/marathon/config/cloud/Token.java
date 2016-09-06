@@ -18,17 +18,17 @@ package de.qaware.cloud.deployer.marathon.config.cloud;
 /**
  * A pojo for a marathon token request.
  */
-public class TokenRequest {
+public class Token {
 
     /**
      * The token which will be sent.
      */
     private String token;
 
-    public TokenRequest() {
+    public Token() {
     }
 
-    public TokenRequest(String token) {
+    public Token(String token) {
         this.token = token;
     }
 

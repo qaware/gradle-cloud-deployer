@@ -50,10 +50,10 @@ public class MarathonCloudConfigTokenUtil {
                 TokenClient tokenClient = clientFactory.create(TokenClient.class);
 
                 // Create token description.
-                TokenRequest token = new TokenRequest(dcosToken);
+                Token token = new Token(dcosToken);
 
                 // Execute request.
-                Response<TokenRequest> tokenResponse = tokenClient.login(token).execute();
+                Response<Token> tokenResponse = tokenClient.login(token).execute();
                 if (tokenResponse.code() != 200 || tokenResponse.body() == null) {
                     throw new CloudConfigException("Couldn't retrieve a api token - please recheck your dcos token");
                 }
