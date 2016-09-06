@@ -15,11 +15,10 @@
  */
 package de.qaware.cloud.deployer.plugin.task;
 
+import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.plugin.CloudConfigFactory;
 import de.qaware.cloud.deployer.plugin.DeployerExtension;
 import org.gradle.api.DefaultTask;
