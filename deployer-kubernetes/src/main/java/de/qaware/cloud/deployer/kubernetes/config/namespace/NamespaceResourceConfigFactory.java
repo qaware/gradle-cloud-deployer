@@ -34,8 +34,8 @@ public final class NamespaceResourceConfigFactory {
         }
 
         try {
-            NamespaceDescription namespaceDescription = new NamespaceDescription(name);
-            String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespaceDescription);
+            Namespace namespace = new Namespace(name);
+            String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespace);
             return new KubernetesResourceConfig("temporary", ContentType.JSON, namespaceDescriptionContent);
         } catch (JsonProcessingException e) {
             throw new ResourceConfigException("Couldn't create namespace content", e);

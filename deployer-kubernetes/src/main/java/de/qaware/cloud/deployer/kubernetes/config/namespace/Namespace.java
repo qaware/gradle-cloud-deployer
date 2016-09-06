@@ -19,13 +19,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NamespaceDescription implements Serializable {
+public class Namespace implements Serializable {
 
     private final String apiVersion = "v1";
     private final String kind = "Namespace";
     private Map<String, String> metadata = new HashMap<>();
 
-    public NamespaceDescription(final String name) {
+    public Namespace(final String name) {
         metadata.put("name", name);
     }
 
