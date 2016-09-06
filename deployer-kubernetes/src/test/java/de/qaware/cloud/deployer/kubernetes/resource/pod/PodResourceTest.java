@@ -54,7 +54,7 @@ public class PodResourceTest extends TestCase {
         namespaceResource.delete();
     }
 
-    public void testExists() throws ResourceException, InterruptedException {
+    public void testExists() throws ResourceException {
 
         // Check that the pod doesn't exist already
         Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
@@ -74,7 +74,7 @@ public class PodResourceTest extends TestCase {
         assertTrue(podResource.exists());
     }
 
-    public void testCreate() throws ResourceException, InterruptedException {
+    public void testCreate() throws ResourceException {
 
         // Check that the pod doesn't exist already
         Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
