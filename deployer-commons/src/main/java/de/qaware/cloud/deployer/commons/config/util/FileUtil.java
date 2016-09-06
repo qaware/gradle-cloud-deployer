@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 /**
  * Offers functionality to read the content of a file into a string.
  */
-public class FileUtil {
+public final class FileUtil {
 
     private FileUtil() {
     }
