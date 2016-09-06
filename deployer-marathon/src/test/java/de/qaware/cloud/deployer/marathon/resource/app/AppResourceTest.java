@@ -27,7 +27,11 @@ import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.utils.MarathonException;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class AppResourceTest extends TestCase {
+
+    private static AtomicInteger testCounter = new AtomicInteger(0);
 
     private AppResource appResource;
     private Marathon marathonClient;
@@ -39,10 +43,13 @@ public class AppResourceTest extends TestCase {
 
         ClientFactory clientFactory = testEnvironment.getClientFactory();
         String appDescription = FileUtil.readFileContent("/resource/app.json");
+        appDescription = appDescription.replace("zwitscher-eureka", "zwitscher-eureka-" + testCounter.getAndIncrement());
+
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, appDescription);
+        resourceConfig.setResourceId(resourceConfig.getResourceId());
         appResource = new AppResource(resourceConfig, clientFactory);
 
-        removeApp();
+        tearDown();
     }
 
     @Override
