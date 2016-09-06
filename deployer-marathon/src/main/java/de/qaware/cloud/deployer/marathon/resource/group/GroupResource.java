@@ -19,30 +19,38 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 public class GroupResource extends MarathonResource {
 
+    private final GroupClient groupClient;
+
     public GroupResource(MarathonResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig, clientFactory);
+        groupClient = createClient(GroupClient.class);
     }
 
     @Override
     public boolean exists() throws ResourceException {
-        return false;
+        Call<ResponseBody> call = groupClient.get(getId());
+        return executeExistsCall(call);
     }
 
     @Override
     public void create() throws ResourceException {
-
+        Call<ResponseBody> call = groupClient.create(createRequestBody());
+        executeCreateCallAndBlock(call);
     }
 
     @Override
     public void delete() throws ResourceException {
-
+        Call<ResponseBody> deleteCall = groupClient.delete(getId());
+        executeDeleteCallAndBlock(deleteCall);
     }
 
     @Override
     public String toString() {
-        return null;
+        return "Group: " + getId();
     }
 }
