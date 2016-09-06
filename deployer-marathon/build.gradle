@@ -6,4 +6,7 @@ jar {
 dependencies {
     compile project(':deployer-commons')
     compile 'com.github.fge:json-schema-validator:2.2.6'
+
+    testCompile project (path: ':deployer-commons', configuration: 'tests')
+    testCompile 'com.github.mohitsoni:marathon-client:0.4.2'
 }
