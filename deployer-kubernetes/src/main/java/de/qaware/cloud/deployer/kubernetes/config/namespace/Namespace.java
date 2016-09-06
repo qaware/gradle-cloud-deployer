@@ -21,11 +21,13 @@ import java.util.Map;
 
 public class Namespace implements Serializable {
 
-    private final String apiVersion = "v1";
-    private final String kind = "Namespace";
-    private Map<String, String> metadata = new HashMap<>();
+    private final String apiVersion;
+    private final String kind;
+    private final Map<String, String> metadata = new HashMap<>();
 
-    public Namespace(final String name) {
+    public Namespace(final String name, String apiVersion, String kind) {
+        this.apiVersion = apiVersion;
+        this.kind = kind;
         metadata.put("name", name);
     }
 

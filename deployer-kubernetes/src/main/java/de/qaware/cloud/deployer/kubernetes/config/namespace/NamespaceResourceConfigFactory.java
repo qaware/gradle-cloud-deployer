@@ -24,6 +24,9 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 
 public final class NamespaceResourceConfigFactory {
 
+    private final static String NAMESPACE_KIND = "Scale";
+    private final static String NAMESPACE_VERSION = "autoscaling/v1";
+
     private NamespaceResourceConfigFactory() {
     }
 
@@ -34,7 +37,7 @@ public final class NamespaceResourceConfigFactory {
         }
 
         try {
-            Namespace namespace = new Namespace(name);
+            Namespace namespace = new Namespace(name, NAMESPACE_VERSION, NAMESPACE_KIND);
             String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespace);
             return new KubernetesResourceConfig("temporary", ContentType.JSON, namespaceDescriptionContent);
         } catch (JsonProcessingException e) {
