@@ -15,6 +15,8 @@
  */
 package de.qaware.cloud.deployer.plugin;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import java.io.File;
 
 public class DeployerExtension {
@@ -89,11 +91,11 @@ public class DeployerExtension {
     }
 
     public File[] getFiles() {
-        return files;
+        return (File[]) ArrayUtils.clone(files);
     }
 
     public void setFiles(File[] files) {
-        this.files = files;
+        this.files = (File[]) ArrayUtils.clone(files);
     }
 
     public String getUpdateStrategy() {
