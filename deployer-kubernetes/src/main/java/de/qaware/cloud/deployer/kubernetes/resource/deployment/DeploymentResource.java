@@ -27,8 +27,8 @@ public class DeploymentResource extends KubernetesResource {
 
     public static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
 
-    private final static String SCALE_KIND = "Scale";
-    private final static String SCALE_VERSION = "extensions/v1beta1";
+    private static final String SCALE_KIND = "Scale";
+    private static final String SCALE_VERSION = "extensions/v1beta1";
 
     private final DeploymentClient deploymentClient;
     private final ReplicaSetClient replicaSetClient;

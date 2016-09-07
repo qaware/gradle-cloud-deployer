@@ -25,8 +25,8 @@ import retrofit2.Call;
 
 public class ReplicationControllerResource extends KubernetesResource {
 
-    private final static String SCALE_KIND = "Scale";
-    private final static String SCALE_VERSION = "autoscaling/v1";
+    private static final String SCALE_KIND = "Scale";
+    private static final String SCALE_VERSION = "autoscaling/v1";
     private final ReplicationControllerClient replicationControllerClient;
 
     public ReplicationControllerResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
