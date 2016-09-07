@@ -24,8 +24,8 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 
 public final class NamespaceResourceConfigFactory {
 
-    private final static String NAMESPACE_KIND = "Scale";
-    private final static String NAMESPACE_VERSION = "autoscaling/v1";
+    private final static String NAMESPACE_KIND = "Namespace";
+    private final static String NAMESPACE_VERSION = "v1";
 
     private NamespaceResourceConfigFactory() {
     }
