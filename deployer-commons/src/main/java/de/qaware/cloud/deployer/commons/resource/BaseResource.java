@@ -27,6 +27,9 @@ import java.io.IOException;
 
 public abstract class BaseResource<ConfigType extends BaseResourceConfig> implements Resource {
 
+    // Error message
+    private static final String UNHANDLED_HTTP_STATUS_CODE_MESSAGE = "Received a unhandled http status code: ";
+
     // Maximum call-duration in seconds
     private static final int TIMEOUT = 300;
     private static final double INTERVAL = 0.5;
@@ -55,7 +58,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         try {
             Response<ResponseBody> response = call.execute();
             if (!isSuccessResponse(response)) {
-                throw new ResourceException("Received a unhandled http status code: " + response.code());
+                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -70,7 +73,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else if (isNotFoundResponse(response)) {
                 return false;
             } else {
-                throw new ResourceException("Received a unhandled http status code: " + response.code());
+                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -86,7 +89,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
                     blocker.block();
                 }
             } else {
-                throw new ResourceException("Received a unhandled http status code: " + response.code());
+                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -102,7 +105,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
                     blocker.block();
                 }
             } else {
-                throw new ResourceException("Received a unhandled http status code: " + response.code());
+                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
             }
         } catch (IOException e) {
             throw new ResourceException(e);
