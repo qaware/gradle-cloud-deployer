@@ -20,10 +20,23 @@ import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import okhttp3.MediaType;
 
+/**
+ * Represents a kubernetes resource.
+ */
 public abstract class KubernetesResource extends BaseResource<KubernetesResourceConfig> {
 
+    /**
+     * The resource's namespace.
+     */
     private final String namespace;
 
+    /**
+     * Creates a new resource using the specified parameters.
+     *
+     * @param namespace      The namespace of the resource.
+     * @param resourceConfig The resource's config.
+     * @param clientFactory  The factory which is used for backend communication.
+     */
     public KubernetesResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig, clientFactory);
         this.namespace = namespace;
