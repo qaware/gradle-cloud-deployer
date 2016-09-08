@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
+import de.qaware.cloud.deployer.commons.update.BaseSoftUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
@@ -28,34 +28,15 @@ import java.util.List;
 /**
  * Implements the soft update strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-public class KubernetesSoftUpdateStrategy implements KubernetesUpdateStrategy {
+class KubernetesSoftUpdateStrategy extends BaseSoftUpdateStrategy<KubernetesResource> implements KubernetesUpdateStrategy {
 
     /**
      * The logger of this class.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesSoftUpdateStrategy.class);
 
-    /**
-     * Deploys the list of resources. If the resource already exists, it will be deleted first.
-     *
-     * @param resources The resources to deploy.
-     * @throws ResourceException If an error during deletion or deployment occurs.
-     */
-    private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
-        LOGGER.info("Deploying resources...");
-
-        for (Resource resource : resources) {
-            if (resource.exists()) {
-                resource.delete();
-                resource.create();
-                LOGGER.info("- " + resource + " (updated)");
-            } else {
-                resource.create();
-                LOGGER.info("- " + resource + " (created)");
-            }
-        }
-
-        LOGGER.info("Finished deploying resources...");
+    KubernetesSoftUpdateStrategy() {
+        super(LOGGER);
     }
 
     @Override
@@ -65,6 +46,6 @@ public class KubernetesSoftUpdateStrategy implements KubernetesUpdateStrategy {
         NamespaceUtil.safeCreateNamespace(namespaceResource);
 
         // 2. Update existing resources (delete and create again) and create new ones
-        deployResources(resources);
+        super.deploy(resources);
     }
 }

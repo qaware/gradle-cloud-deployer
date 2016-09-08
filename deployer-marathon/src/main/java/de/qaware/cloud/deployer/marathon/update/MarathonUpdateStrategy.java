@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.update;
+package de.qaware.cloud.deployer.marathon.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 
 import java.util.List;
 
 /**
- * A kubernetes update strategy describes how to deploy a number of resources in a kubernetes cloud.
+ * A marathon update strategy describes how to deploy a number of resources in a marathon cloud.
  */
-public interface KubernetesUpdateStrategy {
+public interface MarathonUpdateStrategy {
 
     /**
-     * Deploys the specified resources to the specified namespace.
+     * Deploys the specified resources.
      *
-     * @param namespaceResource The namespace the resources will be deployed in.
      * @param resources The resources to deploy.
      * @throws ResourceException If an error during deployment occurs.
      */
-    void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException;
+    void deploy(List<MarathonResource> resources) throws ResourceException;
 }
