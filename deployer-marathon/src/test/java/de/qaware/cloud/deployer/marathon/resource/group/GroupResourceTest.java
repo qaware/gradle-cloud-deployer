@@ -42,7 +42,7 @@ public class GroupResourceTest extends TestCase {
         marathonClient = testEnvironment.getMarathonClient();
 
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String groupDescription = FileUtil.readFileContent("/resource/group/group-create.json");
+        String groupDescription = FileUtil.readFileContent("/resource/group/group.json");
         groupDescription = groupDescription.replace("group-test", "group-test-" + testCounter.getAndIncrement());
 
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, groupDescription);
