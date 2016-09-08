@@ -40,7 +40,7 @@ public final class NamespaceUtil {
      * Deletes a namespace if it exists.
      *
      * @param namespaceResource The namespace resource to delete.
-     * @throws ResourceException If a error during deletion occurs.
+     * @throws ResourceException If an error during deletion occurs.
      */
     public static void safeDeleteNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
@@ -57,7 +57,7 @@ public final class NamespaceUtil {
      * Creates a namespace if it doesn't exist already.
      *
      * @param namespaceResource The namespace resource to create.
-     * @throws ResourceException If a error during creation occurs.
+     * @throws ResourceException If an error during creation occurs.
      */
     public static void safeCreateNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (!namespaceResource.exists()) {

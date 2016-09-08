@@ -25,10 +25,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Implements the soft update strategy. Meaning that all resources not included in the resources list stay untouched.
+ */
 public class SoftUpdateStrategy implements UpdateStrategy {
 
+    /**
+     * The logger of this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(SoftUpdateStrategy.class);
 
+    /**
+     * Deploys the list of resources. If the resource already exists, it will be deleted first.
+     *
+     * @param resources The resources to deploy.
+     * @throws ResourceException If an error during deletion or deployment occurs.
+     */
     private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
         LOGGER.info("Deploying resources...");
 

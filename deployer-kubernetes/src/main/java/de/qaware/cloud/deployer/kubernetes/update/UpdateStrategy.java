@@ -21,7 +21,17 @@ import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 
 import java.util.List;
 
+/**
+ * A update strategy describes how to deploy a number of resources.
+ */
 public interface UpdateStrategy {
 
+    /**
+     * Deploys the specified resources to the specified namespace.
+     *
+     * @param namespaceResource The namespace the resources will be deployed in.
+     * @param resources         The resources to deploy.
+     * @throws ResourceException If an error during deployment occurs.
+     */
     void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException;
 }

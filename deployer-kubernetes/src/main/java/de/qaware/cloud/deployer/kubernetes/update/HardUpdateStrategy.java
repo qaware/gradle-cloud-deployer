@@ -25,10 +25,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Implements the hard update strategy. Meaning that the whole namespace is deleted before the deploying.
+ */
 public class HardUpdateStrategy implements UpdateStrategy {
 
+    /**
+     * The logger of this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(HardUpdateStrategy.class);
 
+    /**
+     * Deploys the list of resources.
+     *
+     * @param resources The resources to deploy.
+     * @throws ResourceException If an error during deployment occurs.
+     */
     private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
         LOGGER.info("Deploying resources...");
 
