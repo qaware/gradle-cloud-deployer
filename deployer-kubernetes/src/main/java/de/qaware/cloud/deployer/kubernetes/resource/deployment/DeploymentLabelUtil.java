@@ -16,19 +16,34 @@
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
 import java.util.Objects;
 
-public final class DeploymentLabelUtil {
+/**
+ * A utility which adds a label to the specified deployment.
+ */
+final class DeploymentLabelUtil {
 
+    /**
+     * UTILITY.
+     */
     private DeploymentLabelUtil() {
     }
 
-    public static void addLabel(KubernetesResourceConfig resourceConfig, String label, String value) throws ResourceException {
+    /**
+     * Adds a label to the specified deployment resource.
+     *
+     * @param resourceConfig The config of the deployment.
+     * @param label          The label name.
+     * @param value          The label value.
+     * @throws ResourceException If the deployment config doesn't contain the path /spec/template/metadata/labels or if
+     *                           the specified config doesn't belong to a deployment.
+     */
+    static void addLabel(KubernetesResourceConfig resourceConfig, String label, String value) throws ResourceException {
         if (Objects.equals(resourceConfig.getResourceVersion(), "extensions/v1beta1") && Objects.equals(resourceConfig.getResourceType(), "Deployment")) {
             try {
                 JsonNode objectTree = ContentTreeUtil.createObjectTree(resourceConfig.getContentType(), resourceConfig.getContent());
