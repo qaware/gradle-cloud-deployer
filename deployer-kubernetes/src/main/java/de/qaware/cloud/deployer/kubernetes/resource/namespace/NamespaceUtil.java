@@ -20,13 +20,28 @@ import de.qaware.cloud.deployer.kubernetes.update.HardUpdateStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A utility which offers typical namespace operations.
+ */
 public final class NamespaceUtil {
 
+    /**
+     * The logger of this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(HardUpdateStrategy.class);
 
+    /**
+     * UTILITY.
+     */
     private NamespaceUtil() {
     }
 
+    /**
+     * Deletes a namespace if it exists.
+     *
+     * @param namespaceResource The namespace resource to delete.
+     * @throws ResourceException If a error during deletion occurs.
+     */
     public static void safeDeleteNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
             LOGGER.info("Removing namespace...");
@@ -38,6 +53,12 @@ public final class NamespaceUtil {
         }
     }
 
+    /**
+     * Creates a namespace if it doesn't exist already.
+     *
+     * @param namespaceResource The namespace resource to create.
+     * @throws ResourceException If a error during creation occurs.
+     */
     public static void safeCreateNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (!namespaceResource.exists()) {
             LOGGER.info("Creating namespace...");
