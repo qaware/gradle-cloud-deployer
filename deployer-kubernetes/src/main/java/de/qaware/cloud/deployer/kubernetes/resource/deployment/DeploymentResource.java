@@ -23,15 +23,44 @@ import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+/**
+ * Represents a kubernetes deployment which offers methods for deletion and creation.
+ */
 public class DeploymentResource extends KubernetesResource {
 
+    /**
+     * The name of the label which is used for marking deployments.
+     */
     private static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
+
+    /**
+     * The kind of the deployment scale object as specified in the kubernetes api.
+     */
     private static final String SCALE_KIND = "Scale";
+
+    /**
+     * The api version of the deployment scale object as specified in the kubernetes api.
+     */
     private static final String SCALE_VERSION = "extensions/v1beta1";
 
+    /**
+     * The client which is used for backend communication concerning deployments.
+     */
     private final DeploymentClient deploymentClient;
+
+    /**
+     * The client which is used for backend communication concerning replica sets.
+     */
     private final ReplicaSetClient replicaSetClient;
 
+    /**
+     * Creates a new deployment resource as specified in the config.
+     *
+     * @param namespace      The deployment resource's namespace.
+     * @param resourceConfig The config which describes the deployment.
+     * @param clientFactory  The factory which is used to create the clients for the backend communication.
+     * @throws ResourceException If a problem occurs during deployment label marking.
+     */
     public DeploymentResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) throws ResourceException {
         super(namespace, resourceConfig, clientFactory);
 
@@ -76,6 +105,11 @@ public class DeploymentResource extends KubernetesResource {
         return "Deployment: " + getNamespace() + "/" + getId();
     }
 
+    /**
+     * Creates the label selector for this deployment.
+     *
+     * @return The label selector for this deployment.
+     */
     private String createLabelSelector() {
         return DEPLOYMENT_MARKER_LABEL + "=" + getId();
     }
