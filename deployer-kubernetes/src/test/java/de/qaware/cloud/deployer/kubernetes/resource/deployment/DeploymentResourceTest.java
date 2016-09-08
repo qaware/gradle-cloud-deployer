@@ -31,9 +31,9 @@ import junit.framework.TestCase;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource.DEPLOYMENT_MARKER_LABEL;
-
 public class DeploymentResourceTest extends TestCase {
+
+    private static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
 
     private KubernetesClient kubernetesClient;
     private NamespaceResource namespaceResource;

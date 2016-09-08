@@ -25,8 +25,7 @@ import retrofit2.Call;
 
 public class DeploymentResource extends KubernetesResource {
 
-    public static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
-
+    private static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
     private static final String SCALE_KIND = "Scale";
     private static final String SCALE_VERSION = "extensions/v1beta1";
 
