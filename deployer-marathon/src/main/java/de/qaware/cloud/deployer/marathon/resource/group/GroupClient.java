@@ -23,7 +23,7 @@ import retrofit2.http.*;
 /**
  * Group interface which will be used by retrofit to create a group client.
  */
-public interface GroupClient {
+interface GroupClient {
 
     /**
      * Returns the http response for a request to the group resource with the specified id.
@@ -49,6 +49,6 @@ public interface GroupClient {
      * @param groupId The group's id.
      * @return The server's http response.
      */
-    @DELETE("/service/marathon/v2/groups/{groupId}")
+    @DELETE("/service/marathon/v2/groups/{groupId}?force=true")
     Call<ResponseBody> delete(@Path("groupId") String groupId);
 }
