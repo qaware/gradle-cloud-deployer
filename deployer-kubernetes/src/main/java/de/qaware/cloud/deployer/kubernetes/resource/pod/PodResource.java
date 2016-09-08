@@ -23,7 +23,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 /**
- * Represents a kubernetes pod which offers methods for deletion and creation.
+ * Represents a kubernetes pod. It offers methods for deletion and creation.
  */
 public class PodResource extends KubernetesResource {
 
@@ -35,7 +35,7 @@ public class PodResource extends KubernetesResource {
     /**
      * Creates a new pod resource as specified in the config.
      *
-     * @param namespace      The namespace the pod will be created in.
+     * @param namespace      The namespace the pod is located in.
      * @param resourceConfig The config which describes the pod.
      * @param clientFactory  The factory which is used to create the client for the backend communication.
      */

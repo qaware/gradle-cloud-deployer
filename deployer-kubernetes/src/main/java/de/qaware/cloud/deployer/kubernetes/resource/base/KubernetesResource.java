@@ -21,7 +21,7 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 import okhttp3.MediaType;
 
 /**
- * Represents a kubernetes resource.
+ * Represents a kubernetes resource. Such a resource offers methods for deletion and creation.
  */
 public abstract class KubernetesResource extends BaseResource<KubernetesResourceConfig> {
 

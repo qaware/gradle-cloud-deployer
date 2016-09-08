@@ -15,9 +15,23 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.scale;
 
-class ScaleSpec {
+import java.io.Serializable;
+
+/**
+ * Represents a scale spec object as specified in the kubernetes api.
+ */
+class ScaleSpec implements Serializable {
+
+    /**
+     * The number of replicas.
+     */
     private final int replicas;
 
+    /**
+     * Creates a new scale spec object using the specified number of replicas.
+     *
+     * @param replicas The number of replicas.
+     */
     ScaleSpec(int replicas) {
         this.replicas = replicas;
     }

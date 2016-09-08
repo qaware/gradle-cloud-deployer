@@ -31,11 +31,29 @@ import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A resource factory which creates kubernetes resources for a special namespace as described in the resource configs.
+ */
 public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesResource, KubernetesResourceConfig> {
 
+    /**
+     * The logger of this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceFactory.class);
+
+    /**
+     * The namespace this resource factory creates objects for.
+     */
     private final NamespaceResource namespaceResource;
 
+    /**
+     * Creates a new factory which creates resources for the specified namespace using the specified cloud config.
+     *
+     * @param namespace The namespace this factory creates objects for.
+     * @param cloudConfig The config which describes the cloud.
+     * @throws ResourceConfigException If a problem during namespace creation occurs.
+     * @throws ResourceException If a problem during client factory creation occurs.
+     */
     public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException, ResourceException {
         super(LOGGER, new ClientFactory(cloudConfig));
         KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(namespace);

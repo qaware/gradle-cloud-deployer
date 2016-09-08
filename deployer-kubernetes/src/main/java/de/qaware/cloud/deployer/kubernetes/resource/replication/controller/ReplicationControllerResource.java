@@ -23,12 +23,33 @@ import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+/**
+ * Represents a kubernetes replication controller. It offers methods for deletion and creation.
+ */
 public class ReplicationControllerResource extends KubernetesResource {
 
+    /**
+     * The kind of the replica set scale object as specified in the kubernetes api.
+     */
     private static final String SCALE_KIND = "Scale";
+
+    /**
+     * The api version of the replica set scale object as specified in the kubernetes api.
+     */
     private static final String SCALE_VERSION = "autoscaling/v1";
+
+    /**
+     * The client which is used for backend communication.
+     */
     private final ReplicationControllerClient replicationControllerClient;
 
+    /**
+     * Creates a new replication controller resource as specified in the config.
+     *
+     * @param namespace      The namespace the replication controller is located in.
+     * @param resourceConfig The config which describes the replication controller.
+     * @param clientFactory  The factory which is used to create the client for backend communication.
+     */
     public ReplicationControllerResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(namespace, resourceConfig, clientFactory);
         replicationControllerClient = createClient(ReplicationControllerClient.class);
@@ -48,7 +69,7 @@ public class ReplicationControllerResource extends KubernetesResource {
 
     @Override
     public void delete() throws ResourceException {
-        // Scale down pods
+        // Scale pods down
         Scale scale = new Scale(getId(), getNamespace(), 0, SCALE_VERSION, SCALE_KIND);
         Call<ResponseBody> updateScaleCall = replicationControllerClient.updateScale(getId(), getNamespace(), scale);
         executeCall(updateScaleCall);

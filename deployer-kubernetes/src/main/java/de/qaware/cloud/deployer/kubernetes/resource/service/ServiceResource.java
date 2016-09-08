@@ -16,16 +16,29 @@
 package de.qaware.cloud.deployer.kubernetes.resource.service;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+/**
+ * Represents a kubernetes service. It offers methods for deletion and creation.
+ */
 public class ServiceResource extends KubernetesResource {
 
+    /**
+     * The client which is used for backend communication.
+     */
     private final ServiceClient serviceClient;
 
+    /**
+     * Creates a new service resource as specified in the config.
+     *
+     * @param namespace      The service resource's namespace.
+     * @param resourceConfig The config which describes the service.
+     * @param clientFactory  The factory which is used to create the clients for the backend communication.
+     */
     public ServiceResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(namespace, resourceConfig, clientFactory);
         this.serviceClient = createClient(ServiceClient.class);

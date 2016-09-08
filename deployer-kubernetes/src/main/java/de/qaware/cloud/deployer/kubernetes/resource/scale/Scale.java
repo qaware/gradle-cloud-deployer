@@ -15,16 +15,44 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.scale;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Scale {
+/**
+ * Represents a kubernetes scale as specified in the kubernetes api.
+ */
+public class Scale implements Serializable {
 
+    /**
+     * The api version of the namespace.
+     */
     private final String apiVersion;
+
+    /**
+     * The kind of the namespace.
+     */
     private final String kind;
+
+    /**
+     * The inner scale specification.
+     */
     private final ScaleSpec spec;
+
+    /**
+     * A map containing the metadata.
+     */
     private final Map<String, String> metadata = new HashMap<>();
 
+    /**
+     * Creates a new scale object using the specified params.
+     *
+     * @param name       The name of the scale.
+     * @param namespace  The namespace of the scale.
+     * @param replicas   The number of replicas to use.
+     * @param apiVersion The api version to use.
+     * @param kind       The kind of the scale.
+     */
     public Scale(String name, String namespace, int replicas, String apiVersion, String kind) {
         spec = new ScaleSpec(replicas);
         metadata.put("name", name);

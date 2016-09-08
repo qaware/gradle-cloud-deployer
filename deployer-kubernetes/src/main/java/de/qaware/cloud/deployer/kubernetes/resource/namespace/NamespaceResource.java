@@ -23,7 +23,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 /**
- * Represents a kubernetes namespace which offers methods for deletion and creation.
+ * Represents a kubernetes namespace. It offers methods for deletion and creation.
  */
 public class NamespaceResource extends KubernetesResource {
 
