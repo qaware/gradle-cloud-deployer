@@ -21,8 +21,17 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ReplicaSetClient {
+/**
+ * Replica set interface which will be used by retrofit to create a replica set client.
+ */
+interface ReplicaSetClient {
 
+    /**
+     * Deletes the replica set resource(s) with the specified label selector.
+     * @param namespace The namespace of the replica set.
+     * @param labelSelector The label selector which identifies the replica set.
+     * @return The server's http response.
+     */
     @DELETE("/apis/extensions/v1beta1/namespaces/{namespace}/replicasets")
     Call<ResponseBody> delete(@Path("namespace") String namespace, @Query("labelSelector") String labelSelector);
 }
