@@ -21,11 +21,29 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
+/**
+ * Represents a config for a kubernetes resource.
+ */
 public class KubernetesResourceConfig extends BaseResourceConfig {
 
+    /**
+     * The version of the resource.
+     */
     private final String resourceVersion;
+
+    /**
+     * The type of the resource.
+     */
     private final String resourceType;
 
+    /**
+     * Creates a new resource config for kubernetes.
+     *
+     * @param filename    The name of the file which contains this config.
+     * @param contentType The content type (json, yml, ...) of the file.
+     * @param content     The content of the file.
+     * @throws ResourceConfigException If the content doesn't contain all necessary attributes or can't be parsed.
+     */
     public KubernetesResourceConfig(String filename, ContentType contentType, String content) throws ResourceConfigException {
         super(filename, contentType, content);
 
