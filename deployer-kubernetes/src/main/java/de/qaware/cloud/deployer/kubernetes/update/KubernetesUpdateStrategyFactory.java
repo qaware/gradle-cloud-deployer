@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.kubernetes.update;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
 /**
- * Factory which returns a update strategy.
+ * Factory which returns a kubernetes update strategy.
  */
 public final class KubernetesUpdateStrategyFactory {
 
