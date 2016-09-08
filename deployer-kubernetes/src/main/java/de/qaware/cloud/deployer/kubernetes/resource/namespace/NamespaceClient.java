@@ -20,14 +20,35 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+/**
+ * Namespace interface which will be used by retrofit to create a namespace client.
+ */
 interface NamespaceClient {
 
+    /**
+     * Returns the http response for a request to the namespace resource with the specified name.
+     *
+     * @param namespace The namespace's name.
+     * @return The server's http response.
+     */
     @GET("/api/v1/namespaces/{namespace}")
     Call<ResponseBody> get(@Path("namespace") String namespace);
 
+    /**
+     * Creates the specified namespace.
+     *
+     * @param namespaceDescription The request body which contains the namespace.
+     * @return The server's http response.
+     */
     @POST("/api/v1/namespaces")
     Call<ResponseBody> create(@Body RequestBody namespaceDescription);
 
+    /**
+     * Deletes the namespace resource with the specified name.
+     *
+     * @param namespace The name of the namespace.
+     * @return The server's http response.
+     */
     @DELETE("/api/v1/namespaces/{namespace}")
     Call<ResponseBody> delete(@Path("namespace") String namespace);
 }

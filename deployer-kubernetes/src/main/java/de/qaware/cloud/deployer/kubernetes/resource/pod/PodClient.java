@@ -20,14 +20,38 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+/**
+ * Pod interface which will be used by retrofit to create a pod client.
+ */
 interface PodClient {
 
+    /**
+     * Returns the http response for a request to the pod resource with the specified name and namespace.
+     *
+     * @param name      The pod name.
+     * @param namespace The pod's namespace.
+     * @return The server's http response.
+     */
     @GET("/api/v1/namespaces/{namespace}/pods/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
+    /**
+     * Creates the specified pod.
+     *
+     * @param namespace      The namespace of the new pod.
+     * @param podDescription The request body which contains the pod.
+     * @return The server's http response.
+     */
     @POST("/api/v1/namespaces/{namespace}/pods")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody podDescription);
 
+    /**
+     * Deletes the pod resource with the specified name.
+     *
+     * @param name      The pod's name.
+     * @param namespace The namespace of the pod.
+     * @return The server's http response.
+     */
     @DELETE("/api/v1/namespaces/{namespace}/pods/{name}")
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 }

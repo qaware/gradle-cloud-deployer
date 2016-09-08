@@ -20,14 +20,38 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+/**
+ * Service interface which will be used by retrofit to create a service client.
+ */
 interface ServiceClient {
 
+    /**
+     * Returns the http response for a request to the service resource with the specified name and namespace.
+     *
+     * @param name      The service name.
+     * @param namespace The service's namespace.
+     * @return The server's http response.
+     */
     @GET("/api/v1/namespaces/{namespace}/services/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
+    /**
+     * Creates the specified service.
+     *
+     * @param namespace          The namespace of the new service.
+     * @param serviceDescription The request body which contains the service.
+     * @return The server's http response.
+     */
     @POST("/api/v1/namespaces/{namespace}/services")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody serviceDescription);
 
+    /**
+     * Deletes the service resource with the specified name.
+     *
+     * @param name      The service's name.
+     * @param namespace The namespace of the service.
+     * @return The server's http response.
+     */
     @DELETE("/api/v1/namespaces/{namespace}/services/{name}")
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 }

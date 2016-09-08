@@ -21,17 +21,49 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+/**
+ * Deployment interface which will be used by retrofit to create a deployment client.
+ */
 interface DeploymentClient {
 
+    /**
+     * Returns the http response for a request to the deployment resource with the specified name and namespace.
+     *
+     * @param name      The deployment name.
+     * @param namespace The deployment's namespace.
+     * @return The server's http response.
+     */
     @GET("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
+    /**
+     * Creates the specified deployment.
+     *
+     * @param namespace             The namespace of the new deployment.
+     * @param deploymentDescription The request body which contains the deployment.
+     * @return The server's http response.
+     */
     @POST("/apis/extensions/v1beta1/namespaces/{namespace}/deployments")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody deploymentDescription);
 
+    /**
+     * Deletes the deployment resource with the specified name.
+     *
+     * @param name      The deployment's name.
+     * @param namespace The namespace of the deployment.
+     * @return The server's http response.
+     */
     @DELETE("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 
+    /**
+     * Updates the scale of the deployment resource with the specified name.
+     *
+     * @param name      The deployment's name.
+     * @param namespace The namespace of the deployment.
+     * @param scale     The new scale object.
+     * @return The server's http response.
+     */
     @PUT("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}/scale")
     Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body Scale scale);
 }
