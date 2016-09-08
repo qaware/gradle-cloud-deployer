@@ -49,7 +49,7 @@ public class AppResourceTest extends TestCase {
         resourceConfig.setResourceId(resourceConfig.getResourceId());
         appResource = new AppResource(resourceConfig, clientFactory);
 
-        tearDown();
+        removeApp();
     }
 
     @Override
