@@ -24,15 +24,15 @@ import java.util.ResourceBundle;
 public class KubernetesLogMessagesUtil {
 
     /**
+     * A bundle which contains all messages.
+     */
+    private static ResourceBundle messages = ResourceBundle.getBundle("kubernetes-log-messages");
+
+    /**
      * UTILITY.
      */
     private KubernetesLogMessagesUtil() {
     }
-
-    /**
-     * A bundle which contains all messages.
-     */
-    private static ResourceBundle messages = ResourceBundle.getBundle("kubernetes-log-messages");
 
     /**
      * Returns the log message with the specified id.
