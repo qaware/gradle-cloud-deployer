@@ -24,7 +24,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 /**
- * Represents a kubernetes deployment which offers methods for deletion and creation.
+ * Represents a kubernetes deployment and offers methods for deletion and creation.
  */
 public class DeploymentResource extends KubernetesResource {
 
