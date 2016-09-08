@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 /**
  * A class which offers all relevant log messages for this project.
  */
-public class KubernetesLogMessagesUtil {
+public final class KubernetesLogMessagesUtil {
 
     /**
      * A bundle which contains all messages.
