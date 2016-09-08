@@ -24,13 +24,13 @@ import java.util.List;
 /**
  * A update strategy describes how to deploy a number of resources.
  */
-public interface UpdateStrategy {
+public interface KubernetesUpdateStrategy {
 
     /**
      * Deploys the specified resources to the specified namespace.
      *
      * @param namespaceResource The namespace the resources will be deployed in.
-     * @param resources         The resources to deploy.
+     * @param resources The resources to deploy.
      * @throws ResourceException If an error during deployment occurs.
      */
     void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException;

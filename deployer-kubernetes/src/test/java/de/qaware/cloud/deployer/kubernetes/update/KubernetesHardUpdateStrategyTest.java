@@ -39,10 +39,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HardUpdateStrategyTest extends TestCase {
+public class KubernetesHardUpdateStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
-    private HardUpdateStrategy hardUpdateStrategy;
+    private KubernetesHardUpdateStrategy hardUpdateStrategy;
     private List<KubernetesResource> resourcesV1;
     private List<KubernetesResource> resourcesV2;
     private List<KubernetesResource> resourcesV3;
@@ -58,7 +58,7 @@ public class HardUpdateStrategyTest extends TestCase {
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
-        hardUpdateStrategy = new HardUpdateStrategy();
+        hardUpdateStrategy = new KubernetesHardUpdateStrategy();
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();

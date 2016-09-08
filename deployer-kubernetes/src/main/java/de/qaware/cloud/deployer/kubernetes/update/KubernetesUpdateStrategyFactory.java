@@ -20,12 +20,12 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 /**
  * Factory which returns a update strategy.
  */
-public final class UpdateStrategyFactory {
+public final class KubernetesUpdateStrategyFactory {
 
     /**
      * SINGLETON.
      */
-    private UpdateStrategyFactory() {
+    private KubernetesUpdateStrategyFactory() {
     }
 
     /**
@@ -35,12 +35,12 @@ public final class UpdateStrategyFactory {
      * @return A new object of the specified strategy.
      * @throws ResourceException If the string specifies a not existing update strategy.
      */
-    public static UpdateStrategy create(String updateStrategy) throws ResourceException {
+    public static KubernetesUpdateStrategy create(String updateStrategy) throws ResourceException {
         switch (updateStrategy) {
             case "HARD":
-                return new HardUpdateStrategy();
+                return new KubernetesHardUpdateStrategy();
             case "SOFT":
-                return new SoftUpdateStrategy();
+                return new KubernetesSoftUpdateStrategy();
             default:
                 throw new ResourceException("Unknown strategy type specified");
         }

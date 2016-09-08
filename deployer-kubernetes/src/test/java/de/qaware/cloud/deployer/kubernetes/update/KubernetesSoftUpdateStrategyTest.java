@@ -38,10 +38,10 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-public class SoftUpdateStrategyTest extends TestCase {
+public class KubernetesSoftUpdateStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
-    private SoftUpdateStrategy softUpdateStrategy;
+    private KubernetesSoftUpdateStrategy softUpdateStrategy;
     private List<KubernetesResource> resourcesV1;
     private List<KubernetesResource> resourcesV2;
     private KubernetesClient kubernetesClient;
@@ -56,7 +56,7 @@ public class SoftUpdateStrategyTest extends TestCase {
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
-        softUpdateStrategy = new SoftUpdateStrategy();
+        softUpdateStrategy = new KubernetesSoftUpdateStrategy();
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();

@@ -26,27 +26,33 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Implements the hard update strategy. Meaning that the whole namespace is deleted before the deploying.
+ * Implements the soft update strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-public class HardUpdateStrategy implements UpdateStrategy {
+public class KubernetesSoftUpdateStrategy implements KubernetesUpdateStrategy {
 
     /**
      * The logger of this class.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(HardUpdateStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesSoftUpdateStrategy.class);
 
     /**
-     * Deploys the list of resources.
+     * Deploys the list of resources. If the resource already exists, it will be deleted first.
      *
      * @param resources The resources to deploy.
-     * @throws ResourceException If an error during deployment occurs.
+     * @throws ResourceException If an error during deletion or deployment occurs.
      */
     private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
         LOGGER.info("Deploying resources...");
 
         for (Resource resource : resources) {
-            resource.create();
-            LOGGER.info("- " + resource);
+            if (resource.exists()) {
+                resource.delete();
+                resource.create();
+                LOGGER.info("- " + resource + " (updated)");
+            } else {
+                resource.create();
+                LOGGER.info("- " + resource + " (created)");
+            }
         }
 
         LOGGER.info("Finished deploying resources...");
@@ -54,13 +60,11 @@ public class HardUpdateStrategy implements UpdateStrategy {
 
     @Override
     public void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
-        // 1. Delete the old namespace
-        NamespaceUtil.safeDeleteNamespace(namespaceResource);
 
-        // 2. Create the new namespace
+        // 1. Create the namespace if it doesn't exist
         NamespaceUtil.safeCreateNamespace(namespaceResource);
 
-        // 3. Create resources in the namespace
+        // 2. Update existing resources (delete and create again) and create new ones
         deployResources(resources);
     }
 }
