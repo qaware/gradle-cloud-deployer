@@ -16,16 +16,29 @@
 package de.qaware.cloud.deployer.kubernetes.resource.pod;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+/**
+ * Represents a kubernetes pod which offers methods for deletion and creation.
+ */
 public class PodResource extends KubernetesResource {
 
+    /**
+     * The client which is used for backend communication.
+     */
     private final PodClient podClient;
 
+    /**
+     * Creates a new pod resource as specified in the config.
+     *
+     * @param namespace      The namespace the pod will be created in.
+     * @param resourceConfig The config which describes the pod.
+     * @param clientFactory  The factory which is used to create the client for the backend communication.
+     */
     public PodResource(String namespace, KubernetesResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(namespace, resourceConfig, clientFactory);
         this.podClient = createClient(PodClient.class);
