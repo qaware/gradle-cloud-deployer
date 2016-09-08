@@ -22,26 +22,53 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesLogMessagesUtil.getMessage;
+
+/**
+ * A factory which creates a resource config for a namespace.
+ */
 public final class NamespaceResourceConfigFactory {
 
-    private final static String NAMESPACE_KIND = "Namespace";
-    private final static String NAMESPACE_VERSION = "v1";
+    /**
+     * The namespace's filename that will be used for creation.
+     */
+    private static final String NAMESPACE_DEFAULT_FILENAME = "temporary";
 
+    /**
+     * The kind of the namespace as specified in the kubernetes api.
+     */
+    private static final String NAMESPACE_KIND = "Namespace";
+
+    /**
+     * The api version of the namespace as specified in the kubernetes api.
+     */
+    private static final String NAMESPACE_VERSION = "v1";
+
+    /**
+     * FACTORY.
+     */
     private NamespaceResourceConfigFactory() {
     }
 
+    /**
+     * Creates a resource config for a namespace with the specified name.
+     *
+     * @param name The name of the namespace.
+     * @return The resource config for the namespace with the specified name.
+     * @throws ResourceConfigException If the namespace name isn't valid or a error occurred during namespace creation.
+     */
     public static KubernetesResourceConfig create(String name) throws ResourceConfigException {
 
         if (name == null || name.isEmpty()) {
-            throw new ResourceConfigException("Please specify a valid namespace");
+            throw new ResourceConfigException(getMessage("DEPLOYER_KUBERNETES_ERROR_INVALID_NAMESPACE"));
         }
 
         try {
             Namespace namespace = new Namespace(name, NAMESPACE_VERSION, NAMESPACE_KIND);
             String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespace);
-            return new KubernetesResourceConfig("temporary", ContentType.JSON, namespaceDescriptionContent);
+            return new KubernetesResourceConfig(NAMESPACE_DEFAULT_FILENAME, ContentType.JSON, namespaceDescriptionContent);
         } catch (JsonProcessingException e) {
-            throw new ResourceConfigException("Couldn't create namespace content", e);
+            throw new ResourceConfigException(getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_NAMESPACE_CREATION"), e);
         }
     }
 }
