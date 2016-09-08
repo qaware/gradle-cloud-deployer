@@ -19,13 +19,34 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Namespace implements Serializable {
+/**
+ * Represents a kubernetes namespace as specified in the kubernetes api.
+ */
+class Namespace implements Serializable {
 
+    /**
+     * The api version of the namespace.
+     */
     private final String apiVersion;
+
+    /**
+     * The kind of the namespace.
+     */
     private final String kind;
+
+    /**
+     * A map containing the metadata.
+     */
     private final Map<String, String> metadata = new HashMap<>();
 
-    public Namespace(final String name, String apiVersion, String kind) {
+    /**
+     * Creates a new namespace.
+     *
+     * @param name The name of the new namespace.
+     * @param apiVersion The api version of the namespace.
+     * @param kind The kind of the namespace.
+     */
+    Namespace(final String name, String apiVersion, String kind) {
         this.apiVersion = apiVersion;
         this.kind = kind;
         metadata.put("name", name);
