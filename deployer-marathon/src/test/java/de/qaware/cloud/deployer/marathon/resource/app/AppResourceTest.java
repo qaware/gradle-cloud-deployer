@@ -69,8 +69,7 @@ public class AppResourceTest extends TestCase {
         appResource.create();
 
         // Check that the app exists
-        App app = marathonClient.getApp(appResource.getId()).getApp();
-        assertNotNull(app);
+        assertExists();
 
         // Test exists method
         assertTrue(appResource.exists());
@@ -85,8 +84,7 @@ public class AppResourceTest extends TestCase {
         appResource.create();
 
         // Check that the app exists
-        App app = marathonClient.getApp(appResource.getId()).getApp();
-        assertNotNull(app);
+        App app = assertExists();
 
         // Compare app ids
         assertEquals(app.getId(), "/" + appResource.getId());
@@ -98,14 +96,19 @@ public class AppResourceTest extends TestCase {
         appResource.create();
 
         // Check that the app exists
-        App app = marathonClient.getApp(appResource.getId()).getApp();
-        assertNotNull(app);
+        assertExists();
 
         // Delete app
         appResource.delete();
 
         // Check that app doesn't exist anymore
         assertNotFound();
+    }
+
+    private App assertExists() throws MarathonException {
+        App app = marathonClient.getApp(appResource.getId()).getApp();
+        assertNotNull(app);
+        return app;
     }
 
     private void assertNotFound() {
