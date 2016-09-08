@@ -68,12 +68,16 @@ public class DeploymentResource extends KubernetesResource {
         executeDeleteCallAndBlock(deploymentDeleteCall);
 
         // Delete the replica set
-        Call<ResponseBody> replicaSetDeleteCall = replicaSetClient.delete(getNamespace(), DEPLOYMENT_MARKER_LABEL + "=" + getId());
+        Call<ResponseBody> replicaSetDeleteCall = replicaSetClient.delete(getNamespace(), createLabelSelector());
         executeDeleteCallAndBlock(replicaSetDeleteCall);
     }
 
     @Override
     public String toString() {
         return "Deployment: " + getNamespace() + "/" + getId();
+    }
+
+    private String createLabelSelector() {
+        return DEPLOYMENT_MARKER_LABEL + "=" + getId();
     }
 }
