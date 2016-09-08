@@ -30,8 +30,19 @@ import de.qaware.cloud.deployer.kubernetes.update.KubernetesUpdateStrategyFactor
 import java.io.File;
 import java.util.List;
 
+/**
+ * Offers the possbility to deploy a list of kubernetes config files to a kubernetes cloud.
+ */
 public class KubernetesDeployer {
 
+    /**
+     * Deletes the specified namespace in the specified cloud.
+     *
+     * @param cloudConfig The config which describes the cloud.
+     * @param namespace   The namespace which will be deleted.
+     * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
+     * @throws ResourceException       If a problem during resource deletion/creation occurs.
+     */
     public void delete(CloudConfig cloudConfig, String namespace) throws ResourceConfigException, ResourceException {
         // 1. Create a resource factory for the specified namespace
         KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(namespace, cloudConfig);
@@ -43,6 +54,14 @@ public class KubernetesDeployer {
         NamespaceUtil.safeDeleteNamespace(namespaceResource);
     }
 
+    /**
+     * Deploys the list of kubernetes config files to the specified cloud in the specified namespace.
+     *
+     * @param cloudConfig The config which describes the cloud.
+     * @param namespace   The namespace the application will be deployed to.
+     * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
+     * @throws ResourceException       If a problem during resource deletion/creation occurs.
+     */
     public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
