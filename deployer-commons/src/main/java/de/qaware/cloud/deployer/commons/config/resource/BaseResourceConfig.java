@@ -15,13 +15,38 @@
  */
 package de.qaware.cloud.deployer.commons.config.resource;
 
+/**
+ * Represents a basic resource config which contains common fields independent of the target cloud system.
+ */
 public abstract class BaseResourceConfig {
 
+    /**
+     * The name of the file this config was read from.
+     */
     private final String filename;
+
+    /**
+     * The content type of the config file (json, yml, ...).
+     */
     private final ContentType contentType;
+
+    /**
+     * The id of the resource which is specified in the config file.
+     */
     private String resourceId;
+
+    /**
+     * The config file content.
+     */
     private String content;
 
+    /**
+     * Creates a new base resource config.
+     *
+     * @param filename    The name of the file this config belongs to.
+     * @param contentType The content type of the file.
+     * @param content     The content of the config file.
+     */
     public BaseResourceConfig(String filename, ContentType contentType, String content) {
         this.filename = filename;
         this.content = content;
