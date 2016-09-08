@@ -17,8 +17,8 @@ package de.qaware.cloud.deployer.kubernetes.config.resource;
 
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfigFactory;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +27,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A factory which creates resource configs using the specified files.
+ */
 public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<KubernetesResourceConfig> {
 
+    /**
+     * The string which splits multiple kubernetes configs within the same file.
+     */
     private static final String KUBERNETES_CONFIG_SEPARATOR = "---";
+
+    /**
+     * The logger of this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
+    /**
+     * Creates a new KubernetesResourceConfigFactory.
+     */
     public KubernetesResourceConfigFactory() {
         super(LOGGER);
     }
@@ -51,6 +64,14 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
         return new KubernetesResourceConfig(filename, contentType, content);
     }
 
+    /**
+     * Splits the specified resource configs if they should contain multiple kubernetes configs in their content.
+     *
+     * @param resourceConfigs The configs which might contain multiple kubernetes configs in their content.
+     * @param splitString     The string which is used to split the content if it contains multiple configs.
+     * @return The split configs.
+     * @throws ResourceConfigException If a problem during resource config creation occurs.
+     */
     private List<KubernetesResourceConfig> splitConfigs(List<KubernetesResourceConfig> resourceConfigs, String splitString) throws ResourceConfigException {
         List<KubernetesResourceConfig> splitResourceConfigs = new ArrayList<>();
         for (KubernetesResourceConfig resourceConfig : resourceConfigs) {
@@ -64,6 +85,13 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
         return splitResourceConfigs;
     }
 
+    /**
+     * Splits the specified content using the specified string.
+     *
+     * @param content     The content that might be split.
+     * @param splitString The string that is used for splitting.
+     * @return A list containing the split contents if possible, otherwise it contains the specified content only.
+     */
     private List<String> splitContent(String content, String splitString) {
         List<String> splitContents = new ArrayList<>();
         List<String> tempSplitContents = Arrays.asList(content.split(splitString));
