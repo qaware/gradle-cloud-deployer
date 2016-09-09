@@ -23,7 +23,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 public final class KubernetesUpdateStrategyFactory {
 
     /**
-     * SINGLETON.
+     * UTILITY.
      */
     private KubernetesUpdateStrategyFactory() {
     }

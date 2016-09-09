@@ -21,13 +21,26 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
+/**
+ * Represents a config for a marathon resource.
+ */
 public class MarathonResourceConfig extends BaseResourceConfig {
 
+    /**
+     * Creates a new resource config for marathon.
+     *
+     * @param filename The name of the file which contains this config.
+     * @param contentType The content type (json, yml, ...) of the file.
+     * @param content The content of the file.
+     * @throws ResourceConfigException If the content doesn't contain all necessary attributes or can't be parsed.
+     */
     public MarathonResourceConfig(String filename, ContentType contentType, String content) throws ResourceConfigException {
         super(filename, contentType, content);
 
+        // Create the object tree and retrieve the id.
         JsonNode contentObjectTree = ContentTreeUtil.createObjectTree(contentType, content);
-        this.setResourceId(ContentTreeUtil.readStringValue(contentObjectTree, "id"));
+        String id = ContentTreeUtil.readStringValue(contentObjectTree, "id");
+        this.setResourceId(id);
     }
 
     @Override

@@ -15,16 +15,35 @@
  */
 package de.qaware.cloud.deployer.commons.error;
 
+/**
+ * Represents a exception which is thrown when a error during resource interaction occurs.
+ */
 public class ResourceException extends Exception {
 
+    /**
+     * Creates a new resource exception.
+     *
+     * @param cause The cause of the exception.
+     */
     public ResourceException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Creates a new resource exception.
+     *
+     * @param message The message which explains the exception.
+     */
     public ResourceException(String message) {
         super(message);
     }
 
+    /**
+     * Creates a new resource exception.
+     *
+     * @param message The message which explains the exception.
+     * @param cause The cause of the exception.
+     */
     public ResourceException(String message, Throwable cause) {
         super(message, cause);
     }

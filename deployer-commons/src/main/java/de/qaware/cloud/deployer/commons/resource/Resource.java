@@ -18,11 +18,30 @@ package de.qaware.cloud.deployer.commons.resource;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
+/**
+ * Specifies the operations a resource has to offer.
+ */
 public interface Resource {
 
+    /**
+     * Indicates whether the resource exists in the cloud or not.
+     *
+     * @return TRUE if the resource already exists, FALSE otherwise.
+     * @throws ResourceException If the request wasn't successful.
+     */
     boolean exists() throws ResourceException;
 
+    /**
+     * Creates the resource.
+     *
+     * @throws ResourceException If the request wasn't successful.
+     */
     void create() throws ResourceException;
 
+    /**
+     * Deletes the resource.
+     *
+     * @throws ResourceException If the request wasn't successful.
+     */
     void delete() throws ResourceException;
 }

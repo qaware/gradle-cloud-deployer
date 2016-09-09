@@ -22,11 +22,30 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseResourceFactory<T extends BaseResource, X extends BaseResourceConfig> {
+/**
+ * Implementation of a basic resource factory. It creates resources out of configs.
+ *
+ * @param <ResourceType> The resource type this factory belongs to.
+ * @param <ConfigType>   The config type this factory belongs to.
+ */
+public abstract class BaseResourceFactory<ResourceType extends BaseResource, ConfigType extends BaseResourceConfig> {
 
+    /**
+     * The client factory which is used to create the clients for the backend communication.
+     */
     private final ClientFactory clientFactory;
+
+    /**
+     * The logger which is used for logging.
+     */
     private final Logger logger;
 
+    /**
+     * Creates a new base resource factory.
+     *
+     * @param logger        The logger which is used for logging.
+     * @param clientFactory The client factory which is used to create the clients for the backend communication.
+     */
     public BaseResourceFactory(Logger logger, ClientFactory clientFactory) {
         this.logger = logger;
         this.clientFactory = clientFactory;
@@ -36,12 +55,19 @@ public abstract class BaseResourceFactory<T extends BaseResource, X extends Base
         return clientFactory;
     }
 
-    public List<T> createResources(List<X> resourceConfigs) throws ResourceException {
+    /**
+     * Creates a list of resources out of the specified configs.
+     *
+     * @param resourceConfigs The configs which are the sources for the resources.
+     * @return A list of resources.
+     * @throws ResourceException If an error during resource creation occurs.
+     */
+    public List<ResourceType> createResources(List<ConfigType> resourceConfigs) throws ResourceException {
 
         logger.info("Creating resources...");
 
-        List<T> resources = new ArrayList<>();
-        for (X resourceConfig : resourceConfigs) {
+        List<ResourceType> resources = new ArrayList<>();
+        for (ConfigType resourceConfig : resourceConfigs) {
             resources.add(createResource(resourceConfig));
         }
 
@@ -50,5 +76,12 @@ public abstract class BaseResourceFactory<T extends BaseResource, X extends Base
         return resources;
     }
 
-    public abstract T createResource(X resourceConfig) throws ResourceException;
+    /**
+     * Creates a resource out of the specified config.
+     *
+     * @param resourceConfig The config which is the source for the resource.
+     * @return The created resource.
+     * @throws ResourceException If a error during resource creation occurs.
+     */
+    public abstract ResourceType createResource(ConfigType resourceConfig) throws ResourceException;
 }

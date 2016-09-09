@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
@@ -47,14 +48,14 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
     }
 
     @Override
-    protected MediaType createMediaType() {
+    protected MediaType createMediaType() throws ResourceException {
         switch (getResourceConfig().getContentType()) {
             case JSON:
                 return MediaType.parse("application/json");
             case YAML:
                 return MediaType.parse("application/yaml");
             default:
-                throw new IllegalArgumentException("Unknown type " + getResourceConfig().getContentType());
+                throw new ResourceException("Unknown type " + getResourceConfig().getContentType());
         }
     }
 }

@@ -15,12 +15,26 @@
  */
 package de.qaware.cloud.deployer.commons.error;
 
+/**
+ * Represents a exception which is thrown when a error during config creation occurs.
+ */
 public class ResourceConfigException extends Exception {
 
+    /**
+     * Creates a new resource config exception.
+     *
+     * @param message The message which explains the exception.
+     */
     public ResourceConfigException(String message) {
         super(message);
     }
 
+    /**
+     * Creates a new resource config exception.
+     *
+     * @param message The message which explains the exception.
+     * @param cause   The cause of the exception.
+     */
     public ResourceConfigException(String message, Throwable cause) {
         super(message, cause);
     }

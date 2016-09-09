@@ -25,10 +25,19 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+/**
+ * A factory which creates resource configs using the specified files.
+ */
 public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<MarathonResourceConfig> {
 
+    /**
+     * The logger of this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(MarathonResourceConfigFactory.class);
 
+    /**
+     * Creates a new marathon resource config factory.
+     */
     public MarathonResourceConfigFactory() {
         super(LOGGER);
     }

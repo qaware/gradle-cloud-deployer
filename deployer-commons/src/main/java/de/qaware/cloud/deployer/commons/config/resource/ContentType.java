@@ -15,7 +15,16 @@
  */
 package de.qaware.cloud.deployer.commons.config.resource;
 
+/**
+ * The supported content types of a file.
+ */
 public enum ContentType {
+    /**
+     * Json content.
+     */
     JSON,
+    /**
+     * Yaml content.
+     */
     YAML
 }

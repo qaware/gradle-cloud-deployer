@@ -15,24 +15,35 @@
  */
 package de.qaware.cloud.deployer.marathon.resource.base;
 
+import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import okhttp3.MediaType;
 
+/**
+ * Represents a marathon resource. It offers functionality for deletion and creation.
+ */
 public abstract class MarathonResource extends BaseResource<MarathonResourceConfig> {
 
+    /**
+     * Creates a new marathon resource using the specified config and client factory.
+     *
+     * @param resourceConfig The config this resource belongs to.
+     * @param clientFactory The factory which is used to build the clients for backend communication.
+     */
     public MarathonResource(MarathonResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig, clientFactory);
     }
 
     @Override
-    protected MediaType createMediaType() {
+    protected MediaType createMediaType() throws ResourceException {
+        // Override because only json is support.
         switch (getResourceConfig().getContentType()) {
             case JSON:
                 return MediaType.parse("application/json");
             default:
-                throw new IllegalArgumentException("Unknown type " + getResourceConfig().getContentType());
+                throw new ResourceException("Unknown type " + getResourceConfig().getContentType());
         }
     }
 }

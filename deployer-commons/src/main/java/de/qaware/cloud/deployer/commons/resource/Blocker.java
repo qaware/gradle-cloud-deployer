@@ -17,26 +17,42 @@ package de.qaware.cloud.deployer.commons.resource;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
-public class CallBlocker {
+/**
+ * Blocks for specified amount of time and throws an exception if the maximum duration is exceeded. It's intended to
+ * be called in a loop.
+ */
+class Blocker {
 
     private final int timeout;
-    private final int interval;
+    private final int blockTime;
     private final String errorMessage;
     private int timeoutCounter = 0;
 
-    public CallBlocker(int timeout, double interval, String errorMessage) {
+    /**
+     * Creates a new blocker using the specified parameters.
+     *
+     * @param timeout      The maximum duration in seconds until an exception is thrown.
+     * @param blockTime     The time in seconds this blocker blocks when the block function is called.
+     * @param errorMessage The error message which will be used in the exception if the maximum duration is exceeded.
+     */
+    Blocker(int timeout, double blockTime, String errorMessage) {
         this.timeout = timeout * 1000;
-        this.interval = (int) (interval * 1000);
+        this.blockTime = (int) (blockTime * 1000);
         this.errorMessage = errorMessage;
     }
 
-    public void block() throws ResourceException {
+    /**
+     * Blocks the execution for a amount of time.
+     *
+     * @throws ResourceException If the maximum duration is exceeded.
+     */
+    void block() throws ResourceException {
         try {
-            timeoutCounter += interval;
+            timeoutCounter += blockTime;
             if (timeoutCounter > timeout) {
                 throw new ResourceException(errorMessage);
             }
-            Thread.sleep(interval);
+            Thread.sleep(blockTime);
         } catch (InterruptedException e) {
             throw new ResourceException(e);
         }

@@ -45,7 +45,7 @@ public final class NamespaceResourceConfigFactory {
     private static final String NAMESPACE_VERSION = "v1";
 
     /**
-     * SINGLETON.
+     * UTILITY.
      */
     private NamespaceResourceConfigFactory() {
     }

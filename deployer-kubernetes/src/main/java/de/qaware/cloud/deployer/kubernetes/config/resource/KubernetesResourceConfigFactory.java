@@ -43,7 +43,7 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
     /**
-     * Creates a new KubernetesResourceConfigFactory.
+     * Creates a new kubernetes resource config factory.
      */
     public KubernetesResourceConfigFactory() {
         super(LOGGER);

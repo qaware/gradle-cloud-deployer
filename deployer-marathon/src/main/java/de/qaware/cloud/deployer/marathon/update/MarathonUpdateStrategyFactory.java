@@ -23,6 +23,12 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 public class MarathonUpdateStrategyFactory {
 
     /**
+     * UTILITY.
+     */
+    public MarathonUpdateStrategyFactory() {
+    }
+
+    /**
      * Accepts a string representation of an update strategy and instantiates a new object of this strategy.
      *
      * @param updateStrategy The string representation of the update strategy.

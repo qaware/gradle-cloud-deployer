@@ -25,11 +25,25 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
 import java.io.IOException;
 
+/**
+ * Utility for json/yaml content.
+ */
 public final class ContentTreeUtil {
 
+    /**
+     * UTILITY.
+     */
     private ContentTreeUtil() {
     }
 
+    /**
+     * Parses the content and creates a object tree.
+     *
+     * @param contentType The type of the content (json, yaml, ...)
+     * @param content     The content.
+     * @return The object tree.
+     * @throws ResourceConfigException If the content type isn't supported.
+     */
     public static JsonNode createObjectTree(ContentType contentType, String content) throws ResourceConfigException {
         ObjectMapper mapper;
         switch (contentType) {
@@ -51,6 +65,14 @@ public final class ContentTreeUtil {
         }
     }
 
+    /**
+     * Reads the node with the specified key in the object tree.
+     *
+     * @param contentObjectTree The object tree which contains the node identified by the specified key.
+     * @param key               The key which identifies the node.
+     * @return The value of the key in form of a node.
+     * @throws ResourceConfigException If the key isn't available in the object tree.
+     */
     public static JsonNode readNodeValue(JsonNode contentObjectTree, String key) throws ResourceConfigException {
         if (contentObjectTree.hasNonNull(key)) {
             return contentObjectTree.get(key);
@@ -59,6 +81,14 @@ public final class ContentTreeUtil {
         }
     }
 
+    /**
+     * Reads the string with the specified key in the object tree.
+     *
+     * @param contentObjectTree The object tree which contains the string identified by the specified key.
+     * @param key               The key which identifies the string.
+     * @return The value of the key in form of a string.
+     * @throws ResourceConfigException If the key isn't available in the object tree.
+     */
     public static String readStringValue(JsonNode contentObjectTree, String key) throws ResourceConfigException {
         if (contentObjectTree.hasNonNull(key)) {
             return contentObjectTree.get(key).textValue();
@@ -67,8 +97,15 @@ public final class ContentTreeUtil {
         }
     }
 
-    public static JsonNode addField(JsonNode contentObjectTree, String fieldName, String value) {
+    /**
+     * Adds a new field with the specified name and value to a object tree.
+     *
+     * @param contentObjectTree The object tree which will contain the new field.
+     * @param fieldName         The name of the field.
+     * @param value             The value of the field.
+     */
+    public static void addField(JsonNode contentObjectTree, String fieldName, String value) {
         ObjectNode objectNode = (ObjectNode) contentObjectTree;
-        return objectNode.put(fieldName, value);
+        objectNode.put(fieldName, value);
     }
 }
