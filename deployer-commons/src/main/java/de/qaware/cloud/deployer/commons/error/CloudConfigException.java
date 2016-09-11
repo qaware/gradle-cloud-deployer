@@ -15,8 +15,16 @@
  */
 package de.qaware.cloud.deployer.commons.error;
 
+/**
+ * Represents a exception which is thrown because of configuration errors.
+ */
 public class CloudConfigException extends Exception {
 
+    /**
+     * Creates a new cloud config exception.
+     *
+     * @param message The message which explains the exception.
+     */
     public CloudConfigException(String message) {
         super(message);
     }

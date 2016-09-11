@@ -15,29 +15,64 @@
  */
 package de.qaware.cloud.deployer.commons.config.cloud;
 
+/**
+ * Represents a cloud's ssl configuration.
+ */
 public class SSLConfig {
 
+    /**
+     * Indicates whether all certs are trusted.
+     */
     private final boolean trustAll;
+
+    /**
+     * Specifies a custom certificate which is trusted.
+     */
     private final String certificate;
 
+    /**
+     * Creates a new ssl config which trusts all certs.
+     *
+     * @param trustAll Indicates whether all certs are trusted.
+     */
     public SSLConfig(boolean trustAll) {
         this.trustAll = trustAll;
         this.certificate = "";
     }
 
+    /**
+     * Creates a new ssl config which trusts the specified certificate.
+     *
+     * @param certificate The certificate to trust.
+     */
     public SSLConfig(String certificate) {
         this.certificate = certificate;
         this.trustAll = false;
     }
 
+    /**
+     * Indicates whether all certs are trusted.
+     *
+     * @return TRUE if all certs are trusted, FALSE otherwise.
+     */
     public boolean isTrustAll() {
         return trustAll;
     }
 
+    /**
+     * Returns the certificate to trust.
+     *
+     * @return The certificate.
+     */
     public String getCertificate() {
         return certificate;
     }
 
+    /**
+     * Inidcates whether this ssl config has a custom certificate to trust.
+     *
+     * @return TRUE if a custom certificate exists, FALSE otherwise.
+     */
     public boolean hasCertificate() {
         return certificate != null && certificate.length() > 0;
     }

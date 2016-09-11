@@ -33,6 +33,11 @@ public abstract class BaseSoftUpdateStrategy<ResourceType extends Resource> {
      */
     private final Logger logger;
 
+    /**
+     * Creates a new base soft update strategy.
+     *
+     * @param logger The logger used for logging.
+     */
     public BaseSoftUpdateStrategy(Logger logger) {
         this.logger = logger;
     }
