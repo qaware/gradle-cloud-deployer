@@ -20,7 +20,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 /**
  * Factory which returns a marathon update strategy.
  */
-public class MarathonUpdateStrategyFactory {
+public final class MarathonUpdateStrategyFactory {
 
     /**
      * UTILITY.
