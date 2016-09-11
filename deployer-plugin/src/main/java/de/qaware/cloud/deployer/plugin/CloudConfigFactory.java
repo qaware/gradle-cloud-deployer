@@ -18,11 +18,23 @@ package de.qaware.cloud.deployer.plugin;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 
+/**
+ * Creates a cloud config using the specified extension.
+ */
 public final class CloudConfigFactory {
 
+    /**
+     * UTILITY.
+     */
     private CloudConfigFactory() {
     }
 
+    /**
+     * Creates a cloud config using the specified extension.
+     *
+     * @param extension The extension which contains all information.
+     * @return The created cloud config.
+     */
     public static CloudConfig create(DeployerExtension extension) {
         CloudConfig cloudConfig = new CloudConfig(extractBaseUrl(extension), extractUpdateStrategy(extension));
         SSLConfig sslConfig = extractSSLConfig(extension);
@@ -33,6 +45,12 @@ public final class CloudConfigFactory {
         return cloudConfig;
     }
 
+    /**
+     * Extracts the base url from the extension.
+     *
+     * @param extension The extension.
+     * @return The base url.
+     */
     private static String extractBaseUrl(DeployerExtension extension) {
         String baseUrl = extension.getBaseUrl();
         if (baseUrl != null && !baseUrl.isEmpty()) {
@@ -42,11 +60,23 @@ public final class CloudConfigFactory {
         }
     }
 
+    /**
+     * Extracts the update strategy from the extension.
+     *
+     * @param extension The extension.
+     * @return The extracted update strategy.
+     */
     private static String extractUpdateStrategy(DeployerExtension extension) {
         String updateStrategy = extension.getUpdateStrategy();
         return updateStrategy != null && !updateStrategy.isEmpty() ? updateStrategy : "HARD";
     }
 
+    /**
+     * Extracts the ssl config from the extension.
+     *
+     * @param extension The extension.
+     * @return The extracted ssl config.
+     */
     private static SSLConfig extractSSLConfig(DeployerExtension extension) {
         SSLConfig sslConfig;
         if (extension.isTrustAll()) {

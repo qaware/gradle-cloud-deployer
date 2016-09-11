@@ -20,8 +20,16 @@ import de.qaware.cloud.deployer.plugin.task.DeployTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
+/**
+ * Specifies all tasks offered and the extension used by the gradle cloud deployer plugin.
+ */
 public class DeployerPlugin implements Plugin<Project> {
 
+    /**
+     * Apply this plugin and it's tasks and extension.
+     *
+     * @param project The project this plugin is applied to.
+     */
     public void apply(Project project) {
         project.getExtensions().create("deployer", DeployerExtension.class);
         project.getTasks().create("deploy", DeployTask.class);

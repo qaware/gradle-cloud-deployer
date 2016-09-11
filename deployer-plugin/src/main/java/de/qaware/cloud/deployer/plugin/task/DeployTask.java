@@ -28,8 +28,17 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Represents a task which deploys the specified configuration to the cloud.
+ */
 public class DeployTask extends DefaultTask {
 
+    /**
+     * Deploys the specified configuration.
+     *
+     * @throws ResourceException If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException If a error during config creation/parsing occurs.
+     */
     @TaskAction
     public void deploy() throws ResourceException, ResourceConfigException {
         DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);

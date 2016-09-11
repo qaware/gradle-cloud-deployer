@@ -24,8 +24,17 @@ import de.qaware.cloud.deployer.plugin.DeployerExtension;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
+/**
+ * Represents a task which deletes the specified configuration from the cloud.
+ */
 public class DeleteTask extends DefaultTask {
 
+    /**
+     * Delete the specified configuration.
+     *
+     * @throws ResourceException If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException If a error during config creation/parsing occurs.
+     */
     @TaskAction
     public void delete() throws ResourceException, ResourceConfigException {
         DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);
