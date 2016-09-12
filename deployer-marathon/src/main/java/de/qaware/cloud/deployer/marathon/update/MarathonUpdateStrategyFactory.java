@@ -42,7 +42,7 @@ public final class MarathonUpdateStrategyFactory {
             case "SOFT":
                 return new MarathonSoftUpdateStrategy();
             default:
-                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_UPDATE_STRATEGY"));
+                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_UPDATE_STRATEGY", updateStrategy));
         }
     }
 }
