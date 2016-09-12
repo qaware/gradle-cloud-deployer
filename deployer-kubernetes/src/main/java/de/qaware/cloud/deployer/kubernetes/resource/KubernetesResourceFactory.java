@@ -49,10 +49,10 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
     /**
      * Creates a new factory which creates resources for the specified namespace using the specified cloud config.
      *
-     * @param namespace The namespace this factory creates objects for.
+     * @param namespace   The namespace this factory creates objects for.
      * @param cloudConfig The config which describes the cloud.
      * @throws ResourceConfigException If a problem during namespace creation occurs.
-     * @throws ResourceException If a problem during client factory creation occurs.
+     * @throws ResourceException       If a problem during client factory creation occurs.
      */
     public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException, ResourceException {
         super(LOGGER, new ClientFactory(cloudConfig));
@@ -60,6 +60,11 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, getClientFactory());
     }
 
+    /**
+     * Returns the namespace resource.
+     *
+     * @return The namespace resource.
+     */
     public NamespaceResource getNamespaceResource() {
         return namespaceResource;
     }

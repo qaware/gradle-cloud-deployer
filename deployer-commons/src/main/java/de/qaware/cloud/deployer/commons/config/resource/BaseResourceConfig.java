@@ -53,26 +53,56 @@ public abstract class BaseResourceConfig {
         this.contentType = contentType;
     }
 
+    /**
+     * Returns the filename.
+     *
+     * @return The filename.
+     */
     public String getFilename() {
         return filename;
     }
 
+    /**
+     * Returns the content type.
+     *
+     * @return The content type.
+     */
     public ContentType getContentType() {
         return contentType;
     }
 
+    /**
+     * Returns the resource's id.
+     *
+     * @return The resource's id.
+     */
     public String getResourceId() {
         return resourceId;
     }
 
+    /**
+     * Sets the resource's id.
+     *
+     * @param resourceId The resource's id.
+     */
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
 
+    /**
+     * Returns the content.
+     *
+     * @return The content.
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Sets the content.
+     *
+     * @param content The content.
+     */
     public void setContent(String content) {
         this.content = content;
     }

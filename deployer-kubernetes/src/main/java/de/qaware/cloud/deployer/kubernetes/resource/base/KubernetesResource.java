@@ -43,6 +43,11 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
         this.namespace = namespace;
     }
 
+    /**
+     * Returns the namespace.
+     *
+     * @return The namespace.
+     */
     public String getNamespace() {
         return namespace;
     }

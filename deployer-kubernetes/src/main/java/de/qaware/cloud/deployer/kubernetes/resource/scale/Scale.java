@@ -61,18 +61,38 @@ public class Scale implements Serializable {
         this.kind = kind;
     }
 
+    /**
+     * Returns the api version.
+     *
+     * @return The api version.
+     */
     public String getApiVersion() {
         return apiVersion;
     }
 
+    /**
+     * Returns the kind.
+     *
+     * @return The kind.
+     */
     public String getKind() {
         return kind;
     }
 
+    /**
+     * Returns the metadata.
+     *
+     * @return The metadata.
+     */
     public Map<String, String> getMetadata() {
         return metadata;
     }
 
+    /**
+     * Returns the spec.
+     *
+     * @return The spec.
+     */
     public ScaleSpec getSpec() {
         return spec;
     }

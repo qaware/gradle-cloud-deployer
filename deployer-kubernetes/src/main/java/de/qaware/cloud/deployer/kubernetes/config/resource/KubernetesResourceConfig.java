@@ -53,10 +53,20 @@ public class KubernetesResourceConfig extends BaseResourceConfig {
         this.resourceVersion = ContentTreeUtil.readStringValue(contentObjectTree, "apiVersion");
     }
 
+    /**
+     * Returns the resource version.
+     *
+     * @return The resource version.
+     */
     public String getResourceVersion() {
         return resourceVersion;
     }
 
+    /**
+     * Returns the resource type.
+     *
+     * @return The resource type.
+     */
     public String getResourceType() {
         return resourceType;
     }

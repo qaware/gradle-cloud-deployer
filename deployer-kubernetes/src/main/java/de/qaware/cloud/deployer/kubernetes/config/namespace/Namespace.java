@@ -42,9 +42,9 @@ class Namespace implements Serializable {
     /**
      * Creates a new namespace.
      *
-     * @param name The name of the new namespace.
+     * @param name       The name of the new namespace.
      * @param apiVersion The api version of the namespace.
-     * @param kind The kind of the namespace.
+     * @param kind       The kind of the namespace.
      */
     Namespace(final String name, String apiVersion, String kind) {
         this.apiVersion = apiVersion;
@@ -52,14 +52,29 @@ class Namespace implements Serializable {
         metadata.put("name", name);
     }
 
+    /**
+     * Returns the api version of the namespace.
+     *
+     * @return The api version.
+     */
     public String getApiVersion() {
         return apiVersion;
     }
 
+    /**
+     * Returns the kind of namespace.
+     *
+     * @return The kind of namespace.
+     */
     public String getKind() {
         return kind;
     }
 
+    /**
+     * Returns the metadata.
+     *
+     * @return The metadata.
+     */
     public Map<String, String> getMetadata() {
         return metadata;
     }

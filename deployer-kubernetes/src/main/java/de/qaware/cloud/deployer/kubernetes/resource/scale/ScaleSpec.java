@@ -36,6 +36,11 @@ class ScaleSpec implements Serializable {
         this.replicas = replicas;
     }
 
+    /**
+     * Returns the number of replicas.
+     *
+     * @return The number of replicas.
+     */
     public int getReplicas() {
         return replicas;
     }

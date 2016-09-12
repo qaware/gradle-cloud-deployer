@@ -51,6 +51,11 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
         this.clientFactory = clientFactory;
     }
 
+    /**
+     * Returns the client factory.
+     *
+     * @return The client factory.
+     */
     public ClientFactory getClientFactory() {
         return clientFactory;
     }
