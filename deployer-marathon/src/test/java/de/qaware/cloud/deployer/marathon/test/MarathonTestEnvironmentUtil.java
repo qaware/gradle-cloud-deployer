@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon.test;
 
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.CloudConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
@@ -38,7 +39,7 @@ public class MarathonTestEnvironmentUtil {
 
     private static CloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy) {
         CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
-        cloudConfig.setToken(environmentVariables.get(MARATHON_TOKEN_ENV));
+        cloudConfig.setAuthConfig(new AuthConfig(environmentVariables.get(MARATHON_TOKEN_ENV)));
         return cloudConfig;
     }
 
@@ -47,7 +48,7 @@ public class MarathonTestEnvironmentUtil {
     }
 
     private static Marathon createMarathonClient(CloudConfig cloudConfig) {
-        return AuthorizedMarathonClient.createInstance(cloudConfig.getBaseUrl() + "/service/marathon", cloudConfig.getToken());
+        return AuthorizedMarathonClient.createInstance(cloudConfig.getBaseUrl() + "/service/marathon", cloudConfig.getAuthConfig().getToken());
     }
 
     public static MarathonTestEnvironment createTestEnvironment() throws ResourceConfigException, ResourceException, IOException, CloudConfigException {

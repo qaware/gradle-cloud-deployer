@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon.config.cloud;
 
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.CloudConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -42,7 +43,8 @@ public final class MarathonCloudConfigTokenUtil {
      * @throws ResourceException    If a problem with the cloud config exists.
      */
     public static void retrieveApiToken(CloudConfig cloudConfig) throws CloudConfigException, ResourceException {
-        String dcosToken = cloudConfig.getToken();
+        AuthConfig authConfig = cloudConfig.getAuthConfig();
+        String dcosToken = authConfig.getToken();
         if (dcosToken != null && !dcosToken.isEmpty()) {
             try {
                 // Create a client factory and a client.
@@ -62,7 +64,7 @@ public final class MarathonCloudConfigTokenUtil {
                 String apiToken = tokenResponse.body().getToken();
 
                 // Replace token
-                cloudConfig.setToken(apiToken);
+                authConfig.setToken(apiToken);
             } catch (IOException e) {
                 throw new ResourceException("Couldn't connect", e);
             }
