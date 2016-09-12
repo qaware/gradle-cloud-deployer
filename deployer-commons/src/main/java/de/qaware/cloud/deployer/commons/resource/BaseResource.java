@@ -35,6 +35,11 @@ import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESS
 public abstract class BaseResource<ConfigType extends BaseResourceConfig> implements Resource {
 
     /**
+     * Id of the error message for a unhandled http status code.
+     */
+    private static final String ERROR_UNHANDLED_HTTP_STATUS_CODE = "DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE";
+
+    /**
      * The timeout defines the maximum duration of a backend operation in seconds. If it takes longer to execute the
      * operation a error will be thrown.
      */
@@ -108,7 +113,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         try {
             Response<ResponseBody> response = call.execute();
             if (!isSuccessResponse(response)) {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -130,7 +135,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else if (isNotFoundResponse(response)) {
                 return false;
             } else {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -153,7 +158,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
                     blocker.block();
                 }
             } else {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -176,7 +181,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
                     blocker.block();
                 }
             } else {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
