@@ -142,9 +142,9 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithExistingAndNonExistingFiles() {
-        File nonExistingFile = new File("/service-non-existing.yml");
+        File nonExistingFile = new File("service-non-existing.yml");
         File existingFile = new File("/service/service.yml");
-        assertExceptionOnCreation(nonExistingFile, existingFile, "File '\\service-non-existing.yml' does not exist");
+        assertExceptionOnCreation(nonExistingFile, existingFile, "File 'service-non-existing.yml' does not exist");
     }
 
     public void testCreateConfigsWithExistingAndEmptyFiles() {
@@ -161,8 +161,8 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithNonExistingFile() {
-        File testFile = new File("/service/service-non-existing.yml");
-        assertExceptionOnCreation1(testFile, "File '\\service\\service-non-existing.yml' does not exist");
+        File testFile = new File("service-non-existing.yml");
+        assertExceptionOnCreation1(testFile, "File 'service-non-existing.yml' does not exist");
     }
 
     public void testCreateConfigsWithExistingUnsupportedFiles() {
