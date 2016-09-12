@@ -20,7 +20,7 @@ import de.qaware.cloud.deployer.commons.logging.DeployerMessageBundle;
 /**
  * A class which offers all relevant log messages for this project.
  */
-public class CommonsMessageBundle {
+public final class CommonsMessageBundle {
 
     /**
      * A bundle which contains all common messages.
