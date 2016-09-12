@@ -25,18 +25,36 @@ public class Token {
      */
     private String token;
 
+    /**
+     * Creates a new token.
+     */
     public Token() {
     }
 
+    /**
+     * Creates a new token.
+     *
+     * @param token The token string.
+     */
     public Token(String token) {
         this.token = token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
+    /**
+     * Returns the token.
+     *
+     * @return The token string.
+     */
     public String getToken() {
         return token;
+    }
+
+    /**
+     * Sets the specified token.
+     *
+     * @param token The token string.
+     */
+    public void setToken(String token) {
+        this.token = token;
     }
 }
