@@ -15,12 +15,12 @@
  */
 package de.qaware.cloud.deployer.plugin.task;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
-import de.qaware.cloud.deployer.plugin.CloudConfigFactory;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
 import de.qaware.cloud.deployer.plugin.DeployerExtension;
+import de.qaware.cloud.deployer.plugin.KubernetesCloudConfigFactory;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
@@ -42,10 +42,9 @@ public class DeployTask extends DefaultTask {
     @TaskAction
     public void deploy() throws ResourceException, ResourceConfigException {
         DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);
-        CloudConfig cloudConfig = CloudConfigFactory.create(extension);
-        String namespace = extension.getNamespace();
+        KubernetesCloudConfig cloudConfig = KubernetesCloudConfigFactory.create(extension);
         List<File> files = Arrays.asList(extension.getFiles());
         KubernetesDeployer deployer = new KubernetesDeployer();
-        deployer.deploy(cloudConfig, namespace, files);
+        deployer.deploy(cloudConfig, files);
     }
 }

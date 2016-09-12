@@ -15,18 +15,19 @@
  */
 package de.qaware.cloud.deployer.plugin;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
 
 /**
  * Creates a cloud config using the specified extension.
  */
-public final class CloudConfigFactory {
+public final class KubernetesCloudConfigFactory {
 
     /**
      * UTILITY.
      */
-    private CloudConfigFactory() {
+    private KubernetesCloudConfigFactory() {
     }
 
     /**
@@ -35,14 +36,28 @@ public final class CloudConfigFactory {
      * @param extension The extension which contains all information.
      * @return The created cloud config.
      */
-    public static CloudConfig create(DeployerExtension extension) {
-        CloudConfig cloudConfig = new CloudConfig(extractBaseUrl(extension), extractUpdateStrategy(extension));
+    public static KubernetesCloudConfig create(DeployerExtension extension) {
+        KubernetesCloudConfig cloudConfig = new KubernetesCloudConfig(extractBaseUrl(extension), extractUpdateStrategy(extension), extractNamespace(extension));
         SSLConfig sslConfig = extractSSLConfig(extension);
         cloudConfig.setSslConfig(sslConfig);
-        cloudConfig.setUsername(extension.getUsername());
-        cloudConfig.setPassword(extension.getPassword());
-        cloudConfig.setToken(extension.getToken());
+        AuthConfig authConfig = extractAuthConfig(extension);
+        cloudConfig.setAuthConfig(authConfig);
         return cloudConfig;
+    }
+
+    /**
+     * Extracts the namespace from the extension.
+     *
+     * @param extension The extension.
+     * @return The extracted namespace.
+     */
+    private static String extractNamespace(DeployerExtension extension) {
+        String namespace = extension.getNamespace();
+        if (namespace != null && !namespace.isEmpty()) {
+            return namespace;
+        } else {
+            throw new IllegalArgumentException("Please specify a namespace");
+        }
     }
 
     /**
@@ -87,5 +102,28 @@ public final class CloudConfigFactory {
             sslConfig = new SSLConfig(false);
         }
         return sslConfig;
+    }
+
+    /**
+     * Extracts the auth config from the extension.
+     *
+     * @param extension The extension.
+     * @return The extracted auth config.
+     */
+    private static AuthConfig extractAuthConfig(DeployerExtension extension) {
+        AuthConfig authConfig = new AuthConfig();
+        String username = extension.getUsername();
+        String password = extension.getPassword();
+        String token = extension.getToken();
+        if (username != null && !username.isEmpty()) {
+            authConfig.setUsername(username);
+        }
+        if (password != null && !password.isEmpty()) {
+            authConfig.setPassword(password);
+        }
+        if (token != null && !token.isEmpty()) {
+            authConfig.setToken(token);
+        }
+        return authConfig;
     }
 }

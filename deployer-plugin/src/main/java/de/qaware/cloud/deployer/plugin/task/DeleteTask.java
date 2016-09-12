@@ -15,12 +15,12 @@
  */
 package de.qaware.cloud.deployer.plugin.task;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
-import de.qaware.cloud.deployer.plugin.CloudConfigFactory;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
 import de.qaware.cloud.deployer.plugin.DeployerExtension;
+import de.qaware.cloud.deployer.plugin.KubernetesCloudConfigFactory;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
@@ -32,15 +32,14 @@ public class DeleteTask extends DefaultTask {
     /**
      * Delete the specified configuration.
      *
-     * @throws ResourceException If a error during resource interaction with the backend occurs.
+     * @throws ResourceException       If a error during resource interaction with the backend occurs.
      * @throws ResourceConfigException If a error during config creation/parsing occurs.
      */
     @TaskAction
     public void delete() throws ResourceException, ResourceConfigException {
         DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);
-        CloudConfig cloudConfig = CloudConfigFactory.create(extension);
-        String namespace = extension.getNamespace();
+        KubernetesCloudConfig cloudConfig = KubernetesCloudConfigFactory.create(extension);
         KubernetesDeployer deployer = new KubernetesDeployer();
-        deployer.delete(cloudConfig, namespace);
+        deployer.delete(cloudConfig);
     }
 }
