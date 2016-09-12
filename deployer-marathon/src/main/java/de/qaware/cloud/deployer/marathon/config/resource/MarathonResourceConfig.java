@@ -42,9 +42,4 @@ public class MarathonResourceConfig extends BaseResourceConfig {
         String id = ContentTreeUtil.readStringValue(contentObjectTree, "id");
         this.setResourceId(id);
     }
-
-    @Override
-    public String toString() {
-        return "Config: " + getResourceId();
-    }
 }
