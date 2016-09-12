@@ -31,7 +31,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Offers the possbility to deploy a list of kubernetes config files to a kubernetes cloud.
+ * Offers the possibility to deploy a list of kubernetes config files to a kubernetes cloud.
  */
 public class KubernetesDeployer {
 
