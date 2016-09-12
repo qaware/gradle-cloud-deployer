@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.List;
 
-import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
  * A factory which creates resource configs using the specified files.

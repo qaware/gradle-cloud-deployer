@@ -17,7 +17,7 @@ package de.qaware.cloud.deployer.marathon.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
-import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
  * Factory which returns a marathon update strategy.

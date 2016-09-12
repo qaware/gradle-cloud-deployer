@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
  * Implements the soft update strategy. Meaning that all resources not included in the resources list stay untouched.

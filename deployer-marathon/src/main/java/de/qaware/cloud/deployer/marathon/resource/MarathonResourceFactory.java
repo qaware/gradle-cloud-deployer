@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
  * Factory which creates MarathonResources using the specified MarathonResourceConfigs.

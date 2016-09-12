@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.marathon.update;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import junit.framework.TestCase;
 
-import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 public class MarathonUpdateStrategyFactoryTest extends TestCase {
 
