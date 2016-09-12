@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.commons;
-
-import de.qaware.cloud.deployer.commons.logging.DeployerMessageBundle;
+package de.qaware.cloud.deployer.commons.logging;
 
 /**
  * A class which offers all relevant log messages for this project.

@@ -25,7 +25,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
 import java.io.IOException;
 
-import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
  * Utility for json/yaml content.

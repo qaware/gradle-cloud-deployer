@@ -25,7 +25,7 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
  * Implements a basic resource independent of the target cloud system. It offers functionality for backend communication.
