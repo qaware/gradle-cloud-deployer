@@ -54,4 +54,28 @@ public class DeploymentLabelUtilTest extends TestCase {
         String value = testNode.textValue();
         assertEquals("test", value);
     }
+
+    public void testAddLabelWithAPod() throws ResourceConfigException {
+        boolean exceptionThrown = false;
+        KubernetesResourceConfig podConfig = new KubernetesResourceConfig("test", ContentType.YAML, FileUtil.readFileContent("/pod/pod.json"));
+        try {
+            DeploymentLabelUtil.addLabel(podConfig, "test", "test");
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_LABEL_MARKING_INVALID_CONFIG", "test"), e.getMessage());
+        }
+        assertTrue(exceptionThrown);
+    }
+
+    public void testAddLabelWithMissingPath() throws ResourceConfigException {
+        boolean exceptionThrown = false;
+        KubernetesResourceConfig podConfig = new KubernetesResourceConfig("test", ContentType.YAML, FileUtil.readFileContent("/deployment/deployment-missing-labels.yml"));
+        try {
+            DeploymentLabelUtil.addLabel(podConfig, "test", "test");
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_LABEL_MARKING_INVALID_PATH", "test"), e.getMessage());
+        }
+        assertTrue(exceptionThrown);
+    }
 }
