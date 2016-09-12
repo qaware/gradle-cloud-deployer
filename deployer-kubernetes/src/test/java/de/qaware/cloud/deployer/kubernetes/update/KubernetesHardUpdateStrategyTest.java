@@ -66,19 +66,19 @@ public class KubernetesHardUpdateStrategyTest extends TestCase {
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/resource/update/hard-update-v1.yml").getPath()));
+        filesV1.add(new File(this.getClass().getResource("/update/hard-update-v1.yml").getPath()));
         List<KubernetesResourceConfig> configsV1 = resourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/resource/update/hard-update-v2.yml").getPath()));
+        filesV2.add(new File(this.getClass().getResource("/update/hard-update-v2.yml").getPath()));
         List<KubernetesResourceConfig> configsV2 = resourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
 
         // Create the resources for v3
         List<File> filesV3 = new ArrayList<>();
-        filesV3.add(new File(this.getClass().getResource("/resource/update/hard-update-v3.yml").getPath()));
+        filesV3.add(new File(this.getClass().getResource("/update/hard-update-v3.yml").getPath()));
         List<KubernetesResourceConfig> configsV3 = resourceConfigFactory.createConfigs(filesV3);
         resourcesV3 = factory.createResources(configsV3);
     }

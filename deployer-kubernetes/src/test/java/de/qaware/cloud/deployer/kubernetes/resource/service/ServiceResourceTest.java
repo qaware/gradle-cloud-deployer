@@ -44,7 +44,7 @@ public class ServiceResourceTest extends TestCase {
 
         // Create the ServiceResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String serviceDescription = FileUtil.readFileContent("/config/resource/service.yml");
+        String serviceDescription = FileUtil.readFileContent("/service/service.yml");
         KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, serviceDescription);
         serviceResource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }

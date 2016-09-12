@@ -90,7 +90,7 @@ public class KubernetesResourceFactoryTest extends TestCase {
     }
 
     public void testCreateWithValidDeployment() throws ResourceConfigException, ResourceException {
-        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.YAML, FileUtil.readFileContent("/resource/deployment/deployment.yml"));
+        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.YAML, FileUtil.readFileContent("/deployment/deployment.yml"));
         KubernetesResource deploymentResource = resourceFactory.createResource(config);
         assertTrue(deploymentResource instanceof DeploymentResource);
         assertEquals("zwitscher-eureka", deploymentResource.getId());
@@ -98,7 +98,7 @@ public class KubernetesResourceFactoryTest extends TestCase {
     }
 
     public void testCreateWithValidPod() throws ResourceConfigException, ResourceException {
-        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.JSON, FileUtil.readFileContent("/config/resource/pod.json"));
+        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.JSON, FileUtil.readFileContent("/pod/pod.json"));
         KubernetesResource podResource = resourceFactory.createResource(config);
         assertTrue(podResource instanceof PodResource);
         assertEquals("nginx-mysql", podResource.getId());
@@ -106,7 +106,7 @@ public class KubernetesResourceFactoryTest extends TestCase {
     }
 
     public void testCreateWithValidService() throws ResourceConfigException, ResourceException {
-        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.YAML, FileUtil.readFileContent("/config/resource/service.yml"));
+        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.YAML, FileUtil.readFileContent("/service/service.yml"));
         KubernetesResource serviceResource = resourceFactory.createResource(config);
         assertTrue(serviceResource instanceof ServiceResource);
         assertEquals("zwitscher-eureka", serviceResource.getId());
@@ -114,7 +114,7 @@ public class KubernetesResourceFactoryTest extends TestCase {
     }
 
     public void testCreateWithValidReplicationController() throws ResourceConfigException, ResourceException {
-        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.YAML, FileUtil.readFileContent("/resource/replication/controller/replication-controller.yml"));
+        KubernetesResourceConfig config = new KubernetesResourceConfig("temp", ContentType.YAML, FileUtil.readFileContent("/replication/controller/replication-controller.yml"));
         KubernetesResource controllerResource = resourceFactory.createResource(config);
         assertTrue(controllerResource instanceof ReplicationControllerResource);
         assertEquals("nginx", controllerResource.getId());

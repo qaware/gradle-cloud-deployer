@@ -27,13 +27,15 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 public class DeploymentLabelUtilTest extends TestCase {
 
     private KubernetesResourceConfig resourceConfig;
 
     @Override
     public void setUp() throws Exception {
-        String deploymentDescription = FileUtil.readFileContent("/resource/deployment/deployment.yml");
+        String deploymentDescription = FileUtil.readFileContent("/deployment/deployment.yml");
         resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescription);
     }
 
