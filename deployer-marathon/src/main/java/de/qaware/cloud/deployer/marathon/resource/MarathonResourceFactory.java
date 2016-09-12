@@ -107,7 +107,7 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
             throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_DURING_RESOURCE_CREATION", resourceConfig.getFilename()), e);
         }
 
-        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE"), resource);
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE", resource));
 
         return resource;
     }

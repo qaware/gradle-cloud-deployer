@@ -121,7 +121,7 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
                 throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_API_VERSION", resourceConfig.getFilename()));
         }
 
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE"), resource);
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE", resource));
 
         return resource;
     }
