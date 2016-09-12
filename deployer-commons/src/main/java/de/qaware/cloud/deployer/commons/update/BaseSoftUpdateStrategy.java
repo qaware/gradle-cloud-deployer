@@ -17,51 +17,25 @@ package de.qaware.cloud.deployer.commons.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
-import org.slf4j.Logger;
-
-import java.util.List;
 
 /**
  * Implements a basic version of the soft update strategy. Meaning that all resources not included in the resources list
  * stay untouched.
- * @param <ResourceType> The type of the resources that are handled by this update strategy.
  */
-public abstract class BaseSoftUpdateStrategy<ResourceType extends Resource> {
+public abstract class BaseSoftUpdateStrategy {
 
     /**
-     * The logger of this instance.
-     */
-    private final Logger logger;
-
-    /**
-     * Creates a new base soft update strategy.
+     * Deploys the specified resources. If the resource already exists, it will be deleted first.
      *
-     * @param logger The logger used for logging.
-     */
-    public BaseSoftUpdateStrategy(Logger logger) {
-        this.logger = logger;
-    }
-
-    /**
-     * Deploys the list of resources. If the resource already exists, it will be deleted first.
-     *
-     * @param resources The resources to deploy.
+     * @param resource The resource to deploy.
      * @throws ResourceException If an error during deletion or deployment occurs.
      */
-    public void deploy(List<ResourceType> resources) throws ResourceException {
-        logger.info("Deploying resources...");
-
-        for (Resource resource : resources) {
-            if (resource.exists()) {
-                resource.delete();
-                resource.create();
-                logger.info("- " + resource + " (updated)");
-            } else {
-                resource.create();
-                logger.info("- " + resource + " (created)");
-            }
+    public void deploy(Resource resource) throws ResourceException {
+        if (resource.exists()) {
+            resource.delete();
+            resource.create();
+        } else {
+            resource.create();
         }
-
-        logger.info("Finished deploying resources...");
     }
 }

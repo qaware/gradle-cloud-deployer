@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Implements the hard update strategy. Meaning that the whole namespace is deleted before the deploying.
  */
@@ -42,14 +44,12 @@ public class KubernetesHardUpdateStrategy implements KubernetesUpdateStrategy {
      * @throws ResourceException If an error during deployment occurs.
      */
     private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
-        LOGGER.info("Deploying resources...");
-
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
         for (Resource resource : resources) {
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE"), resource);
             resource.create();
-            LOGGER.info("- " + resource);
         }
-
-        LOGGER.info("Finished deploying resources...");
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
     }
 
     @Override

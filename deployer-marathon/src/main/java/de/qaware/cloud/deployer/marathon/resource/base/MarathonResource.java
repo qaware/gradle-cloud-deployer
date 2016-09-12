@@ -21,6 +21,8 @@ import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import okhttp3.MediaType;
 
+import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+
 /**
  * Represents a marathon resource. It offers functionality for deletion and creation.
  */
@@ -30,7 +32,7 @@ public abstract class MarathonResource extends BaseResource<MarathonResourceConf
      * Creates a new marathon resource using the specified config and client factory.
      *
      * @param resourceConfig The config this resource belongs to.
-     * @param clientFactory The factory which is used to build the clients for backend communication.
+     * @param clientFactory  The factory which is used to build the clients for backend communication.
      */
     public MarathonResource(MarathonResourceConfig resourceConfig, ClientFactory clientFactory) {
         super(resourceConfig, clientFactory);
@@ -43,7 +45,7 @@ public abstract class MarathonResource extends BaseResource<MarathonResourceConf
             case JSON:
                 return MediaType.parse("application/json");
             default:
-                throw new ResourceException("Unknown type " + getResourceConfig().getContentType());
+                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_CONTENT_TYPE", getResourceConfig().getFilename()));
         }
     }
 }

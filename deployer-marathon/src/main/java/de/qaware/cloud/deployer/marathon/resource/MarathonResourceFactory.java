@@ -35,6 +35,10 @@ import de.qaware.cloud.deployer.marathon.resource.group.GroupResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+
 /**
  * Factory which creates MarathonResources using the specified MarathonResourceConfigs.
  */
@@ -67,15 +71,24 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
      * @throws ResourceException if an error occurs.
      */
     public MarathonResourceFactory(CloudConfig cloudConfig) throws ResourceException {
-        super(LOGGER, new ClientFactory(cloudConfig));
+        super(new ClientFactory(cloudConfig));
+    }
+
+    @Override
+    public List<MarathonResource> createResources(List<MarathonResourceConfig> resourceConfigs) throws ResourceException {
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_CREATING_RESOURCES_STARTED"));
+        List<MarathonResource> resources = super.createResources(resourceConfigs);
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_CREATING_RESOURCES_DONE"));
+        return resources;
     }
 
     @Override
     public MarathonResource createResource(MarathonResourceConfig resourceConfig) throws ResourceException {
+        MarathonResource resource;
 
         // Is the content empty?
         if (resourceConfig.getContent().isEmpty()) {
-            throw new ResourceException("Config is empty (File: " + resourceConfig.getFilename() + ")");
+            throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_EMPTY_CONFIG", resourceConfig.getFilename()));
         }
 
         try {
@@ -83,16 +96,20 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
             // What type of config is this json tree?
             if (isApp(contentObjectTree)) {
                 // App?
-                return new AppResource(resourceConfig, getClientFactory());
+                resource = new AppResource(resourceConfig, getClientFactory());
             } else if (isGroup(contentObjectTree)) {
                 // Group?
-                return new GroupResource(resourceConfig, getClientFactory());
+                resource = new GroupResource(resourceConfig, getClientFactory());
             } else {
-                throw new ResourceException("Unknown marathon resource type");
+                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_RESOURCE_TYPE", resourceConfig.getFilename()));
             }
         } catch (ResourceConfigException e) {
-            throw new ResourceException("An error occured during marathon resource creation", e);
+            throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_DURING_RESOURCE_CREATION", resourceConfig.getFilename()));
         }
+
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE"), resource);
+
+        return resource;
     }
 
     /**

@@ -15,10 +15,12 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import junit.framework.TestCase;
+
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
 public class NamespaceResourceConfigFactoryTest extends TestCase {
 
@@ -40,6 +42,7 @@ public class NamespaceResourceConfigFactoryTest extends TestCase {
             NamespaceResourceConfigFactory.create("");
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_INVALID_NAMESPACE"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }
@@ -50,6 +53,7 @@ public class NamespaceResourceConfigFactoryTest extends TestCase {
             NamespaceResourceConfigFactory.create(null);
         } catch (ResourceConfigException e) {
             exceptionThrown = true;
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_INVALID_NAMESPACE"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }

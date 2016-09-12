@@ -15,22 +15,37 @@
  */
 package de.qaware.cloud.deployer.marathon.update;
 
+import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.update.BaseSoftUpdateStrategy;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+
 /**
  * Implements the soft update strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-class MarathonSoftUpdateStrategy extends BaseSoftUpdateStrategy<MarathonResource> implements MarathonUpdateStrategy {
+class MarathonSoftUpdateStrategy extends BaseSoftUpdateStrategy implements MarathonUpdateStrategy {
 
     /**
      * The logger of this class.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(MarathonSoftUpdateStrategy.class);
 
-    public MarathonSoftUpdateStrategy() {
-        super(LOGGER);
+    @Override
+    public void deploy(List<MarathonResource> resources) throws ResourceException {
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
+
+        // Update existing resources (delete and create again) and create new ones
+        for (Resource resource : resources) {
+            LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
+            super.deploy(resource);
+        }
+
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_DONE"));
     }
 }

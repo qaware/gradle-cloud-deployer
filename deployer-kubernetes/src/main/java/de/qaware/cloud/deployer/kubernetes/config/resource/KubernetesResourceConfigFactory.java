@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * A factory which creates resource configs using the specified files.
  */
@@ -42,17 +44,12 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResourceConfig.class);
 
-    /**
-     * Creates a new kubernetes resource config factory.
-     */
-    public KubernetesResourceConfigFactory() {
-        super(LOGGER);
-    }
-
     @Override
     public List<KubernetesResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_READING_CONFIGS_STARTED"));
         List<KubernetesResourceConfig> resourceConfigs = super.createConfigs(files);
         resourceConfigs = splitConfigs(resourceConfigs, KUBERNETES_CONFIG_SEPARATOR);
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_READING_CONFIGS_DONE"));
         return resourceConfigs;
     }
 
@@ -61,6 +58,12 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
         String filename = file.getName();
         ContentType contentType = retrieveContentType(file);
         String content = FileUtil.readFileContent(file);
+
+        // Is the content empty?
+        if (content.isEmpty()) {
+            throw new ResourceConfigException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_EMPTY_CONFIG", file.getName()));
+        }
+
         return new KubernetesResourceConfig(filename, contentType, content);
     }
 
@@ -79,7 +82,7 @@ public class KubernetesResourceConfigFactory extends BaseResourceConfigFactory<K
             for (String splitContent : splitContents) {
                 KubernetesResourceConfig splitResourceConfig = new KubernetesResourceConfig(resourceConfig.getFilename(), resourceConfig.getContentType(), splitContent);
                 splitResourceConfigs.add(splitResourceConfig);
-                LOGGER.info("- " + splitResourceConfig);
+                LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_READING_CONFIGS_SINGLE_CONFIG", splitResourceConfig));
             }
         }
         return splitResourceConfigs;

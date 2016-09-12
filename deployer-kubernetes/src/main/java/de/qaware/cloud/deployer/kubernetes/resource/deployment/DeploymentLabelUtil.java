@@ -23,6 +23,8 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 
 import java.util.Objects;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * A utility which adds a label to the specified deployment.
  */
@@ -54,10 +56,10 @@ final class DeploymentLabelUtil {
                 ContentTreeUtil.addField(labelsNode, label, value);
                 resourceConfig.setContent(objectTree.toString());
             } catch (ResourceConfigException e) {
-                throw new ResourceException("Can't add label to deployment - the path spec/template/metadata/labels doesn't exist in your deployment config (Config: " + resourceConfig.getResourceId() + ")", e);
+                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_LABEL_MARKING_INVALID_PATH", resourceConfig.getFilename()), e);
             }
         } else {
-            throw new ResourceException("Can't add label to a " + resourceConfig.getResourceType());
+            throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_LABEL_MARKING_INVALID_CONFIG", resourceConfig.getFilename()));
         }
     }
 }

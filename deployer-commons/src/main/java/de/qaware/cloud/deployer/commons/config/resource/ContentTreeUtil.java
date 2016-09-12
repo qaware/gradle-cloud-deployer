@@ -25,6 +25,8 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 
 import java.io.IOException;
 
+import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+
 /**
  * Utility for json/yaml content.
  */
@@ -54,12 +56,12 @@ public final class ContentTreeUtil {
                 mapper = new ObjectMapper(new JsonFactory());
                 break;
             default:
-                throw new ResourceConfigException("Unknown config type " + contentType);
+                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNKNOWN_CONTENT_TYPE_NO_FILE"));
         }
         try {
             return mapper.readTree(content);
         } catch (JsonProcessingException ex) {
-            throw new ResourceConfigException("Could not parse config content", ex);
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_PARSING"), ex);
         } catch (IOException ex) {
             throw new ResourceConfigException(ex.getMessage(), ex);
         }
@@ -77,7 +79,7 @@ public final class ContentTreeUtil {
         if (contentObjectTree.hasNonNull(key)) {
             return contentObjectTree.get(key);
         } else {
-            throw new ResourceConfigException("Could not find attribute '" + key + "' in config content");
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", key));
         }
     }
 
@@ -93,7 +95,7 @@ public final class ContentTreeUtil {
         if (contentObjectTree.hasNonNull(key)) {
             return contentObjectTree.get(key).textValue();
         } else {
-            throw new ResourceConfigException("Could not find attribute '" + key + "' in config content");
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", key));
         }
     }
 

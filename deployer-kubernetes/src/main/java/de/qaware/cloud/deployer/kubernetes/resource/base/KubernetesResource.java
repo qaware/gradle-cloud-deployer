@@ -21,6 +21,8 @@ import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import okhttp3.MediaType;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Represents a kubernetes resource. Such a resource offers methods for deletion and creation.
  */
@@ -60,7 +62,7 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
             case YAML:
                 return MediaType.parse("application/yaml");
             default:
-                throw new ResourceException("Unknown type " + getResourceConfig().getContentType());
+                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_CONTENT_TYPE", getResourceConfig().getFilename()));
         }
     }
 }

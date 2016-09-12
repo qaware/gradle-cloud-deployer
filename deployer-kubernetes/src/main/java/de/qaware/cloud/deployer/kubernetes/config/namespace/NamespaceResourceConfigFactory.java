@@ -22,7 +22,7 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 
-import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesLogMessagesUtil.getMessage;
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
 /**
  * A factory which creates a resource config for a namespace.
@@ -60,7 +60,7 @@ public final class NamespaceResourceConfigFactory {
     public static KubernetesResourceConfig create(String name) throws ResourceConfigException {
 
         if (name == null || name.isEmpty()) {
-            throw new ResourceConfigException(getMessage("DEPLOYER_KUBERNETES_ERROR_INVALID_NAMESPACE"));
+            throw new ResourceConfigException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_INVALID_NAMESPACE"));
         }
 
         try {
@@ -68,7 +68,7 @@ public final class NamespaceResourceConfigFactory {
             String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespace);
             return new KubernetesResourceConfig(NAMESPACE_DEFAULT_FILENAME, ContentType.JSON, namespaceDescriptionContent);
         } catch (JsonProcessingException e) {
-            throw new ResourceConfigException(getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_NAMESPACE_CREATION"), e);
+            throw new ResourceConfigException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_NAMESPACE_CREATION"), e);
         }
     }
 }

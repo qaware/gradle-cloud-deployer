@@ -17,7 +17,6 @@ package de.qaware.cloud.deployer.commons.resource;
 
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,18 +35,11 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
     private final ClientFactory clientFactory;
 
     /**
-     * The logger which is used for logging.
-     */
-    private final Logger logger;
-
-    /**
      * Creates a new base resource factory.
      *
-     * @param logger        The logger which is used for logging.
      * @param clientFactory The client factory which is used to create the clients for the backend communication.
      */
-    public BaseResourceFactory(Logger logger, ClientFactory clientFactory) {
-        this.logger = logger;
+    public BaseResourceFactory(ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 
@@ -68,16 +60,10 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
      * @throws ResourceException If an error during resource creation occurs.
      */
     public List<ResourceType> createResources(List<ConfigType> resourceConfigs) throws ResourceException {
-
-        logger.info("Creating resources...");
-
         List<ResourceType> resources = new ArrayList<>();
         for (ConfigType resourceConfig : resourceConfigs) {
             resources.add(createResource(resourceConfig));
         }
-
-        logger.info("Finished creating resources...");
-
         return resources;
     }
 

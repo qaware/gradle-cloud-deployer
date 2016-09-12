@@ -37,6 +37,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+
 /**
  * A factory which creates retrofit clients. Those clients are initialized using the specified cloud config.
  */
@@ -94,7 +96,7 @@ public class ClientFactory {
 
         // Check if url is specified.
         if (cloudConfig.getBaseUrl() == null || cloudConfig.getBaseUrl().isEmpty()) {
-            throw new ResourceException("Can't create a client without a url");
+            throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_NO_URL_SPECIFIED"));
         }
 
         // Create a client builder.

@@ -20,6 +20,8 @@ import de.qaware.cloud.deployer.kubernetes.update.KubernetesHardUpdateStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * A utility which offers typical namespace operations.
  */
@@ -44,12 +46,10 @@ public final class NamespaceUtil {
      */
     public static void safeDeleteNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (namespaceResource.exists()) {
-            LOGGER.info("Removing namespace...");
-
-            LOGGER.info("- " + namespaceResource);
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DELETING_NAMESPACE_STARTED"));
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DELETING_NAMESPACE_SINGLE_DEPLOYMENT", namespaceResource));
             namespaceResource.delete();
-
-            LOGGER.info("Finished removing namespace...");
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DELETING_NAMESPACE_DONE"));
         }
     }
 
@@ -61,12 +61,10 @@ public final class NamespaceUtil {
      */
     public static void safeCreateNamespace(NamespaceResource namespaceResource) throws ResourceException {
         if (!namespaceResource.exists()) {
-            LOGGER.info("Creating namespace...");
-
-            LOGGER.info("- " + namespaceResource);
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_NAMESPACE_STARTED"));
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_NAMESPACE_SINGLE_DEPLOYMENT", namespaceResource));
             namespaceResource.create();
-
-            LOGGER.info("Finished creating namespace...");
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_NAMESPACE_DONE"));
         }
     }
 }

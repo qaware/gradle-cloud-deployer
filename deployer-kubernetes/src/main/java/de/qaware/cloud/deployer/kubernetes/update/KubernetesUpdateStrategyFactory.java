@@ -17,6 +17,8 @@ package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Factory which returns a kubernetes update strategy.
  */
@@ -42,7 +44,7 @@ public final class KubernetesUpdateStrategyFactory {
             case "SOFT":
                 return new KubernetesSoftUpdateStrategy();
             default:
-                throw new ResourceException("Unknown strategy type specified");
+                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_UPDATE_STRATEGY", updateStrategy));
         }
     }
 }

@@ -17,11 +17,12 @@ package de.qaware.cloud.deployer.commons.config.resource;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
  * Implementation of a basic resource config factory.
@@ -31,20 +32,6 @@ import java.util.List;
 public abstract class BaseResourceConfigFactory<ConfigType extends BaseResourceConfig> {
 
     /**
-     * The logger used for logging.
-     */
-    private final Logger logger;
-
-    /**
-     * Creates a new base resource config factory.
-     *
-     * @param logger The logger used for logging.
-     */
-    protected BaseResourceConfigFactory(Logger logger) {
-        this.logger = logger;
-    }
-
-    /**
      * Creates a list of config objects out of the specified list of files.
      *
      * @param files The files which are the sources for the configs.
@@ -52,16 +39,10 @@ public abstract class BaseResourceConfigFactory<ConfigType extends BaseResourceC
      * @throws ResourceConfigException If an error during config creation occurs.
      */
     public List<ConfigType> createConfigs(List<File> files) throws ResourceConfigException {
-
-        logger.info("Reading config files...");
-
         List<ConfigType> resourceConfigs = new ArrayList<>();
         for (File file : files) {
             resourceConfigs.add(createConfig(file));
         }
-
-        logger.info("Finished reading config files...");
-
         return resourceConfigs;
     }
 
@@ -89,7 +70,7 @@ public abstract class BaseResourceConfigFactory<ConfigType extends BaseResourceC
             case "yml":
                 return ContentType.YAML;
             default:
-                throw new ResourceConfigException("Unsupported content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
+                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNKNOWN_CONTENT_TYPE", file.getName()));
         }
     }
 }

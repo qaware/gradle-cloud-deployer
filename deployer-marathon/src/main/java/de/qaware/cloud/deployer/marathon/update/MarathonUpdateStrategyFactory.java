@@ -17,6 +17,8 @@ package de.qaware.cloud.deployer.marathon.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
+import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+
 /**
  * Factory which returns a marathon update strategy.
  */
@@ -40,7 +42,7 @@ public final class MarathonUpdateStrategyFactory {
             case "SOFT":
                 return new MarathonSoftUpdateStrategy();
             default:
-                throw new ResourceException("Unknown strategy type specified");
+                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_UPDATE_STRATEGY"));
         }
     }
 }

@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.update.BaseSoftUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -25,27 +26,31 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Implements the soft update strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-class KubernetesSoftUpdateStrategy extends BaseSoftUpdateStrategy<KubernetesResource> implements KubernetesUpdateStrategy {
+class KubernetesSoftUpdateStrategy extends BaseSoftUpdateStrategy implements KubernetesUpdateStrategy {
 
     /**
      * The logger of this class.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesSoftUpdateStrategy.class);
 
-    KubernetesSoftUpdateStrategy() {
-        super(LOGGER);
-    }
-
     @Override
     public void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
 
         // 1. Create the namespace if it doesn't exist
         NamespaceUtil.safeCreateNamespace(namespaceResource);
 
         // 2. Update existing resources (delete and create again) and create new ones
-        super.deploy(resources);
+        for (Resource resource : resources) {
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
+            super.deploy(resource);
+        }
+
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
     }
 }

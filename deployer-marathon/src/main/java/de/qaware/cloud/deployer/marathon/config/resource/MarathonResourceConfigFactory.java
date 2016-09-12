@@ -24,6 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
+
+import static de.qaware.cloud.deployer.marathon.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
  * A factory which creates resource configs using the specified files.
@@ -35,11 +38,13 @@ public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<Mar
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(MarathonResourceConfigFactory.class);
 
-    /**
-     * Creates a new marathon resource config factory.
-     */
-    public MarathonResourceConfigFactory() {
-        super(LOGGER);
+    @Override
+    public List<MarathonResourceConfig> createConfigs(List<File> files) throws ResourceConfigException {
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_READING_CONFIGS_STARTED"));
+        List<MarathonResourceConfig> resourceConfigs = super.createConfigs(files);
+        resourceConfigs.forEach(resourceConfig -> LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_READING_CONFIGS_SINGLE_CONFIG", resourceConfig)));
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_READING_CONFIGS_DONE"));
+        return resourceConfigs;
     }
 
     @Override
@@ -47,6 +52,12 @@ public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<Mar
         String filename = file.getName();
         ContentType contentType = retrieveContentType(file);
         String content = FileUtil.readFileContent(file);
+
+        // Is the content empty?
+        if (content.isEmpty()) {
+            throw new ResourceConfigException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_EMPTY_CONFIG", file.getName()));
+        }
+
         return new MarathonResourceConfig(filename, contentType, content);
     }
 
@@ -57,7 +68,7 @@ public class MarathonResourceConfigFactory extends BaseResourceConfigFactory<Mar
             case "json":
                 return ContentType.JSON;
             default:
-                throw new ResourceConfigException("Unsupported content type for file ending: " + fileEnding + "(File: " + file.getName() + ")");
+                throw new ResourceConfigException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_CONTENT_TYPE", file.getName()));
         }
     }
 }

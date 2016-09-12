@@ -31,6 +31,10 @@ import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * A resource factory which creates kubernetes resources for a special namespace as described in the resource configs.
  */
@@ -55,7 +59,7 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
      * @throws ResourceException       If a problem during client factory creation occurs.
      */
     public KubernetesResourceFactory(String namespace, CloudConfig cloudConfig) throws ResourceConfigException, ResourceException {
-        super(LOGGER, new ClientFactory(cloudConfig));
+        super(new ClientFactory(cloudConfig));
         KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(namespace);
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, getClientFactory());
     }
@@ -70,10 +74,24 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
     }
 
     @Override
+    public List<KubernetesResource> createResources(List<KubernetesResourceConfig> resourceConfigs) throws ResourceException {
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_CREATING_RESOURCES_STARTED"));
+        List<KubernetesResource> resources = super.createResources(resourceConfigs);
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_CREATING_RESOURCES_DONE"));
+        return resources;
+    }
+
+    @Override
     public KubernetesResource createResource(KubernetesResourceConfig resourceConfig) throws ResourceException {
         String resourceVersion = resourceConfig.getResourceVersion();
         String resourceType = resourceConfig.getResourceType();
         KubernetesResource resource;
+
+        // Is the content empty?
+        if (resourceConfig.getContent().isEmpty()) {
+            throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_EMPTY_CONFIG", resourceConfig.getFilename()));
+        }
+
         switch (resourceVersion) {
             case "extensions/v1beta1":
                 switch (resourceType) {
@@ -81,7 +99,7 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
                         resource = new DeploymentResource(namespaceResource.getNamespace(), resourceConfig, getClientFactory());
                         break;
                     default:
-                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(KubernetesResourceConfig: " + resourceConfig + ")");
+                        throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_RESOURCE_TYPE", resourceConfig.getFilename()));
                 }
                 break;
             case "v1":
@@ -96,14 +114,14 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
                         resource = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfig, getClientFactory());
                         break;
                     default:
-                        throw new ResourceException("Unknown Kubernetes resource type for api version " + resourceVersion + "(KubernetesResourceConfig: " + resourceConfig + ")");
+                        throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_RESOURCE_TYPE", resourceConfig.getFilename()));
                 }
                 break;
             default:
-                throw new ResourceException("Unknown Kubernetes api version (KubernetesResourceConfig: " + resourceConfig + ")");
+                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_API_VERSION", resourceConfig.getFilename()));
         }
 
-        LOGGER.info("- " + resource);
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE"), resource);
 
         return resource;
     }

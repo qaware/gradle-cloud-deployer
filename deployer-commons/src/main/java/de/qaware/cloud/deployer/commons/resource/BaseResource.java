@@ -25,17 +25,14 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
+import static de.qaware.cloud.deployer.commons.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+
 /**
  * Implements a basic resource independent of the target cloud system. It offers functionality for backend communication.
  *
  * @param <ConfigType> The type of ResourceConfig this base resource is defined for.
  */
 public abstract class BaseResource<ConfigType extends BaseResourceConfig> implements Resource {
-
-    /**
-     * The error message for a unhandled http status code.
-     */
-    private static final String UNHANDLED_HTTP_STATUS_CODE_MESSAGE = "Received a unhandled http status code: ";
 
     /**
      * The timeout defines the maximum duration of a backend operation in seconds. If it takes longer to execute the
@@ -111,7 +108,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         try {
             Response<ResponseBody> response = call.execute();
             if (!isSuccessResponse(response)) {
-                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -133,7 +130,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else if (isNotFoundResponse(response)) {
                 return false;
             } else {
-                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -151,12 +148,12 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         try {
             Response<ResponseBody> response = createCall.execute();
             if (isSuccessResponse(response)) {
-                Blocker blocker = new Blocker(TIMEOUT, BLOCK_TIME, "Resource wasn't created within specified time (" + createCall.request().url() + ")");
+                Blocker blocker = new Blocker(TIMEOUT, BLOCK_TIME, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_TIMEOUT_DURING_CREATION"));
                 while (!this.exists()) {
                     blocker.block();
                 }
             } else {
-                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -174,12 +171,12 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         try {
             Response<ResponseBody> response = deleteCall.execute();
             if (isSuccessResponse(response)) {
-                Blocker blocker = new Blocker(TIMEOUT, BLOCK_TIME, "Resource wasn't deleted within specified time (" + deleteCall.request().url() + ")");
+                Blocker blocker = new Blocker(TIMEOUT, BLOCK_TIME, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_TIMEOUT_DURING_DELETION"));
                 while (this.exists()) {
                     blocker.block();
                 }
             } else {
-                throw new ResourceException(UNHANDLED_HTTP_STATUS_CODE_MESSAGE + response.code());
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNHANDLED_HTTP_STATUS_CODE", response.code()));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
