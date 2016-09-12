@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceConfigFactoryTest extends TestCase {
+public class KubernetesResourceConfigFactoryTest extends TestCase {
 
     public void testCreateConfigsWithExistingJsonFile() throws ResourceConfigException, IOException {
         String testFile = "/pod/pod.json";
