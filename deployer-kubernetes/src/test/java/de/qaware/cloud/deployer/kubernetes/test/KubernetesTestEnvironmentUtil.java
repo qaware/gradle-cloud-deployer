@@ -15,12 +15,14 @@
  */
 package de.qaware.cloud.deployer.kubernetes.test;
 
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -49,20 +51,26 @@ public class KubernetesTestEnvironmentUtil {
     private KubernetesTestEnvironmentUtil() {
     }
 
+    private static String createNewTestNamespace(Map<String, String> environmentProperties) {
+        return environmentProperties.get(KUBERNETES_NAMESPACE_PREFIX_ENV) + "-" + subNamespaceCounter.getAndIncrement();
+    }
+
     private static KubernetesClient createKubernetesClient(CloudConfig cloudConfig) {
         Config config = new ConfigBuilder()
                 .withMasterUrl(cloudConfig.getBaseUrl())
                 .withTrustCerts(true)
-                .withUsername(cloudConfig.getUsername())
-                .withPassword(cloudConfig.getPassword())
+                .withUsername(cloudConfig.getAuthConfig().getUsername())
+                .withPassword(cloudConfig.getAuthConfig().getPassword())
                 .build();
         return new DefaultKubernetesClient(config);
     }
 
-    private static CloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy) {
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(KUBERNETES_URL_ENV), updateStrategy);
-        cloudConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
-        cloudConfig.setPassword(environmentVariables.get(KUBERNETES_PASSWORD_ENV));
+    private static KubernetesCloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy, String namespace) {
+        KubernetesCloudConfig cloudConfig = new KubernetesCloudConfig(environmentVariables.get(KUBERNETES_URL_ENV), updateStrategy, namespace);
+        AuthConfig authConfig = new AuthConfig();
+        authConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
+        authConfig.setPassword(environmentVariables.get(KUBERNETES_PASSWORD_ENV));
+        cloudConfig.setAuthConfig(authConfig);
         cloudConfig.setSslConfig(new SSLConfig(true));
         return cloudConfig;
     }
@@ -71,8 +79,7 @@ public class KubernetesTestEnvironmentUtil {
         return new ClientFactory(cloudConfig);
     }
 
-    private static NamespaceResource createNamespaceResource(ClientFactory clientFactory, Map<String, String> environmentProperties) throws ResourceConfigException {
-        String namespace = environmentProperties.get(KUBERNETES_NAMESPACE_PREFIX_ENV) + "-" + subNamespaceCounter.getAndIncrement();
+    private static NamespaceResource createNamespaceResource(ClientFactory clientFactory, String namespace) throws ResourceConfigException {
         KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(namespace);
         return new NamespaceResource(namespaceResourceConfig, clientFactory);
     }
@@ -89,11 +96,13 @@ public class KubernetesTestEnvironmentUtil {
                 KUBERNETES_NAMESPACE_PREFIX_ENV
         );
 
-        CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
+        String namespace = createNewTestNamespace(environmentVariables);
+
+        KubernetesCloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy, namespace);
         ClientFactory clientFactory = createClientFactory(cloudConfig);
 
         KubernetesClient kubernetesClient = createKubernetesClient(cloudConfig);
-        NamespaceResource namespaceResource = createNamespaceResource(clientFactory, environmentVariables);
+        NamespaceResource namespaceResource = createNamespaceResource(clientFactory, namespace);
         return new KubernetesTestEnvironment(clientFactory, cloudConfig, namespaceResource, kubernetesClient);
     }
 

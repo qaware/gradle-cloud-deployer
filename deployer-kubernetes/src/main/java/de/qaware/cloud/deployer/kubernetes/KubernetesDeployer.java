@@ -15,9 +15,9 @@
  */
 package de.qaware.cloud.deployer.kubernetes;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
@@ -39,13 +39,12 @@ public class KubernetesDeployer {
      * Deletes the specified namespace in the specified cloud.
      *
      * @param cloudConfig The config which describes the cloud.
-     * @param namespace   The namespace which will be deleted.
      * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
      * @throws ResourceException       If a problem during resource deletion/creation occurs.
      */
-    public void delete(CloudConfig cloudConfig, String namespace) throws ResourceConfigException, ResourceException {
+    public void delete(KubernetesCloudConfig cloudConfig) throws ResourceConfigException, ResourceException {
         // 1. Create a resource factory for the specified namespace
-        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(namespace, cloudConfig);
+        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(cloudConfig);
 
         // 2. Create the namespace resource
         NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
@@ -58,17 +57,16 @@ public class KubernetesDeployer {
      * Deploys the list of kubernetes config files to the specified cloud in the specified namespace.
      *
      * @param cloudConfig The config which describes the cloud.
-     * @param namespace   The namespace the application will be deployed to.
      * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
      * @throws ResourceException       If a problem during resource deletion/creation occurs.
      */
-    public void deploy(CloudConfig cloudConfig, String namespace, List<File> files) throws ResourceConfigException, ResourceException {
+    public void deploy(KubernetesCloudConfig cloudConfig, List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
         List<KubernetesResourceConfig> resourceConfigs = resourceConfigFactory.createConfigs(files);
 
         // 2. Create a resource factory for the specified namespace
-        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(namespace, cloudConfig);
+        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(cloudConfig);
 
         // 3. Create the resources for the configs out of step 1.
         List<KubernetesResource> resources = resourceFactory.createResources(resourceConfigs);

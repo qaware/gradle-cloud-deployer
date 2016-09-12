@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.commons.resource;
 
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -150,8 +151,9 @@ public class ClientFactory {
      * @param builder     The builder which will be configured.
      */
     private void addCredentials(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
-        String username = cloudConfig.getUsername();
-        String password = cloudConfig.getPassword();
+        AuthConfig authConfig = cloudConfig.getAuthConfig();
+        String username = authConfig.getUsername();
+        String password = authConfig.getPassword();
         if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
             builder.addInterceptor(chain -> {
                 String credentials = Credentials.basic(username, password);
@@ -171,7 +173,7 @@ public class ClientFactory {
      * @param builder     The builder which will be configured.
      */
     private void addToken(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
-        String token = cloudConfig.getToken();
+        String token = cloudConfig.getAuthConfig().getToken();
         if (token != null && !token.isEmpty()) {
             builder.addInterceptor(chain -> {
                 Request original = chain.request();

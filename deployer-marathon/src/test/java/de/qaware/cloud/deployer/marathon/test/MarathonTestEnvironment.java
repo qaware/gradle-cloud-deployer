@@ -23,13 +23,19 @@ import mesosphere.marathon.client.Marathon;
 public class MarathonTestEnvironment extends TestEnvironment {
 
     private Marathon marathonClient;
+    private CloudConfig cloudConfig;
 
     MarathonTestEnvironment(ClientFactory clientFactory, CloudConfig cloudConfig, Marathon marathonClient) {
-        super(clientFactory, cloudConfig);
+        super(clientFactory);
         this.marathonClient = marathonClient;
+        this.cloudConfig = cloudConfig;
     }
 
     public Marathon getMarathonClient() {
         return marathonClient;
+    }
+
+    public CloudConfig getCloudConfig() {
+        return cloudConfig;
     }
 }

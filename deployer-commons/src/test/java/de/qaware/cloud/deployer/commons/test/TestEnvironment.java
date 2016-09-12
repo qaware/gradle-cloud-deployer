@@ -15,24 +15,17 @@
  */
 package de.qaware.cloud.deployer.commons.test;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 
 public class TestEnvironment {
 
     private ClientFactory clientFactory;
-    private CloudConfig cloudConfig;
 
-    public TestEnvironment(ClientFactory clientFactory, CloudConfig cloudConfig) {
+    public TestEnvironment(ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
-        this.cloudConfig = cloudConfig;
     }
 
     public ClientFactory getClientFactory() {
         return clientFactory;
-    }
-
-    public CloudConfig getCloudConfig() {
-        return cloudConfig;
     }
 }

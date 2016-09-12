@@ -15,11 +15,11 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
@@ -44,10 +44,10 @@ public class KubernetesResourceFactoryTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
-        CloudConfig cloudConfig = testEnvironment.getCloudConfig();
+        KubernetesCloudConfig cloudConfig = testEnvironment.getCloudConfig();
         resourceConfig = testEnvironment.getNamespaceResource().getResourceConfig();
         namespaceResource = testEnvironment.getNamespaceResource();
-        resourceFactory = new KubernetesResourceFactory(namespaceResource.getId(), cloudConfig);
+        resourceFactory = new KubernetesResourceFactory(cloudConfig);
     }
 
     public void testCreateWithEmptyResourceConfig() throws ResourceException, ResourceConfigException {

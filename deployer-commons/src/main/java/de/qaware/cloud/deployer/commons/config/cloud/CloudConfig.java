@@ -31,19 +31,9 @@ public class CloudConfig {
     private final String updateStrategy;
 
     /**
-     * The username used for authorization.
+     * The authorization configuration for this cloud.
      */
-    private String username;
-
-    /**
-     * The password used for authorization.
-     */
-    private String password;
-
-    /**
-     * The token used for authorization.
-     */
-    private String token;
+    private AuthConfig authConfig;
 
     /**
      * The ssl configuration for this cloud.
@@ -80,57 +70,21 @@ public class CloudConfig {
     }
 
     /**
-     * Returns the username used for authorization.
+     * Returns the authorization configuration.
      *
-     * @return The username.
+     * @return The authorization configuration.
      */
-    public String getUsername() {
-        return username;
+    public AuthConfig getAuthConfig() {
+        return authConfig;
     }
 
     /**
-     * Sets the username used for authorization.
+     * Sets the authorization configuration.
      *
-     * @param username The username.
+     * @param authConfig The authorization configuration.
      */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * The password used for authorization.
-     *
-     * @return The password.
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the password used for authorization.
-     *
-     * @param password The password.
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Returns the token used for authorization.
-     *
-     * @return The token.
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * Sets the token used for authorization.
-     *
-     * @param token The token.
-     */
-    public void setToken(String token) {
-        this.token = token;
+    public void setAuthConfig(AuthConfig authConfig) {
+        this.authConfig = authConfig;
     }
 
     /**
