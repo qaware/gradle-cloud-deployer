@@ -69,10 +69,20 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         this.clientFactory = clientFactory;
     }
 
+    /**
+     * Returns the id of this resource.
+     *
+     * @return The id.
+     */
     public String getId() {
         return resourceConfig.getResourceId();
     }
 
+    /**
+     * Returns the resource config of this resource.
+     *
+     * @return The resource config.
+     */
     public ConfigType getResourceConfig() {
         return resourceConfig;
     }
