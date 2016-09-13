@@ -1,6 +1,7 @@
 include ':deployer-commons'
 include ':deployer-kubernetes'
+include ':deployer-marathon'
+include ':deployer-dcos'
 include ':deployer-plugin'
-include 'deployer-marathon'
 
 rootProject.name = 'deployer'

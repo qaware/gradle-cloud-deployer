@@ -1,0 +1,8 @@
+jar {
+    baseName = 'deployer-dcos'
+    version = "$version"
+}
+
+dependencies {
+    compile project(':deployer-commons')
+}
