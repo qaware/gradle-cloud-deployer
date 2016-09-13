@@ -46,9 +46,14 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     private static final int TIMEOUT = 300;
 
     /**
-     * The time between two requests to check if the backend operation finished.
+     * The time in seconds between two requests to check if the backend operation finished.
      */
     private static final double BLOCK_TIME = 0.5;
+
+    /**
+     * The time in seconds to wait in the case of a server error before retrying a call.
+     */
+    private static final int SERVER_ERROR_WAITING_TIME = 5;
 
     /**
      * The config this resource belongs to.
@@ -130,6 +135,13 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     protected boolean executeExistsCall(Call<ResponseBody> existsCall) throws ResourceException {
         try {
             Response<ResponseBody> response = existsCall.execute();
+
+            // Retry the call if the server had an error
+            if (isServerErrorResponse(response)) {
+                response = retryCall(existsCall);
+            }
+
+            // Interpret result
             if (isSuccessResponse(response)) {
                 return true;
             } else if (isNotFoundResponse(response)) {
@@ -137,7 +149,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else {
                 throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }
@@ -152,6 +164,13 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     protected void executeCreateCallAndBlock(Call<ResponseBody> createCall) throws ResourceException {
         try {
             Response<ResponseBody> response = createCall.execute();
+
+            // Retry the call if the server had an error
+            if (isServerErrorResponse(response)) {
+                response = retryCall(createCall);
+            }
+
+            // Interpret result
             if (isSuccessResponse(response)) {
                 Blocker blocker = new Blocker(TIMEOUT, BLOCK_TIME, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_TIMEOUT_DURING_CREATION"));
                 while (!this.exists()) {
@@ -160,7 +179,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else {
                 throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }
@@ -175,6 +194,13 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     protected void executeDeleteCallAndBlock(Call<ResponseBody> deleteCall) throws ResourceException {
         try {
             Response<ResponseBody> response = deleteCall.execute();
+
+            // Retry the call if the server had an error
+            if (isServerErrorResponse(response)) {
+                response = retryCall(deleteCall);
+            }
+
+            // Interpret result
             if (isSuccessResponse(response)) {
                 Blocker blocker = new Blocker(TIMEOUT, BLOCK_TIME, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_TIMEOUT_DURING_DELETION"));
                 while (this.exists()) {
@@ -183,7 +209,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else {
                 throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
         }
     }
@@ -207,6 +233,16 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     protected abstract MediaType createMediaType() throws ResourceException;
 
     /**
+     * Retries a call after a waiting period.
+     *
+     * @return The response of the call.
+     */
+    private Response<ResponseBody> retryCall(Call<ResponseBody> call) throws IOException, InterruptedException {
+        Thread.sleep(SERVER_ERROR_WAITING_TIME * 1000);
+        return call.clone().execute();
+    }
+
+    /**
      * Checks if the specified response is a not found response.
      *
      * @param response The response which will be checked.
@@ -224,5 +260,15 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
      */
     private boolean isSuccessResponse(Response<ResponseBody> response) {
         return response.code() == 200 || response.code() == 201;
+    }
+
+    /**
+     * Indicates whether the server threw an error.
+     *
+     * @param response The response which contains the response code.
+     * @return TRUE if the server threw an error, FALSE otherwise.
+     */
+    private boolean isServerErrorResponse(Response<ResponseBody> response) {
+        return response.code() == 409 || response.code() == 500;
     }
 }
