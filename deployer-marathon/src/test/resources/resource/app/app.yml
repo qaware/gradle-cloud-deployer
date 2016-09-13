@@ -1,0 +1,21 @@
+id: zwitscher-eureka
+instances: 1
+cpus: 0.2
+mem: 512
+container:
+  type: DOCKER
+  docker:
+    image: qaware-oss-docker-registry.bintray.io/zwitscher/zwitscher-eureka:1.0.1
+    network: BRIDGE
+    portMappings:
+    - hostPort: 8761
+      containerPort: 8761
+      protocol: tcp
+      servicePort: 8761
+healthChecks:
+- protocol: HTTP
+  path: "/admin/health"
+  intervalSeconds: 10
+  portIndex: 0
+  timeoutSeconds: 10
+  maxConsecutiveFailures: 3
