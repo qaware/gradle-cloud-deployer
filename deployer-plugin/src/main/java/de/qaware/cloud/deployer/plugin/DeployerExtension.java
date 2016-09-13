@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.plugin;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 
@@ -201,7 +201,7 @@ public class DeployerExtension {
      * @return The configuration files.
      */
     public File[] getFiles() {
-        return (File[]) ArrayUtils.clone(files);
+        return ArrayUtils.clone(files);
     }
 
     /**
@@ -210,7 +210,7 @@ public class DeployerExtension {
      * @param files The configuration files.
      */
     public void setFiles(File[] files) {
-        this.files = (File[]) ArrayUtils.clone(files);
+        this.files = ArrayUtils.clone(files);
     }
 
     /**
