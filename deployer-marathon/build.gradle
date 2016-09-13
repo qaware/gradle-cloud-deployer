@@ -1,5 +1,5 @@
 jar {
-    baseName = 'deployer-commons'
+    baseName = 'deployer-marathon'
     version = "$version"
 }
 
