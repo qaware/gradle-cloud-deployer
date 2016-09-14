@@ -5,4 +5,6 @@ jar {
 
 dependencies {
     compile project(':deployer-commons')
+
+    testCompile project (path: ':deployer-commons', configuration: 'tests')
 }
