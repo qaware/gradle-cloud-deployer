@@ -18,7 +18,7 @@ buildscript {
 apply plugin: 'org.sonarqube'
 
 allprojects {
-    group = 'de.qaware.cloud'
+    group = 'de.qaware.cloud.deployer'
     version = '1.0.0'
 }
 
