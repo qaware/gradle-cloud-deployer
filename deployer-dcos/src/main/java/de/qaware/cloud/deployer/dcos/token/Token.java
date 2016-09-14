@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.config.cloud;
+package de.qaware.cloud.deployer.dcos.token;
 
 /**
  * A pojo for a marathon token request.

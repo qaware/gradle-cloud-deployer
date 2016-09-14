@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.config.cloud;
+package de.qaware.cloud.deployer.dcos.logging;
 
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import de.qaware.cloud.deployer.commons.logging.DeployerMessageBundle;
 
-interface TokenClient {
+/**
+ * A class which offers all relevant log messages for this project.
+ */
+public final class DCOSMessageBundle {
 
     /**
-     * Tries to login using the specified token.
-     *
-     * @param token The request body which contains the app.
-     * @return The server's http response.
+     * A bundle which contains all dcos messages.
      */
-    @POST("/acs/api/v1/auth/login")
-    Call<Token> login(@Body Token token);
+    public static final DeployerMessageBundle DCOS_MESSAGE_BUNDLE = new DeployerMessageBundle("dcos-log-messages");
+
+    /**
+     * UTILITY.
+     */
+    private DCOSMessageBundle() {
+    }
 }

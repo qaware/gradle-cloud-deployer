@@ -28,4 +28,14 @@ public class CloudConfigException extends Exception {
     public CloudConfigException(String message) {
         super(message);
     }
+
+    /**
+     * Creates a new cloud config exception.
+     *
+     * @param message The message which explains the exception.
+     * @param cause The cause of the exception.
+     */
+    public CloudConfigException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

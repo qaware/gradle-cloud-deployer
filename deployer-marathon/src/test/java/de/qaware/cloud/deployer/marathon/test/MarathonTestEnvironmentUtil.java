@@ -22,7 +22,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
-import de.qaware.cloud.deployer.marathon.config.cloud.MarathonCloudConfigTokenUtil;
+import de.qaware.cloud.deployer.dcos.token.TokenResource;
 import mesosphere.marathon.client.Marathon;
 
 import java.io.IOException;
@@ -64,7 +64,9 @@ public class MarathonTestEnvironmentUtil {
         CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
 
         // Replace the token.
-        MarathonCloudConfigTokenUtil.retrieveApiToken(cloudConfig);
+        TokenResource tokenResource = new TokenResource(cloudConfig);
+        String apiToken = tokenResource.retrieveApiToken();
+        cloudConfig.getAuthConfig().setToken(apiToken);
 
         ClientFactory clientFactory = createClientFactory(cloudConfig);
 
