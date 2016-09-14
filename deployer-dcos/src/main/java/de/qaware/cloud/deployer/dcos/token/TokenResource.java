@@ -60,6 +60,7 @@ public final class TokenResource {
      *
      * @throws CloudConfigException If the specified dcos cli token isn't valid.
      * @throws ResourceException    If a problem with the cloud config exists.
+     * @return The dcos api token.
      */
     public String retrieveApiToken() throws CloudConfigException, ResourceException {
         AuthConfig authConfig = cloudConfig.getAuthConfig();
