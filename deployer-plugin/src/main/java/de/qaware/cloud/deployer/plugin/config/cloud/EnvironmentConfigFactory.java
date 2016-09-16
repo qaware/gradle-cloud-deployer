@@ -24,9 +24,8 @@ import de.qaware.cloud.deployer.plugin.extension.AuthExtension;
 import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
 import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
@@ -47,31 +46,31 @@ public final class EnvironmentConfigFactory {
     }
 
     /**
-     * Creates a list of kubernetes environment configs out of the specified extensions.
+     * Creates a map of kubernetes environment configs and their files out of the specified extensions.
      *
      * @param extensions THe extensions which are used to create the kubernetes environment configs.
-     * @return The list of kubernetes environment configs.
+     * @return The map of kubernetes environment configs and their files.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static List<KubernetesEnvironmentConfig> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        List<KubernetesEnvironmentConfig> configs = new ArrayList<>();
+    public static Map<KubernetesEnvironmentConfig, List<File>> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
+        Map<KubernetesEnvironmentConfig, List<File>> configs = new TreeMap<>();
         for (EnvironmentExtension extension : extensions) {
-            configs.add(createKubernetesEnvironmentConfig(extension));
+            configs.put(createKubernetesEnvironmentConfig(extension), extension.getFiles());
         }
         return configs;
     }
 
     /**
-     * Creates a list of environment configs out of the specified extensions.
+     * Creates a map of environment configs and their files out of the specified extensions.
      *
      * @param extensions The extensions which are used to create the environment configs.
-     * @return The list of environment configs.
+     * @return The map of environment configs and their files.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static List<EnvironmentConfig> createEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        List<EnvironmentConfig> configs = new ArrayList<>();
+    public static Map<EnvironmentConfig, List<File>> createEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
+        Map<EnvironmentConfig, List<File>> configs = new TreeMap<>();
         for (EnvironmentExtension extension : extensions) {
-            configs.add(createEnvironmentConfig(extension));
+            configs.put(createEnvironmentConfig(extension), extension.getFiles());
         }
         return configs;
     }
@@ -83,7 +82,7 @@ public final class EnvironmentConfigFactory {
      * @return The created environment config.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static KubernetesEnvironmentConfig createKubernetesEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
+    private static KubernetesEnvironmentConfig createKubernetesEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
         String baseUrl = extractBaseUrl(extension);
         String updateStrategy = extractUpdateStrategy(extension);
         String namespace = extractNamespace(extension);
@@ -107,7 +106,7 @@ public final class EnvironmentConfigFactory {
      * @return The created kubernetes config.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static EnvironmentConfig createEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
+    private static EnvironmentConfig createEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
         String baseUrl = extractBaseUrl(extension);
         String updateStrategy = extractUpdateStrategy(extension);
         EnvironmentConfig environmentConfig = new EnvironmentConfig(baseUrl, updateStrategy);

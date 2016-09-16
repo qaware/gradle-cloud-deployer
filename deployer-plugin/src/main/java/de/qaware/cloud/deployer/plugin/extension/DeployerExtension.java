@@ -29,7 +29,12 @@ public class DeployerExtension {
     /**
      * Contains all configs defined in this deployer extension.
      */
-    private Collection<EnvironmentExtension> configs = new ArrayList<>();
+    private Collection<EnvironmentExtension> marathonConfigs = new ArrayList<>();
+
+    /**
+     * Contains all kubernetes configs defined in this deployer extension.
+     */
+    private Collection<EnvironmentExtension> kubernetesConfigs = new ArrayList<>();
 
     /**
      * The project this deployer extension belongs to.
@@ -53,7 +58,7 @@ public class DeployerExtension {
      */
     public EnvironmentExtension marathon(Closure closure) {
         EnvironmentExtension config = (EnvironmentExtension) project.configure(new EnvironmentExtension(project), closure);
-        configs.add(config);
+        marathonConfigs.add(config);
         return config;
     }
 
@@ -65,16 +70,25 @@ public class DeployerExtension {
      */
     public EnvironmentExtension kubernetes(Closure closure) {
         EnvironmentExtension config = (EnvironmentExtension) project.configure(new EnvironmentExtension(project), closure);
-        configs.add(config);
+        kubernetesConfigs.add(config);
         return config;
     }
 
     /**
-     * Returns the configs for this deployer extension.
+     * Returns the marathon configs for this deployer extension.
      *
      * @return The configs.
      */
-    public Collection<EnvironmentExtension> getConfigs() {
-        return configs;
+    public Collection<EnvironmentExtension> getMarathonConfigs() {
+        return marathonConfigs;
+    }
+
+    /**
+     * Returns the kubernetes configs for this deployer extension.
+     *
+     * @return The configs.
+     */
+    public Collection<EnvironmentExtension> getKubernetesConfigs() {
+        return kubernetesConfigs;
     }
 }
