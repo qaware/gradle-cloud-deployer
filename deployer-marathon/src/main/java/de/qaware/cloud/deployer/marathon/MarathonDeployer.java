@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon;
 
+import de.qaware.cloud.deployer.commons.BaseDeployer;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -31,18 +32,27 @@ import java.util.List;
 /**
  * Offers the possibility to deploy a list of marathon config files to a marathon cloud.
  */
-public class MarathonDeployer {
+public class MarathonDeployer extends BaseDeployer<EnvironmentConfig> {
 
     /**
-     * Deploys the list of marathon config files to the specified cloud.
+     * Creates a new marathon deployer for the specified environment.
      *
-     * @param environmentConfig The config which describes the environment.
-     * @param files       The marathon config files to deploy.
+     * @param environmentConfig The environment.
+     */
+    public MarathonDeployer(EnvironmentConfig environmentConfig) {
+        super(environmentConfig);
+    }
+
+    /**
+     * Deploys the list of marathon config files.
+     *
+     * @param files The marathon config files to deploy.
      * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
      * @throws ResourceException       If a problem during resource deletion/creation occurs.
      */
-    public void deploy(EnvironmentConfig environmentConfig, List<File> files) throws ResourceConfigException, ResourceException {
+    public void deploy(List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
+        EnvironmentConfig environmentConfig = getEnvironmentConfig();
         MarathonResourceConfigFactory resourceConfigFactory = new MarathonResourceConfigFactory();
         List<MarathonResourceConfig> resourceConfigs = resourceConfigFactory.createConfigs(files);
 

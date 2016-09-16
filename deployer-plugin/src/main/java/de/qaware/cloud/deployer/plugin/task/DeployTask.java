@@ -55,16 +55,16 @@ public class DeployTask extends DefaultTask {
         for (Map.Entry<EnvironmentConfig, List<File>> environment : marathonConfigs.entrySet()) {
             EnvironmentConfig environmentConfig = environment.getKey();
             List<File> files = environment.getValue();
-            MarathonDeployer deployer = new MarathonDeployer();
-            deployer.deploy(environmentConfig, files);
+            MarathonDeployer deployer = new MarathonDeployer(environmentConfig);
+            deployer.deploy(files);
         }
 
         // Call kubernetes deployer
         for (Map.Entry<KubernetesEnvironmentConfig, List<File>> environment : kubernetesConfigs.entrySet()) {
             KubernetesEnvironmentConfig environmentConfig = environment.getKey();
             List<File> files = environment.getValue();
-            KubernetesDeployer deployer = new KubernetesDeployer();
-            deployer.deploy(environmentConfig, files);
+            KubernetesDeployer deployer = new KubernetesDeployer(environmentConfig);
+            deployer.deploy(files);
         }
     }
 }

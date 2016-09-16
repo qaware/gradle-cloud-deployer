@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes;
 
+import de.qaware.cloud.deployer.commons.BaseDeployer;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
@@ -23,7 +24,6 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
 import de.qaware.cloud.deployer.kubernetes.update.KubernetesUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.update.KubernetesUpdateStrategyFactory;
 
@@ -33,35 +33,26 @@ import java.util.List;
 /**
  * Offers the possibility to deploy a list of kubernetes config files to a kubernetes cloud.
  */
-public class KubernetesDeployer {
+public class KubernetesDeployer extends BaseDeployer<KubernetesEnvironmentConfig> {
 
     /**
-     * Deletes the specified namespace in the specified cloud.
+     * Creates a new kubernetes deployer for the specified environment.
      *
-     * @param environmentConfig The config which describes the environment.
-     * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
-     * @throws ResourceException       If a problem during resource deletion/creation occurs.
+     * @param environmentConfig The environment.
      */
-    public void delete(KubernetesEnvironmentConfig environmentConfig) throws ResourceConfigException, ResourceException {
-        // 1. Create a resource factory for the specified namespace
-        KubernetesResourceFactory resourceFactory = new KubernetesResourceFactory(environmentConfig);
-
-        // 2. Create the namespace resource
-        NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
-
-        // 3. Delete the namespace
-        NamespaceUtil.safeDeleteNamespace(namespaceResource);
+    public KubernetesDeployer(KubernetesEnvironmentConfig environmentConfig) {
+        super(environmentConfig);
     }
 
     /**
-     * Deploys the list of kubernetes config files to the specified cloud in the specified namespace.
+     * Deploys the list of kubernetes config files.
      *
-     * @param environmentConfig The config which describes the environment.
      * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
      * @throws ResourceException       If a problem during resource deletion/creation occurs.
      */
-    public void deploy(KubernetesEnvironmentConfig environmentConfig, List<File> files) throws ResourceConfigException, ResourceException {
+    public void deploy(List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
+        KubernetesEnvironmentConfig environmentConfig = getEnvironmentConfig();
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
         List<KubernetesResourceConfig> resourceConfigs = resourceConfigFactory.createConfigs(files);
 
