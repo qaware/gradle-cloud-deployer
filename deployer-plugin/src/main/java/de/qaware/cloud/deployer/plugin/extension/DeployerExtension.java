@@ -21,6 +21,9 @@ import org.gradle.api.Project;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Contains all plugin configurations.
+ */
 public class DeployerExtension {
 
     /**

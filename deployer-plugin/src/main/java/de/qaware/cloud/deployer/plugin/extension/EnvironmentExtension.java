@@ -21,6 +21,9 @@ import org.gradle.api.Project;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Contains all relevant configuration for a environment.
+ */
 public class EnvironmentExtension {
 
     /**
