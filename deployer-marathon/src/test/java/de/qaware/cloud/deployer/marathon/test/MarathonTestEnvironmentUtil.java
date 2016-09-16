@@ -16,8 +16,8 @@
 package de.qaware.cloud.deployer.marathon.test;
 
 import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.commons.error.CloudConfigException;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
@@ -37,40 +37,40 @@ public class MarathonTestEnvironmentUtil {
     // Constants.
     private static final String MARATHON_DEFAULT_UPDATE_STRATEGY = "HARD";
 
-    private static CloudConfig createCloudConfig(Map<String, String> environmentVariables, String updateStrategy) {
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
-        cloudConfig.setAuthConfig(new AuthConfig(environmentVariables.get(MARATHON_TOKEN_ENV)));
-        return cloudConfig;
+    private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, String updateStrategy) {
+        EnvironmentConfig environmentConfig = new EnvironmentConfig(environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
+        environmentConfig.setAuthConfig(new AuthConfig(environmentVariables.get(MARATHON_TOKEN_ENV)));
+        return environmentConfig;
     }
 
-    private static ClientFactory createClientFactory(CloudConfig cloudConfig) throws ResourceException {
-        return new ClientFactory(cloudConfig);
+    private static ClientFactory createClientFactory(EnvironmentConfig environmentConfig) throws ResourceException {
+        return new ClientFactory(environmentConfig);
     }
 
-    private static Marathon createMarathonClient(CloudConfig cloudConfig) {
-        return AuthorizedMarathonClient.createInstance(cloudConfig.getBaseUrl() + "/service/marathon", cloudConfig.getAuthConfig().getToken());
+    private static Marathon createMarathonClient(EnvironmentConfig environmentConfig) {
+        return AuthorizedMarathonClient.createInstance(environmentConfig.getBaseUrl() + "/service/marathon", environmentConfig.getAuthConfig().getToken());
     }
 
-    public static MarathonTestEnvironment createTestEnvironment() throws ResourceConfigException, ResourceException, IOException, CloudConfigException {
+    public static MarathonTestEnvironment createTestEnvironment() throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
         return createTestEnvironment(MARATHON_DEFAULT_UPDATE_STRATEGY);
     }
 
-    public static MarathonTestEnvironment createTestEnvironment(String updateStrategy) throws ResourceConfigException, ResourceException, IOException, CloudConfigException {
+    public static MarathonTestEnvironment createTestEnvironment(String updateStrategy) throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 MARATHON_TOKEN_ENV,
                 MARATHON_URL_ENV
         );
 
-        CloudConfig cloudConfig = createCloudConfig(environmentVariables, updateStrategy);
+        EnvironmentConfig environmentConfig = createEnvironmentConfig(environmentVariables, updateStrategy);
 
         // Replace the token.
-        TokenResource tokenResource = new TokenResource(cloudConfig);
+        TokenResource tokenResource = new TokenResource(environmentConfig);
         String apiToken = tokenResource.retrieveApiToken();
-        cloudConfig.getAuthConfig().setToken(apiToken);
+        environmentConfig.getAuthConfig().setToken(apiToken);
 
-        ClientFactory clientFactory = createClientFactory(cloudConfig);
+        ClientFactory clientFactory = createClientFactory(environmentConfig);
 
-        Marathon marathonClient = createMarathonClient(cloudConfig);
-        return new MarathonTestEnvironment(clientFactory, cloudConfig, marathonClient);
+        Marathon marathonClient = createMarathonClient(environmentConfig);
+        return new MarathonTestEnvironment(clientFactory, environmentConfig, marathonClient);
     }
 }

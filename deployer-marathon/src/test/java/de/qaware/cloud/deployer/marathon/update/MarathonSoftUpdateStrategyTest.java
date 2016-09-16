@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon.update;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
@@ -46,14 +46,14 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
         // Create test environment
         MarathonTestEnvironment testEnvironment = MarathonTestEnvironmentUtil.createTestEnvironment();
         marathonClient = testEnvironment.getMarathonClient();
-        CloudConfig cloudConfig = testEnvironment.getCloudConfig();
+        EnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
 
         // Create update strategy
         softUpdateStrategy = new MarathonSoftUpdateStrategy();
 
         // Create config and resource factory
         MarathonResourceConfigFactory resourceConfigFactory = new MarathonResourceConfigFactory();
-        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(cloudConfig);
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();

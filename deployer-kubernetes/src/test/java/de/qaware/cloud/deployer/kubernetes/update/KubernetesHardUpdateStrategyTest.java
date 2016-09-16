@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
@@ -54,7 +54,7 @@ public class KubernetesHardUpdateStrategyTest extends TestCase {
         KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment("HARD");
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
-        KubernetesCloudConfig cloudConfig = testEnvironment.getCloudConfig();
+        KubernetesEnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
@@ -62,7 +62,7 @@ public class KubernetesHardUpdateStrategyTest extends TestCase {
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
-        KubernetesResourceFactory factory = new KubernetesResourceFactory(cloudConfig);
+        KubernetesResourceFactory factory = new KubernetesResourceFactory(environmentConfig);
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();

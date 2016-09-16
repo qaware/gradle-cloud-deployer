@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.commons.resource;
 
 import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import okhttp3.Credentials;
@@ -68,11 +68,11 @@ public class ClientFactory {
     /**
      * Creates a new ClientFactory which creates clients. Those are initialized with the specified cloud config.
      *
-     * @param cloudConfig The config which is used for the clients.
+     * @param environmentConfig The config which is used for the clients.
      * @throws ResourceException If an error occurs.
      */
-    public ClientFactory(CloudConfig cloudConfig) throws ResourceException {
-        this.retrofit = createRetrofit(cloudConfig);
+    public ClientFactory(EnvironmentConfig environmentConfig) throws ResourceException {
+        this.retrofit = createRetrofit(environmentConfig);
     }
 
     /**
@@ -87,16 +87,16 @@ public class ClientFactory {
     }
 
     /**
-     * Creates the retrofit instance using the specified cloud config. It adds headers and ssl.
+     * Creates the retrofit instance using the specified environment config. It adds headers and ssl.
      *
-     * @param cloudConfig The config which specifies the headers and ssl options.
+     * @param environmentConfig The config which specifies the headers and ssl options.
      * @return The retrofit instance.
      * @throws ResourceException If an error occurs during ssl configuration.
      */
-    private Retrofit createRetrofit(CloudConfig cloudConfig) throws ResourceException {
+    private Retrofit createRetrofit(EnvironmentConfig environmentConfig) throws ResourceException {
 
         // Check if url is specified.
-        if (cloudConfig.getBaseUrl() == null || cloudConfig.getBaseUrl().isEmpty()) {
+        if (environmentConfig.getBaseUrl() == null || environmentConfig.getBaseUrl().isEmpty()) {
             throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_NO_URL_SPECIFIED"));
         }
 
@@ -104,19 +104,19 @@ public class ClientFactory {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
         // Add credentials header if credentials are specified.
-        addCredentials(cloudConfig, builder);
+        addCredentials(environmentConfig, builder);
 
         // Add token header if token is specified.
-        addToken(cloudConfig, builder);
+        addToken(environmentConfig, builder);
 
         // Add ssl config if specified.
-        addSSLConfig(cloudConfig, builder);
+        addSSLConfig(environmentConfig, builder);
 
         // Build the client.
         OkHttpClient client = builder.build();
 
         return new Retrofit.Builder()
-                .baseUrl(cloudConfig.getBaseUrl())
+                .baseUrl(environmentConfig.getBaseUrl())
                 .addConverterFactory(JacksonConverterFactory.create())
                 .client(client)
                 .build();
@@ -125,12 +125,12 @@ public class ClientFactory {
     /**
      * Adds ssl configuration as specified in the config to the builder, if existing.
      *
-     * @param cloudConfig The config which specifies how to configure ssl.
+     * @param environmentConfig The config which specifies how to configure ssl.
      * @param builder     The builder which will be configured.
      * @throws ResourceException If an error during trust manager creation occurs.
      */
-    private void addSSLConfig(CloudConfig cloudConfig, OkHttpClient.Builder builder) throws ResourceException {
-        SSLConfig sslConfig = cloudConfig.getSslConfig();
+    private void addSSLConfig(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) throws ResourceException {
+        SSLConfig sslConfig = environmentConfig.getSslConfig();
         if (sslConfig != null) {
             try {
                 if (sslConfig.isTrustAll()) {
@@ -147,11 +147,11 @@ public class ClientFactory {
     /**
      * Adds a credentials header using the credentials in the config to the builder, if existing.
      *
-     * @param cloudConfig The config which specifies the credentials.
+     * @param environmentConfig The config which specifies the credentials.
      * @param builder     The builder which will be configured.
      */
-    private void addCredentials(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
-        AuthConfig authConfig = cloudConfig.getAuthConfig();
+    private void addCredentials(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) {
+        AuthConfig authConfig = environmentConfig.getAuthConfig();
         String username = authConfig.getUsername();
         String password = authConfig.getPassword();
         if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
@@ -169,11 +169,11 @@ public class ClientFactory {
     /**
      * Adds a token header using the token specified in the config to the builder, if existing.
      *
-     * @param cloudConfig The config which specifies the token.
+     * @param environmentConfig The config which specifies the token.
      * @param builder     The builder which will be configured.
      */
-    private void addToken(CloudConfig cloudConfig, OkHttpClient.Builder builder) {
-        String token = cloudConfig.getAuthConfig().getToken();
+    private void addToken(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) {
+        String token = environmentConfig.getAuthConfig().getToken();
         if (token != null && !token.isEmpty()) {
             builder.addInterceptor(chain -> {
                 Request original = chain.request();

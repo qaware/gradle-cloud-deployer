@@ -15,11 +15,10 @@
  */
 package de.qaware.cloud.deployer.marathon.resource;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
-import de.qaware.cloud.deployer.commons.error.CloudConfigException;
+import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
@@ -33,11 +32,11 @@ import java.io.IOException;
 
 public class MarathonResourceFactoryTest extends TestCase {
 
-    private CloudConfig cloudConfig;
+    private EnvironmentConfig environmentConfig;
 
     @Override
-    public void setUp() throws ResourceConfigException, ResourceException, CloudConfigException, IOException {
-        cloudConfig = MarathonTestEnvironmentUtil.createTestEnvironment().getCloudConfig();
+    public void setUp() throws ResourceConfigException, ResourceException, EnvironmentConfigException, IOException {
+        environmentConfig = MarathonTestEnvironmentUtil.createTestEnvironment().getEnvironmentConfig();
     }
 
     @Override
@@ -47,14 +46,14 @@ public class MarathonResourceFactoryTest extends TestCase {
 
     public void testCreateResourceWithValidApp() throws ResourceException, ResourceConfigException {
         MarathonResourceConfig config = new MarathonResourceConfig("", ContentType.JSON, FileUtil.readFileContent("/config/resource/app.json"));
-        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(cloudConfig);
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
         MarathonResource resource = resourceFactory.createResource(config);
         assertTrue(resource instanceof AppResource);
     }
 
     public void testCreateResourceWithValidGroup() throws ResourceException, ResourceConfigException {
         MarathonResourceConfig config = new MarathonResourceConfig("", ContentType.JSON, FileUtil.readFileContent("/config/resource/group.json"));
-        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(cloudConfig);
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
         MarathonResource resource = resourceFactory.createResource(config);
         assertTrue(resource instanceof GroupResource);
     }
@@ -62,7 +61,7 @@ public class MarathonResourceFactoryTest extends TestCase {
     public void testCreateResourceWithUnknownType() throws ResourceException, ResourceConfigException {
         boolean exceptionThrown = false;
         MarathonResourceConfig config = new MarathonResourceConfig("", ContentType.JSON, FileUtil.readFileContent("/config/resource/unknown.json"));
-        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(cloudConfig);
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
         try {
             resourceFactory.createResource(config);
         } catch (ResourceException e) {

@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon.test;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironment;
 import mesosphere.marathon.client.Marathon;
@@ -23,19 +23,19 @@ import mesosphere.marathon.client.Marathon;
 public class MarathonTestEnvironment extends TestEnvironment {
 
     private Marathon marathonClient;
-    private CloudConfig cloudConfig;
+    private EnvironmentConfig environmentConfig;
 
-    MarathonTestEnvironment(ClientFactory clientFactory, CloudConfig cloudConfig, Marathon marathonClient) {
+    MarathonTestEnvironment(ClientFactory clientFactory, EnvironmentConfig environmentConfig, Marathon marathonClient) {
         super(clientFactory);
         this.marathonClient = marathonClient;
-        this.cloudConfig = cloudConfig;
+        this.environmentConfig = environmentConfig;
     }
 
     public Marathon getMarathonClient() {
         return marathonClient;
     }
 
-    public CloudConfig getCloudConfig() {
-        return cloudConfig;
+    public EnvironmentConfig getEnvironmentConfig() {
+        return environmentConfig;
     }
 }

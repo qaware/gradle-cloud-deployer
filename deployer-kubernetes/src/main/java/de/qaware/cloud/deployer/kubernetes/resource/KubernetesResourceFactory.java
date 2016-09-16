@@ -19,7 +19,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResourceFactory;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
@@ -53,13 +53,13 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
     /**
      * Creates a new factory which creates resources for the specified namespace using the specified cloud config.
      *
-     * @param cloudConfig The config which describes the cloud.
+     * @param environmentConfig The config which describes the cloud.
      * @throws ResourceConfigException If a problem during namespace creation occurs.
      * @throws ResourceException       If a problem during client factory creation occurs.
      */
-    public KubernetesResourceFactory(KubernetesCloudConfig cloudConfig) throws ResourceConfigException, ResourceException {
-        super(new ClientFactory(cloudConfig));
-        KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(cloudConfig.getNamespace());
+    public KubernetesResourceFactory(KubernetesEnvironmentConfig environmentConfig) throws ResourceConfigException, ResourceException {
+        super(new ClientFactory(environmentConfig));
+        KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(environmentConfig.getNamespace());
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, getClientFactory());
     }
 

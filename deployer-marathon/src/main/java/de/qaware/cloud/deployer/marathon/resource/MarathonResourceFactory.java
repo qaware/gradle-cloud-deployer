@@ -22,7 +22,7 @@ import com.github.fge.jsonschema.core.load.uri.URITranslatorConfiguration;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -67,11 +67,11 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
     /**
      * Creates a new MarathonResourceConfigFactory for the specified cloud.
      *
-     * @param cloudConfig The config of the cloud.
+     * @param environmentConfig The config of the environment.
      * @throws ResourceException if an error occurs.
      */
-    public MarathonResourceFactory(CloudConfig cloudConfig) throws ResourceException {
-        super(new ClientFactory(cloudConfig));
+    public MarathonResourceFactory(EnvironmentConfig environmentConfig) throws ResourceException {
+        super(new ClientFactory(environmentConfig));
     }
 
     @Override

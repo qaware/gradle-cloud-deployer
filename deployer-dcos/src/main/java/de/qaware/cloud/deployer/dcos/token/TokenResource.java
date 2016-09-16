@@ -16,8 +16,8 @@
 package de.qaware.cloud.deployer.dcos.token;
 
 import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
-import de.qaware.cloud.deployer.commons.error.CloudConfigException;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import retrofit2.Response;
@@ -34,7 +34,7 @@ public final class TokenResource {
     /**
      * The config for the cloud.
      */
-    private final CloudConfig cloudConfig;
+    private final EnvironmentConfig environmentConfig;
 
     /**
      * The client which is used to retrieve the token from the backend.
@@ -44,26 +44,26 @@ public final class TokenResource {
     /**
      * Creates a new token resource.
      *
-     * @param cloudConfig The config which the describes the cloud.
+     * @param environmentConfig The config which the describes the cloud.
      * @throws ResourceException If the config isn't valid.
      */
-    public TokenResource(CloudConfig cloudConfig) throws ResourceException {
-        this.cloudConfig = cloudConfig;
+    public TokenResource(EnvironmentConfig environmentConfig) throws ResourceException {
+        this.environmentConfig = environmentConfig;
 
         // Create the client
-        ClientFactory clientFactory = new ClientFactory(cloudConfig);
+        ClientFactory clientFactory = new ClientFactory(environmentConfig);
         this.tokenClient = clientFactory.create(TokenClient.class);
     }
 
     /**
      * Retrieves the dcos api token using a dcos cli token.
      *
-     * @throws CloudConfigException If the specified dcos cli token isn't valid.
+     * @throws EnvironmentConfigException If the specified dcos cli token isn't valid.
      * @throws ResourceException    If a problem with the cloud config exists.
      * @return The dcos api token.
      */
-    public String retrieveApiToken() throws CloudConfigException, ResourceException {
-        AuthConfig authConfig = cloudConfig.getAuthConfig();
+    public String retrieveApiToken() throws EnvironmentConfigException, ResourceException {
+        AuthConfig authConfig = environmentConfig.getAuthConfig();
         String dcosToken = authConfig.getToken();
         if (dcosToken != null && !dcosToken.isEmpty()) {
             try {
@@ -73,16 +73,16 @@ public final class TokenResource {
                 // Execute request.
                 Response<Token> tokenResponse = tokenClient.login(token).execute();
                 if (tokenResponse.code() != 200 || tokenResponse.body() == null) {
-                    throw new CloudConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
+                    throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
                 }
 
                 // Return api token.
                 return tokenResponse.body().getToken();
             } catch (IOException e) {
-                throw new CloudConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"), e);
+                throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"), e);
             }
         } else {
-            throw new CloudConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));
+            throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));
         }
     }
 }

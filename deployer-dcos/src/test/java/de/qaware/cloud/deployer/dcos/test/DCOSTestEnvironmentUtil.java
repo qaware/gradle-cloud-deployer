@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.dcos.test;
 
 import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
 
 import java.io.IOException;
@@ -31,16 +31,16 @@ public final class DCOSTestEnvironmentUtil {
     private DCOSTestEnvironmentUtil() {
     }
 
-    public static CloudConfig createCloudConfig(String updateStrategy) throws IOException {
+    public static EnvironmentConfig createEnvironmentConfig(String updateStrategy) throws IOException {
         // Retrieve env variables
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 DCOS_URL_ENV,
                 DCOS_TOKEN_ENV
         );
 
-        // Create cloud config.
-        CloudConfig cloudConfig = new CloudConfig(environmentVariables.get(DCOS_URL_ENV), updateStrategy);
-        cloudConfig.setAuthConfig(new AuthConfig(environmentVariables.get(DCOS_TOKEN_ENV)));
-        return cloudConfig;
+        // Create environment config.
+        EnvironmentConfig environmentConfig = new EnvironmentConfig(environmentVariables.get(DCOS_URL_ENV), updateStrategy);
+        environmentConfig.setAuthConfig(new AuthConfig(environmentVariables.get(DCOS_TOKEN_ENV)));
+        return environmentConfig;
     }
 }

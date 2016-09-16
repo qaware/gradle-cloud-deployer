@@ -15,12 +15,12 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.cloud;
 
-import de.qaware.cloud.deployer.commons.config.cloud.CloudConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 
 /**
- * A custom cloud config for kubernetes.
+ * A custom environment config for kubernetes.
  */
-public class KubernetesCloudConfig extends CloudConfig {
+public class KubernetesEnvironmentConfig extends EnvironmentConfig {
 
     /**
      * The namespace which is used for deployment.
@@ -28,13 +28,13 @@ public class KubernetesCloudConfig extends CloudConfig {
     private final String namespace;
 
     /**
-     * Creates a new kubernetes cloud config.
+     * Creates a new kubernetes environment config.
      *
-     * @param baseUrl        The base url of this cloud.
-     * @param updateStrategy The update strategy which is used for this cloud.
+     * @param baseUrl        The base url of this environment.
+     * @param updateStrategy The update strategy which is used for this environment.
      * @param namespace      The namespace which is used for deployment.
      */
-    public KubernetesCloudConfig(String baseUrl, String updateStrategy, String namespace) {
+    public KubernetesEnvironmentConfig(String baseUrl, String updateStrategy, String namespace) {
         super(baseUrl, updateStrategy);
         this.namespace = namespace;
     }

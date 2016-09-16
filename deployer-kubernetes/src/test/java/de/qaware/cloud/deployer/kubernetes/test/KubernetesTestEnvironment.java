@@ -17,7 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.test;
 
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesCloudConfig;
+import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
@@ -25,13 +25,13 @@ public class KubernetesTestEnvironment extends TestEnvironment {
 
     private NamespaceResource namespaceResource;
     private KubernetesClient kubernetesClient;
-    private KubernetesCloudConfig cloudConfig;
+    private KubernetesEnvironmentConfig environmentConfig;
 
-    KubernetesTestEnvironment(ClientFactory clientFactory, KubernetesCloudConfig cloudConfig, NamespaceResource namespaceResource, KubernetesClient kubernetesClient) {
+    KubernetesTestEnvironment(ClientFactory clientFactory, KubernetesEnvironmentConfig environmentConfig, NamespaceResource namespaceResource, KubernetesClient kubernetesClient) {
         super(clientFactory);
         this.namespaceResource = namespaceResource;
         this.kubernetesClient = kubernetesClient;
-        this.cloudConfig = cloudConfig;
+        this.environmentConfig = environmentConfig;
     }
 
     public NamespaceResource getNamespaceResource() {
@@ -42,7 +42,7 @@ public class KubernetesTestEnvironment extends TestEnvironment {
         return kubernetesClient;
     }
 
-    public KubernetesCloudConfig getCloudConfig() {
-        return cloudConfig;
+    public KubernetesEnvironmentConfig getEnvironmentConfig() {
+        return environmentConfig;
     }
 }

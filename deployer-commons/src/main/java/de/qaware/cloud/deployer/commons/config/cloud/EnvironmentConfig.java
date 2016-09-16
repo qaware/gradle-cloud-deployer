@@ -16,37 +16,37 @@
 package de.qaware.cloud.deployer.commons.config.cloud;
 
 /**
- * Represents a configuration for a cloud.
+ * Represents a configuration for a environment.
  */
-public class CloudConfig {
+public class EnvironmentConfig {
 
     /**
-     * The base url of the cloud.
+     * The base url of the environment.
      */
     private final String baseUrl;
 
     /**
-     * The update strategy which is used in this cloud.
+     * The update strategy which is used in this environment.
      */
     private final String updateStrategy;
 
     /**
-     * The authorization configuration for this cloud.
+     * The authorization configuration for this environment.
      */
     private AuthConfig authConfig;
 
     /**
-     * The ssl configuration for this cloud.
+     * The ssl configuration for this environment.
      */
     private SSLConfig sslConfig;
 
     /**
-     * Creates a new cloud config.
+     * Creates a new environment config.
      *
-     * @param baseUrl        The base url of this cloud.
-     * @param updateStrategy The update strategy which is used for this cloud.
+     * @param baseUrl        The base url of this environment.
+     * @param updateStrategy The update strategy which is used for this environment.
      */
-    public CloudConfig(String baseUrl, String updateStrategy) {
+    public EnvironmentConfig(String baseUrl, String updateStrategy) {
         this.baseUrl = baseUrl;
         this.updateStrategy = updateStrategy;
     }
@@ -88,18 +88,18 @@ public class CloudConfig {
     }
 
     /**
-     * Returns the cloud's ssl config.
+     * Returns the environment's ssl config.
      *
-     * @return The cloud's ssl config.
+     * @return The environment's ssl config.
      */
     public SSLConfig getSslConfig() {
         return sslConfig;
     }
 
     /**
-     * Sets the cloud's ssl config.
+     * Sets the environment's ssl config.
      *
-     * @param sslConfig The cloud's ssl config.
+     * @param sslConfig The environment's ssl config.
      */
     public void setSslConfig(SSLConfig sslConfig) {
         this.sslConfig = sslConfig;
