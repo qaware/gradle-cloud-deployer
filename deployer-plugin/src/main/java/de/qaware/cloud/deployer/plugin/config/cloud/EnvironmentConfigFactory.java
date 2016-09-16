@@ -25,6 +25,7 @@ import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
 import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
@@ -47,11 +48,12 @@ public final class EnvironmentConfigFactory {
 
     /**
      * Creates a list of kubernetes environment configs out of the specified extensions.
+     *
      * @param extensions THe extensions which are used to create the kubernetes environment configs.
      * @return The list of kubernetes environment configs.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static List<KubernetesEnvironmentConfig> createKubernetesEnvironmentConfigs(List<EnvironmentExtension> extensions) throws EnvironmentConfigException {
+    public static List<KubernetesEnvironmentConfig> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
         List<KubernetesEnvironmentConfig> configs = new ArrayList<>();
         for (EnvironmentExtension extension : extensions) {
             configs.add(createKubernetesEnvironmentConfig(extension));
@@ -66,7 +68,7 @@ public final class EnvironmentConfigFactory {
      * @return The list of environment configs.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static List<EnvironmentConfig> createEnvironmentConfigs(List<EnvironmentExtension> extensions) throws EnvironmentConfigException {
+    public static List<EnvironmentConfig> createEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
         List<EnvironmentConfig> configs = new ArrayList<>();
         for (EnvironmentExtension extension : extensions) {
             configs.add(createEnvironmentConfig(extension));
