@@ -4,7 +4,10 @@ jar {
 }
 
 dependencies {
+    compile project(':deployer-commons')
     compile project(':deployer-kubernetes')
+    compile project(':deployer-marathon')
+    compile project(':deployer-dcos')
 
     compile gradleApi()
 }
