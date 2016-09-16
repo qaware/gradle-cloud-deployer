@@ -31,6 +31,13 @@ public class SSLConfig {
     private final String certificate;
 
     /**
+     * Creates a default ssl config which trusts only the host's certs.
+     */
+    public SSLConfig(){
+        this(false);
+    }
+
+    /**
      * Creates a new ssl config which trusts all certs.
      *
      * @param trustAll Indicates whether all certs are trusted.
@@ -69,7 +76,7 @@ public class SSLConfig {
     }
 
     /**
-     * Inidcates whether this ssl config has a custom certificate to trust.
+     * Indicates whether this ssl config has a custom certificate to trust.
      *
      * @return TRUE if a custom certificate exists, FALSE otherwise.
      */
