@@ -24,7 +24,7 @@ interface TokenClient {
     /**
      * Tries to login using the specified token.
      *
-     * @param token The request body which contains the app.
+     * @param token The request body which contains the token.
      * @return The server's http response.
      */
     @POST("/acs/api/v1/auth/login")
