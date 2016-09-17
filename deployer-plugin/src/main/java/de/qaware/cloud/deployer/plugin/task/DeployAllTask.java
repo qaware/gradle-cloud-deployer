@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a task which deploys the specified configuration to the cloud.
+ * Represents a task which deploys the all environments.
  */
 public class DeployAllTask extends DefaultTask {
 

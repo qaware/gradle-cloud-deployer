@@ -35,7 +35,7 @@ import java.util.Map;
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
 /**
- * Represents a task which deploys the specified configuration to the cloud.
+ * Represents a task which deploys one specified environment.
  */
 public class DeployTask extends DefaultTask {
 
