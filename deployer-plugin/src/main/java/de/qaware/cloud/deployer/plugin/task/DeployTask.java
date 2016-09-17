@@ -39,8 +39,9 @@ public class DeployTask extends DefaultTask {
     /**
      * Deploys the specified configuration.
      *
-     * @throws ResourceException       If a error during resource interaction with the backend occurs.
-     * @throws ResourceConfigException If a error during config creation/parsing occurs.
+     * @throws ResourceException          If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException    If a error during config creation/parsing occurs.
+     * @throws EnvironmentConfigException If a error during config creation occurs.
      */
     @TaskAction
     public void deploy() throws ResourceException, ResourceConfigException, EnvironmentConfigException {
