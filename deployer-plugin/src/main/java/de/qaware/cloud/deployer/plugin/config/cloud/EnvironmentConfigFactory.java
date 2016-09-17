@@ -25,7 +25,10 @@ import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
 import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
@@ -52,8 +55,8 @@ public final class EnvironmentConfigFactory {
      * @return The map of kubernetes environment configs and their files.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    public static Map<KubernetesEnvironmentConfig, List<File>> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        Map<KubernetesEnvironmentConfig, List<File>> configs = new TreeMap<>();
+    public static Map<EnvironmentConfig, List<File>> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
+        Map<EnvironmentConfig, List<File>> configs = new TreeMap<>();
         for (EnvironmentExtension extension : extensions) {
             configs.put(createKubernetesEnvironmentConfig(extension), extension.getFiles());
         }
@@ -83,10 +86,11 @@ public final class EnvironmentConfigFactory {
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
     private static KubernetesEnvironmentConfig createKubernetesEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
+        String id = extractId(extension);
         String baseUrl = extractBaseUrl(extension);
         String updateStrategy = extractUpdateStrategy(extension);
         String namespace = extractNamespace(extension);
-        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(baseUrl, updateStrategy, namespace);
+        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(id, baseUrl, updateStrategy, namespace);
 
         // Set authorization config
         AuthConfig authConfig = extractAuthConfig(extension);
@@ -107,9 +111,10 @@ public final class EnvironmentConfigFactory {
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
     private static EnvironmentConfig createEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
+        String id = extractId(extension);
         String baseUrl = extractBaseUrl(extension);
         String updateStrategy = extractUpdateStrategy(extension);
-        EnvironmentConfig environmentConfig = new EnvironmentConfig(baseUrl, updateStrategy);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig(id, baseUrl, updateStrategy);
 
         // Set authorization config
         AuthConfig authConfig = extractAuthConfig(extension);
@@ -120,6 +125,19 @@ public final class EnvironmentConfigFactory {
         environmentConfig.setSslConfig(sslConfig);
 
         return environmentConfig;
+    }
+
+    /**
+     * Extracts the id out of the specified extension.
+     *
+     * @param extension The extension which contains the id.
+     * @return The id.
+     * @throws EnvironmentConfigException If the id is not defined.
+     */
+    private static String extractId(EnvironmentExtension extension) throws EnvironmentConfigException {
+        String id = extension.getId();
+        assertNotNullNorEmpty(id, PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_EMPTY_ID"));
+        return id;
     }
 
     /**

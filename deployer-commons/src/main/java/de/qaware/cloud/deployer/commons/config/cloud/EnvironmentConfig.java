@@ -21,6 +21,11 @@ package de.qaware.cloud.deployer.commons.config.cloud;
 public class EnvironmentConfig {
 
     /**
+     * The id of this environment.
+     */
+    private final String id;
+
+    /**
      * The base url of the environment.
      */
     private final String baseUrl;
@@ -43,12 +48,23 @@ public class EnvironmentConfig {
     /**
      * Creates a new environment config.
      *
+     * @param id The id of this environment.
      * @param baseUrl        The base url of this environment.
      * @param updateStrategy The update strategy which is used for this environment.
      */
-    public EnvironmentConfig(String baseUrl, String updateStrategy) {
+    public EnvironmentConfig(String id, String baseUrl, String updateStrategy) {
+        this.id = id;
         this.baseUrl = baseUrl;
         this.updateStrategy = updateStrategy;
+    }
+
+    /**
+     * Returns the id of this environment.
+     *
+     * @return The id.
+     */
+    public String getId() {
+        return id;
     }
 
     /**

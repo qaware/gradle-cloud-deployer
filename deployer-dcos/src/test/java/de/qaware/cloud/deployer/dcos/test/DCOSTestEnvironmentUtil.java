@@ -39,7 +39,7 @@ public final class DCOSTestEnvironmentUtil {
         );
 
         // Create environment config.
-        EnvironmentConfig environmentConfig = new EnvironmentConfig(environmentVariables.get(DCOS_URL_ENV), updateStrategy);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", environmentVariables.get(DCOS_URL_ENV), updateStrategy);
         environmentConfig.setAuthConfig(new AuthConfig(environmentVariables.get(DCOS_TOKEN_ENV)));
         return environmentConfig;
     }

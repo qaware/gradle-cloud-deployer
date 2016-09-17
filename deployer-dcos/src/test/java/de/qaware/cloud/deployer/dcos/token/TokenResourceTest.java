@@ -47,11 +47,11 @@ public class TokenResourceTest extends TestCase {
     }
 
     public void testRetrieveApiTokenInvalidAddress() throws ResourceException {
-        EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getUpdateStrategy());
+        EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getUpdateStrategy());
         newEnvironmentConfig.setAuthConfig(environmentConfig.getAuthConfig());
         assertException(newEnvironmentConfig, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
 
-        newEnvironmentConfig = new EnvironmentConfig("http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getUpdateStrategy());
+        newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getUpdateStrategy());
         newEnvironmentConfig.setAuthConfig(environmentConfig.getAuthConfig());
         assertException(newEnvironmentConfig, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
     }

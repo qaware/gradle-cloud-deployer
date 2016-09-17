@@ -38,7 +38,7 @@ public class MarathonTestEnvironmentUtil {
     private static final String MARATHON_DEFAULT_UPDATE_STRATEGY = "HARD";
 
     private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, String updateStrategy) {
-        EnvironmentConfig environmentConfig = new EnvironmentConfig(environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
         environmentConfig.setAuthConfig(new AuthConfig(environmentVariables.get(MARATHON_TOKEN_ENV)));
         return environmentConfig;
     }

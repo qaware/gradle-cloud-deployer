@@ -30,12 +30,13 @@ public class KubernetesEnvironmentConfig extends EnvironmentConfig {
     /**
      * Creates a new kubernetes environment config.
      *
+     * @param id             The id of this environment.
      * @param baseUrl        The base url of this environment.
      * @param updateStrategy The update strategy which is used for this environment.
      * @param namespace      The namespace which is used for deployment.
      */
-    public KubernetesEnvironmentConfig(String baseUrl, String updateStrategy, String namespace) {
-        super(baseUrl, updateStrategy);
+    public KubernetesEnvironmentConfig(String id, String baseUrl, String updateStrategy, String namespace) {
+        super(id, baseUrl, updateStrategy);
         this.namespace = namespace;
     }
 

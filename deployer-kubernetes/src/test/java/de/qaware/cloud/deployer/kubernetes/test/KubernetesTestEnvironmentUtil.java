@@ -66,7 +66,7 @@ public class KubernetesTestEnvironmentUtil {
     }
 
     private static KubernetesEnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, String updateStrategy, String namespace) {
-        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(environmentVariables.get(KUBERNETES_URL_ENV), updateStrategy, namespace);
+        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig("test", environmentVariables.get(KUBERNETES_URL_ENV), updateStrategy, namespace);
         AuthConfig authConfig = new AuthConfig();
         authConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
         authConfig.setPassword(environmentVariables.get(KUBERNETES_PASSWORD_ENV));
