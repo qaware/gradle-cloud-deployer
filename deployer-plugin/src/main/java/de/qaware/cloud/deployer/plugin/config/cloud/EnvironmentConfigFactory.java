@@ -143,7 +143,7 @@ public final class EnvironmentConfigFactory {
      */
     private static SSLConfig extractSSLConfig(EnvironmentExtension extension) {
         SSLConfig sslConfig;
-        SSLExtension sslExtension = extension.getSsl();
+        SSLExtension sslExtension = extension.getSslExtension();
         if (sslExtension.isTrustAll()) {
             sslConfig = new SSLConfig(true);
         } else {
@@ -165,7 +165,7 @@ public final class EnvironmentConfigFactory {
      */
     private static AuthConfig extractAuthConfig(EnvironmentExtension extension) {
         AuthConfig authConfig = new AuthConfig();
-        AuthExtension authExtension = extension.getAuth();
+        AuthExtension authExtension = extension.getAuthExtension();
         if (authExtension != null) {
             // Set a token if available
             String token = authExtension.getToken();

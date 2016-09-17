@@ -49,12 +49,12 @@ public class EnvironmentExtension {
     /**
      * The ssl configuration for this environment.
      */
-    private SSLExtension ssl;
+    private SSLExtension sslExtension;
 
     /**
      * The authorization configuration for this environment.
      */
-    private AuthExtension auth;
+    private AuthExtension authExtension;
 
     /**
      * The list of config files which belong to this environment.
@@ -83,7 +83,7 @@ public class EnvironmentExtension {
      */
     public SSLExtension ssl(Closure closure) {
         SSLExtension ssl = (SSLExtension) project.configure(new SSLExtension(), closure);
-        this.ssl = ssl;
+        this.sslExtension = ssl;
         return ssl;
     }
 
@@ -95,7 +95,7 @@ public class EnvironmentExtension {
      */
     public AuthExtension auth(Closure closure) {
         AuthExtension auth = (AuthExtension) project.configure(new AuthExtension(), closure);
-        this.auth = auth;
+        this.authExtension = auth;
         return auth;
     }
 
@@ -158,8 +158,8 @@ public class EnvironmentExtension {
      *
      * @return The ssl configuration.
      */
-    public SSLExtension getSsl() {
-        return ssl;
+    public SSLExtension getSslExtension() {
+        return sslExtension;
     }
 
     /**
@@ -167,8 +167,8 @@ public class EnvironmentExtension {
      *
      * @return The authorization configuration.
      */
-    public AuthExtension getAuth() {
-        return auth;
+    public AuthExtension getAuthExtension() {
+        return authExtension;
     }
 
     /**
