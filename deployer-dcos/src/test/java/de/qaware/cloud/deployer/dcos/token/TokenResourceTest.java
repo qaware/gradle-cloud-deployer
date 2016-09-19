@@ -58,7 +58,7 @@ public class TokenResourceTest extends TestCase {
 
     public void testRetrieveApiToken() throws ResourceException, EnvironmentConfigException {
         TokenResource tokenResource = new TokenResource(environmentConfig);
-        String token = tokenResource.retrieveApiToken();
+        String token = tokenResource.retrieveApiToken(environmentConfig.getAuthConfig().getToken());
         assertFalse(token.isEmpty());
     }
 
@@ -66,7 +66,7 @@ public class TokenResourceTest extends TestCase {
         boolean exceptionThrown = false;
         TokenResource tokenResource = new TokenResource(environmentConfig);
         try {
-            tokenResource.retrieveApiToken();
+            tokenResource.retrieveApiToken(environmentConfig.getAuthConfig().getToken());
         } catch (EnvironmentConfigException e) {
             exceptionThrown = true;
             assertEquals(exceptionMessage, e.getMessage());

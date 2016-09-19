@@ -15,7 +15,6 @@
  */
 package de.qaware.cloud.deployer.dcos.token;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -32,11 +31,6 @@ import static de.qaware.cloud.deployer.dcos.logging.DCOSMessageBundle.DCOS_MESSA
 public final class TokenResource {
 
     /**
-     * The config for the cloud.
-     */
-    private final EnvironmentConfig environmentConfig;
-
-    /**
      * The client which is used to retrieve the token from the backend.
      */
     private final TokenClient tokenClient;
@@ -48,9 +42,6 @@ public final class TokenResource {
      * @throws ResourceException If the config isn't valid.
      */
     public TokenResource(EnvironmentConfig environmentConfig) throws ResourceException {
-        this.environmentConfig = environmentConfig;
-
-        // Create the client
         ClientFactory clientFactory = new ClientFactory(environmentConfig);
         this.tokenClient = clientFactory.create(TokenClient.class);
     }
@@ -58,17 +49,16 @@ public final class TokenResource {
     /**
      * Retrieves the dcos api token using a dcos cli token.
      *
-     * @throws EnvironmentConfigException If the specified dcos cli token isn't valid.
-     * @throws ResourceException    If a problem with the cloud config exists.
+     * @param cliToken The dcos cli token which is used to authorize.
      * @return The dcos api token.
+     * @throws EnvironmentConfigException If the specified dcos cli token isn't valid.
+     * @throws ResourceException          If a problem with the cloud config exists.
      */
-    public String retrieveApiToken() throws EnvironmentConfigException, ResourceException {
-        AuthConfig authConfig = environmentConfig.getAuthConfig();
-        String dcosToken = authConfig.getToken();
-        if (dcosToken != null && !dcosToken.isEmpty()) {
+    public String retrieveApiToken(String cliToken) throws EnvironmentConfigException, ResourceException {
+        if (cliToken != null && !cliToken.isEmpty()) {
             try {
                 // Create token description.
-                Token token = new Token(dcosToken);
+                Token token = new Token(cliToken);
 
                 // Execute request.
                 Response<Token> tokenResponse = tokenClient.login(token).execute();
