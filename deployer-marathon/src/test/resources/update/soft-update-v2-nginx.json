@@ -1,5 +1,5 @@
 {
-  "id": "/webserver",
+  "id": "/webserver-1",
   "cpus": 0.5,
   "mem": 100,
   "container": {
