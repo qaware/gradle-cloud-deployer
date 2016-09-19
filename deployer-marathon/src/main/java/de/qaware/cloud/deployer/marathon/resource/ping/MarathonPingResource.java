@@ -36,6 +36,7 @@ public class MarathonPingResource extends BasePingResource {
      * Creates a new marathon ping resource.
      *
      * @param environmentConfig The config of the environment this resource belongs to.
+     * @throws ResourceException If the resource couldn't be created.
      */
     public MarathonPingResource(EnvironmentConfig environmentConfig) throws ResourceException {
         super(environmentConfig.getId());

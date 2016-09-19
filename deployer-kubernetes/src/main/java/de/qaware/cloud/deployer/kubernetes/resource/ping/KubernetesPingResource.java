@@ -36,6 +36,7 @@ public class KubernetesPingResource extends BasePingResource {
      * Creates a new kubernetes ping resource.
      *
      * @param environmentConfig The config of the environment this resource belongs to.
+     * @throws ResourceException If the resource couldn't be created.
      */
     public KubernetesPingResource(EnvironmentConfig environmentConfig) throws ResourceException {
         super(environmentConfig.getId());
