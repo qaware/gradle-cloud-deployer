@@ -38,9 +38,7 @@ public class MarathonTestEnvironmentUtil {
     private static final String MARATHON_DEFAULT_UPDATE_STRATEGY = "HARD";
 
     private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, String updateStrategy) {
-        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
-        environmentConfig.setAuthConfig(new AuthConfig(environmentVariables.get(MARATHON_TOKEN_ENV)));
-        return environmentConfig;
+        return new EnvironmentConfig("test", environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
     }
 
     private static ClientFactory createClientFactory(EnvironmentConfig environmentConfig) throws ResourceException {
@@ -65,7 +63,7 @@ public class MarathonTestEnvironmentUtil {
 
         // Replace the token.
         TokenResource tokenResource = new TokenResource(environmentConfig);
-        String apiToken = tokenResource.retrieveApiToken();
+        String apiToken = tokenResource.retrieveApiToken(environmentVariables.get(MARATHON_TOKEN_ENV));
         environmentConfig.getAuthConfig().setToken(apiToken);
 
         ClientFactory clientFactory = createClientFactory(environmentConfig);
