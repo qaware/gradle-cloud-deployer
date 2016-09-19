@@ -1,0 +1,37 @@
+{
+  "id": "/zwitscher-config-0",
+
+  "instances": 1,
+  "cpus": 0.2,
+  "mem": 512,
+
+  "cmd": "/opt/java/latest/bin/java -Xmx256m -Dserver.port=$PORT0 -Deureka.instance.ipAddress=$HOST -jar /opt/zwitscher-config/zwitscher-config.jar",
+
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "qaware-oss-docker-registry.bintray.io/zwitscher/zwitscher-config:1.0.1",
+      "network": "BRIDGE",
+      "portMappings": [
+        { "containerPort": 0, "hostPort": 0, "protocol": "tcp" }
+      ]
+    }
+  },
+
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "path": "/admin/health",
+      "intervalSeconds": 10,
+      "portIndex": 0,
+      "timeoutSeconds": 10,
+      "maxConsecutiveFailures": 3
+    }
+  ],
+
+  "dependencies" : [ "zwitscher-eureka" ],
+
+  "env": {
+    "eureka.host": "zwitscher-eureka.marathon.mesos"
+  }
+}

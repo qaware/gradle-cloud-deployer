@@ -38,8 +38,9 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
 
     private Marathon marathonClient;
     private MarathonUpdateStrategy softUpdateStrategy;
-    private List<MarathonResource> resourcesV1;
-    private List<MarathonResource> resourcesV2;
+    private List<MarathonResource> resourcesSingle;
+    private List<MarathonResource> resourcesMultipleV1;
+    private List<MarathonResource> resourcesMultipleV2;
 
     @Override
     public void setUp() throws Exception {
@@ -55,21 +56,29 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
         MarathonResourceConfigFactory resourceConfigFactory = new MarathonResourceConfigFactory();
         MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
 
-        // Create the resources for v1
-        List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/update/soft-update-v1-eureka.json").getPath()));
-        filesV1.add(new File(this.getClass().getResource("/update/soft-update-v1-config.json").getPath()));
-        filesV1.add(new File(this.getClass().getResource("/update/soft-update-v1-group.json").getPath()));
-        List<MarathonResourceConfig> configsV1 = resourceConfigFactory.createConfigs(filesV1);
-        resourcesV1 = resourceFactory.createResources(configsV1);
+        // Create the resources for the single deployment test
+        List<File> filesSingle = new ArrayList<>();
+        filesSingle.add(new File(this.getClass().getResource("/update/soft-update-eureka.json").getPath()));
+        filesSingle.add(new File(this.getClass().getResource("/update/soft-update-config.json").getPath()));
+        filesSingle.add(new File(this.getClass().getResource("/update/soft-update-group.json").getPath()));
+        List<MarathonResourceConfig> configsSingle = resourceConfigFactory.createConfigs(filesSingle);
+        resourcesSingle = resourceFactory.createResources(configsSingle);
 
-        // Create the resources for v2
-        List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/update/soft-update-v2-eureka.json").getPath()));
-        filesV2.add(new File(this.getClass().getResource("/update/soft-update-v2-nginx.json").getPath()));
-        filesV2.add(new File(this.getClass().getResource("/update/soft-update-v2-group.json").getPath()));
-        List<MarathonResourceConfig> configsV2 = resourceConfigFactory.createConfigs(filesV2);
-        resourcesV2 = resourceFactory.createResources(configsV2);
+        // Create the resources for the multiple deployment test v1
+        List<File> filesMultipleV1 = new ArrayList<>();
+        filesMultipleV1.add(new File(this.getClass().getResource("/update/soft-update-v1-eureka.json").getPath()));
+        filesMultipleV1.add(new File(this.getClass().getResource("/update/soft-update-v1-config.json").getPath()));
+        filesMultipleV1.add(new File(this.getClass().getResource("/update/soft-update-v1-group.json").getPath()));
+        List<MarathonResourceConfig> configsMultipleV1 = resourceConfigFactory.createConfigs(filesMultipleV1);
+        resourcesMultipleV1 = resourceFactory.createResources(configsMultipleV1);
+
+        // Create the resources for the multiple deployment test v2
+        List<File> filesMultipleV2 = new ArrayList<>();
+        filesMultipleV2.add(new File(this.getClass().getResource("/update/soft-update-v2-eureka.json").getPath()));
+        filesMultipleV2.add(new File(this.getClass().getResource("/update/soft-update-v2-nginx.json").getPath()));
+        filesMultipleV2.add(new File(this.getClass().getResource("/update/soft-update-v2-group.json").getPath()));
+        List<MarathonResourceConfig> configsMultipleV2 = resourceConfigFactory.createConfigs(filesMultipleV2);
+        resourcesMultipleV2 = resourceFactory.createResources(configsMultipleV2);
 
         deleteAll();
     }
@@ -84,12 +93,12 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
         int appsV1 = 5;
 
         // Deploy v1
-        softUpdateStrategy.deploy(resourcesV1);
+        softUpdateStrategy.deploy(resourcesSingle);
 
         // Check that everything was deployed correctly
-        MarathonResource eurekaAppResource = resourcesV1.get(0);
-        MarathonResource configAppResource = resourcesV1.get(1);
-        MarathonResource groupResource = resourcesV1.get(2);
+        MarathonResource eurekaAppResource = resourcesSingle.get(0);
+        MarathonResource configAppResource = resourcesSingle.get(1);
+        MarathonResource groupResource = resourcesSingle.get(2);
 
         // Check apps
         assertEquals(originalSize + appsV1, marathonClient.getApps().getApps().size());
@@ -117,16 +126,16 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
         int appsV2 = 6;
 
         // Deploy v1 - already tested above
-        softUpdateStrategy.deploy(resourcesV1);
+        softUpdateStrategy.deploy(resourcesMultipleV1);
 
         // Deploy v2
-        softUpdateStrategy.deploy(resourcesV2);
+        softUpdateStrategy.deploy(resourcesMultipleV2);
 
         // Check that everything was deployed correctly
-        MarathonResource configAppResource = resourcesV1.get(1);
-        MarathonResource eurekaAppResource = resourcesV2.get(0);
-        MarathonResource nginxAppResource = resourcesV2.get(1);
-        MarathonResource groupResource = resourcesV2.get(2);
+        MarathonResource configAppResource = resourcesMultipleV1.get(1);
+        MarathonResource eurekaAppResource = resourcesMultipleV2.get(0);
+        MarathonResource nginxAppResource = resourcesMultipleV2.get(1);
+        MarathonResource groupResource = resourcesMultipleV2.get(2);
 
         // Check apps
         assertEquals(originalSize + appsV2, marathonClient.getApps().getApps().size());
@@ -157,8 +166,9 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
 
     private void deleteAll() {
         List<Resource> allResources = new ArrayList<>();
-        allResources.addAll(resourcesV1);
-        allResources.addAll(resourcesV2);
+        allResources.addAll(resourcesSingle);
+        allResources.addAll(resourcesMultipleV1);
+        allResources.addAll(resourcesMultipleV2);
         for (Resource resource : allResources) {
             try {
                 resource.delete();
