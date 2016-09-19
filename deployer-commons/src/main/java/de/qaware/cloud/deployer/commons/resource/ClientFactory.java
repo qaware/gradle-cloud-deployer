@@ -141,6 +141,8 @@ public class ClientFactory {
             } catch (Exception e) {
                 throw new ResourceException(e);
             }
+        } else {
+            environmentConfig.setSslConfig(new SSLConfig());
         }
     }
 
@@ -152,17 +154,21 @@ public class ClientFactory {
      */
     private void addCredentials(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) {
         AuthConfig authConfig = environmentConfig.getAuthConfig();
-        String username = authConfig.getUsername();
-        String password = authConfig.getPassword();
-        if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-            builder.addInterceptor(chain -> {
-                String credentials = Credentials.basic(username, password);
-                Request original = chain.request();
-                Request request = original.newBuilder()
-                        .addHeader("Authorization", credentials)
-                        .build();
-                return chain.proceed(request);
-            });
+        if (authConfig != null) {
+            String username = authConfig.getUsername();
+            String password = authConfig.getPassword();
+            if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+                builder.addInterceptor(chain -> {
+                    String credentials = Credentials.basic(username, password);
+                    Request original = chain.request();
+                    Request request = original.newBuilder()
+                            .addHeader("Authorization", credentials)
+                            .build();
+                    return chain.proceed(request);
+                });
+            }
+        } else {
+            environmentConfig.setAuthConfig(new AuthConfig());
         }
     }
 
@@ -173,15 +179,20 @@ public class ClientFactory {
      * @param builder     The builder which will be configured.
      */
     private void addToken(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) {
-        String token = environmentConfig.getAuthConfig().getToken();
-        if (token != null && !token.isEmpty()) {
-            builder.addInterceptor(chain -> {
-                Request original = chain.request();
-                Request request = original.newBuilder()
-                        .addHeader("Authorization", "token=" + token)
-                        .build();
-                return chain.proceed(request);
-            });
+        AuthConfig authConfig = environmentConfig.getAuthConfig();
+        if (authConfig != null) {
+            String token = authConfig.getToken();
+            if (token != null && !token.isEmpty()) {
+                builder.addInterceptor(chain -> {
+                    Request original = chain.request();
+                    Request request = original.newBuilder()
+                            .addHeader("Authorization", "token=" + token)
+                            .build();
+                    return chain.proceed(request);
+                });
+            }
+        } else {
+            environmentConfig.setAuthConfig(new AuthConfig());
         }
     }
 
