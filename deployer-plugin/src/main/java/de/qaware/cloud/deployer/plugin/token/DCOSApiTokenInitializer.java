@@ -46,10 +46,10 @@ public class DCOSApiTokenInitializer implements TokenInitializer {
 
     @Override
     public String initialize(EnvironmentConfig environmentConfig) throws EnvironmentConfigException {
-        try {
+        try (FileInputStream inputStream = new FileInputStream(USER_HOME + DCOS_CONFIG_FILE)) {
             // Load the token
             Properties properties = new Properties();
-            properties.load(new FileInputStream(USER_HOME + DCOS_CONFIG_FILE));
+            properties.load(inputStream);
             String token = (String) properties.get(DCOS_TOKEN_PROPERTY);
 
             // Remove "-characters and assign
