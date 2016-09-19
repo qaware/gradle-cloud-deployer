@@ -18,7 +18,8 @@ package de.qaware.cloud.deployer.dcos.token;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.dcos.test.DCOSTestEnvironmentUtil;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.dcos.test.DcosTestEnvironmentUtil;
 import junit.framework.TestCase;
 import org.junit.Before;
 
@@ -32,8 +33,8 @@ public class TokenResourceTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        this.environmentConfig = DCOSTestEnvironmentUtil.createEnvironmentConfig("SOFT");
-        this.authToken = DCOSTestEnvironmentUtil.getToken();
+        this.environmentConfig = DcosTestEnvironmentUtil.createEnvironmentConfig(UpdateStrategy.REPLACE);
+        this.authToken = DcosTestEnvironmentUtil.getToken();
     }
 
     public void testRetrieveApiTokenWithEmptyToken() throws ResourceException {

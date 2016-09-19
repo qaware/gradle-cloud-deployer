@@ -19,20 +19,21 @@ import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 
 import java.io.IOException;
 import java.util.Map;
 
-public final class DCOSTestEnvironmentUtil {
+public final class DcosTestEnvironmentUtil {
 
     // Environment variables.
     private static final String DCOS_URL_ENV = "MARATHON_URL";
     private static final String DCOS_TOKEN_ENV = "MARATHON_TOKEN";
 
-    private DCOSTestEnvironmentUtil() {
+    private DcosTestEnvironmentUtil() {
     }
 
-    public static EnvironmentConfig createEnvironmentConfig(String updateStrategy) throws IOException {
+    public static EnvironmentConfig createEnvironmentConfig(UpdateStrategy updateStrategy) throws IOException {
         // Retrieve env variables
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 DCOS_URL_ENV
