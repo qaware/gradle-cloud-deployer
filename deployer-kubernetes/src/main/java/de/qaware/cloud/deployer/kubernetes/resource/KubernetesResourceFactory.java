@@ -15,16 +15,18 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource;
 
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.BasePingResource;
 import de.qaware.cloud.deployer.commons.resource.BaseResourceFactory;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
+import de.qaware.cloud.deployer.kubernetes.resource.ping.KubernetesPingResource;
 import de.qaware.cloud.deployer.kubernetes.resource.pod.PodResource;
 import de.qaware.cloud.deployer.kubernetes.resource.replication.controller.ReplicationControllerResource;
 import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
@@ -58,7 +60,7 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
      * @throws ResourceException       If a problem during client factory creation occurs.
      */
     public KubernetesResourceFactory(KubernetesEnvironmentConfig environmentConfig) throws ResourceConfigException, ResourceException {
-        super(new ClientFactory(environmentConfig));
+        super(environmentConfig);
         KubernetesResourceConfig namespaceResourceConfig = NamespaceResourceConfigFactory.create(environmentConfig.getNamespace());
         this.namespaceResource = new NamespaceResource(namespaceResourceConfig, getClientFactory());
     }
@@ -123,5 +125,10 @@ public class KubernetesResourceFactory extends BaseResourceFactory<KubernetesRes
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE", resource));
 
         return resource;
+    }
+
+    @Override
+    public BasePingResource createPingResource(EnvironmentConfig environmentConfig) throws ResourceException {
+        return new KubernetesPingResource(environmentConfig);
     }
 }

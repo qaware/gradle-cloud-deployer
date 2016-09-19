@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.commons.resource;
 
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
@@ -37,10 +38,16 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
     /**
      * Creates a new base resource factory.
      *
-     * @param clientFactory The client factory which is used to create the clients for the backend communication.
+     * @param environmentConfig The configuration of the environment this factory belongs to.
+     * @throws ResourceException If a error during ping resource creation or connectivity testing occurs.
      */
-    public BaseResourceFactory(ClientFactory clientFactory) {
-        this.clientFactory = clientFactory;
+    public BaseResourceFactory(EnvironmentConfig environmentConfig) throws ResourceException {
+        // Test connectivity
+        BasePingResource pingResource = createPingResource(environmentConfig);
+        pingResource.ping();
+
+        // Create a client factory
+        this.clientFactory = new ClientFactory(environmentConfig);
     }
 
     /**
@@ -75,4 +82,12 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
      * @throws ResourceException If a error during resource creation occurs.
      */
     public abstract ResourceType createResource(ConfigType resourceConfig) throws ResourceException;
+
+    /**
+     * Creates a ping resource for the specified environment config to test the connectivity.
+     *
+     * @return The ping resource.
+     * @throws ResourceException If a error during ping resource creation occurs.
+     */
+    public abstract BasePingResource createPingResource(EnvironmentConfig environmentConfig) throws ResourceException;
 }

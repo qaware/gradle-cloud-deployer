@@ -26,12 +26,13 @@ import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.BasePingResource;
 import de.qaware.cloud.deployer.commons.resource.BaseResourceFactory;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import de.qaware.cloud.deployer.marathon.resource.app.AppResource;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import de.qaware.cloud.deployer.marathon.resource.group.GroupResource;
+import de.qaware.cloud.deployer.marathon.resource.ping.MarathonPingResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
      * @throws ResourceException if an error occurs.
      */
     public MarathonResourceFactory(EnvironmentConfig environmentConfig) throws ResourceException {
-        super(new ClientFactory(environmentConfig));
+        super(environmentConfig);
     }
 
     @Override
@@ -110,6 +111,11 @@ public class MarathonResourceFactory extends BaseResourceFactory<MarathonResourc
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_CREATING_RESOURCES_SINGLE_RESOURCE", resource));
 
         return resource;
+    }
+
+    @Override
+    public BasePingResource createPingResource(EnvironmentConfig environmentConfig) throws ResourceException {
+        return new MarathonPingResource(environmentConfig);
     }
 
     /**
