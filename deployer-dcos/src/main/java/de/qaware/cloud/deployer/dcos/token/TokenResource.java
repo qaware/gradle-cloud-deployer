@@ -26,7 +26,7 @@ import java.io.IOException;
 import static de.qaware.cloud.deployer.dcos.logging.DCOSMessageBundle.DCOS_MESSAGE_BUNDLE;
 
 /**
- * Retrieves a dcos api token using a dcos cli token.
+ * Retrieves a dcos api token using a dcos auth token.
  */
 public final class TokenResource {
 
@@ -38,7 +38,7 @@ public final class TokenResource {
     /**
      * Creates a new token resource.
      *
-     * @param environmentConfig The config which the describes the cloud.
+     * @param environmentConfig The config which the describes the environment.
      * @throws ResourceException If the config isn't valid.
      */
     public TokenResource(EnvironmentConfig environmentConfig) throws ResourceException {
@@ -47,18 +47,18 @@ public final class TokenResource {
     }
 
     /**
-     * Retrieves the dcos api token using a dcos cli token.
+     * Retrieves the dcos api token using a dcos auth token.
      *
-     * @param cliToken The dcos cli token which is used to authorize.
+     * @param authToken The dcos auth token which is used to authorize.
      * @return The dcos api token.
-     * @throws EnvironmentConfigException If the specified dcos cli token isn't valid.
+     * @throws EnvironmentConfigException If the specified dcos auth token isn't valid.
      * @throws ResourceException          If a problem with the cloud config exists.
      */
-    public String retrieveApiToken(String cliToken) throws EnvironmentConfigException, ResourceException {
-        if (cliToken != null && !cliToken.isEmpty()) {
+    public String retrieveApiToken(String authToken) throws EnvironmentConfigException, ResourceException {
+        if (authToken != null && !authToken.isEmpty()) {
             try {
                 // Create token description.
-                Token token = new Token(cliToken);
+                Token token = new Token(authToken);
 
                 // Execute request.
                 Response<Token> tokenResponse = tokenClient.login(token).execute();

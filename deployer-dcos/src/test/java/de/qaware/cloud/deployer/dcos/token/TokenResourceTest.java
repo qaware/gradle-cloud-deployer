@@ -36,24 +36,26 @@ public class TokenResourceTest extends TestCase {
 
     public void testRetrieveApiTokenWithEmptyToken() throws ResourceException {
         environmentConfig.setAuthConfig(new AuthConfig());
-        assertException(environmentConfig, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));
+
+        assertException(environmentConfig, "", DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));
     }
 
     public void testRetrieveApiTokenWithInvalidToken() throws ResourceException {
+        environmentConfig.setAuthConfig(new AuthConfig());
+
         String validToken = environmentConfig.getAuthConfig().getToken();
         String invalidToken = validToken.substring(0, validToken.length() - 2);
-        environmentConfig.setAuthConfig(new AuthConfig(invalidToken));
-        assertException(environmentConfig, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
+        assertException(environmentConfig, invalidToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
     }
 
     public void testRetrieveApiTokenInvalidAddress() throws ResourceException {
+        String authToken = environmentConfig.getAuthConfig().getToken();
+
         EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getUpdateStrategy());
-        newEnvironmentConfig.setAuthConfig(environmentConfig.getAuthConfig());
-        assertException(newEnvironmentConfig, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
+        assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
 
         newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getUpdateStrategy());
-        newEnvironmentConfig.setAuthConfig(environmentConfig.getAuthConfig());
-        assertException(newEnvironmentConfig, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
+        assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
     }
 
     public void testRetrieveApiToken() throws ResourceException, EnvironmentConfigException {
@@ -62,11 +64,11 @@ public class TokenResourceTest extends TestCase {
         assertFalse(token.isEmpty());
     }
 
-    private void assertException(EnvironmentConfig environmentConfig, String exceptionMessage) throws ResourceException {
+    private void assertException(EnvironmentConfig environmentConfig, String token, String exceptionMessage) throws ResourceException {
         boolean exceptionThrown = false;
         TokenResource tokenResource = new TokenResource(environmentConfig);
         try {
-            tokenResource.retrieveApiToken(environmentConfig.getAuthConfig().getToken());
+            tokenResource.retrieveApiToken(token);
         } catch (EnvironmentConfigException e) {
             exceptionThrown = true;
             assertEquals(exceptionMessage, e.getMessage());
