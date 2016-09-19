@@ -144,7 +144,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             // Interpret result
             if (isSuccessResponse(response)) {
                 return true;
-            } else if (isNotFoundResponse(response)) {
+            } else if (ResponseInterpreterUtil.isNotFoundResponse(response)) {
                 return false;
             } else {
                 throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
@@ -243,23 +243,13 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     }
 
     /**
-     * Checks if the specified response is a not found response.
-     *
-     * @param response The response which will be checked.
-     * @return TRUE if the response is a not found response, FALSE otherwise.
-     */
-    private boolean isNotFoundResponse(Response<ResponseBody> response) {
-        return response.code() == 404;
-    }
-
-    /**
      * Checks if the specified response is a success response.
      *
      * @param response The response which will be checked.
      * @return TRUE if the response is a success response, FALSE otherwise.
      */
     private boolean isSuccessResponse(Response<ResponseBody> response) {
-        return response.code() == 200 || response.code() == 201;
+        return ResponseInterpreterUtil.isSuccessResponse(response);
     }
 
     /**
@@ -269,6 +259,6 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
      * @return TRUE if the server threw an error, FALSE otherwise.
      */
     private boolean isServerErrorResponse(Response<ResponseBody> response) {
-        return response.code() == 409 || response.code() == 500;
+        return ResponseInterpreterUtil.isServerErrorResponse(response);
     }
 }
