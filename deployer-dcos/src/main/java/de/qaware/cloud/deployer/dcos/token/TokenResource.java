@@ -23,7 +23,7 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-import static de.qaware.cloud.deployer.dcos.logging.DCOSMessageBundle.DCOS_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.dcos.logging.DcosMessageBundle.DCOS_MESSAGE_BUNDLE;
 
 /**
  * Retrieves a dcos api token using a dcos auth token.

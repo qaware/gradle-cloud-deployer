@@ -29,7 +29,7 @@ import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN
 /**
  * Initializes a dcos api token using a dcos auth token from the specified file.
  */
-public class DCOSAuthTokenInitializer implements TokenInitializer {
+public class DcosAuthTokenInitializer implements TokenInitializer {
 
     /**
      * The file which contains the dcos auth token.
@@ -41,7 +41,7 @@ public class DCOSAuthTokenInitializer implements TokenInitializer {
      *
      * @param tokenFile The file which contains the dcos auth token.
      */
-    public DCOSAuthTokenInitializer(File tokenFile) {
+    public DcosAuthTokenInitializer(File tokenFile) {
         this.authTokenFile = tokenFile;
     }
 

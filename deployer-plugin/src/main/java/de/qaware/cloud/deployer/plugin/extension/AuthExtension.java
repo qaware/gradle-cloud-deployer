@@ -16,8 +16,8 @@
 package de.qaware.cloud.deployer.plugin.extension;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import de.qaware.cloud.deployer.plugin.token.DCOSApiTokenInitializer;
-import de.qaware.cloud.deployer.plugin.token.DCOSAuthTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.DcosApiTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.DcosAuthTokenInitializer;
 import de.qaware.cloud.deployer.plugin.token.DefaultTokenInitializer;
 import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
 
@@ -51,7 +51,7 @@ public class AuthExtension {
      * @throws ResourceConfigException If the token can't be initialized.
      */
     public TokenInitializer dcosAuthToken(File tokenFile) throws ResourceConfigException {
-        return new DCOSAuthTokenInitializer(tokenFile);
+        return new DcosAuthTokenInitializer(tokenFile);
     }
 
     /**
@@ -61,7 +61,7 @@ public class AuthExtension {
      * @throws ResourceConfigException If the token can't be initialized.
      */
     public TokenInitializer dcosApiToken() throws ResourceConfigException {
-        return new DCOSApiTokenInitializer();
+        return new DcosApiTokenInitializer();
     }
 
     /**

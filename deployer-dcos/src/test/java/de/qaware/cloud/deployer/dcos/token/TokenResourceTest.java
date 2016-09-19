@@ -15,7 +15,6 @@
  */
 package de.qaware.cloud.deployer.dcos.token;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -23,7 +22,7 @@ import de.qaware.cloud.deployer.dcos.test.DCOSTestEnvironmentUtil;
 import junit.framework.TestCase;
 import org.junit.Before;
 
-import static de.qaware.cloud.deployer.dcos.logging.DCOSMessageBundle.DCOS_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.dcos.logging.DcosMessageBundle.DCOS_MESSAGE_BUNDLE;
 
 public class TokenResourceTest extends TestCase {
 

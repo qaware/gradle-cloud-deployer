@@ -20,7 +20,7 @@ import de.qaware.cloud.deployer.commons.logging.DeployerMessageBundle;
 /**
  * A class which offers all relevant log messages for this project.
  */
-public final class DCOSMessageBundle {
+public final class DcosMessageBundle {
 
     /**
      * A bundle which contains all dcos messages.
@@ -30,6 +30,6 @@ public final class DCOSMessageBundle {
     /**
      * UTILITY.
      */
-    private DCOSMessageBundle() {
+    private DcosMessageBundle() {
     }
 }

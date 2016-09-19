@@ -27,7 +27,7 @@ import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN
 /**
  * Initializes a dcos api token which is retrieved from the dcos.toml file in the user's home directory.
  */
-public class DCOSApiTokenInitializer implements TokenInitializer {
+public class DcosApiTokenInitializer implements TokenInitializer {
 
     /**
      * The user's home directory.
