@@ -53,7 +53,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     /**
      * The time in seconds to wait in the case of a server error before retrying a call.
      */
-    private static final int SERVER_ERROR_WAITING_TIME = 5;
+    private static final int SERVER_ERROR_WAITING_TIME = 10;
 
     /**
      * The config this resource belongs to.
