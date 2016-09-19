@@ -23,6 +23,7 @@ import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentCon
 import de.qaware.cloud.deployer.plugin.extension.AuthExtension;
 import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
 import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
+import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
 
 import java.io.File;
 import java.util.Collection;
@@ -100,6 +101,9 @@ public final class EnvironmentConfigFactory {
         SSLConfig sslConfig = extractSSLConfig(extension);
         environmentConfig.setSslConfig(sslConfig);
 
+        // Initialize the token
+        initializeToken(extension, environmentConfig, authConfig);
+
         return environmentConfig;
     }
 
@@ -123,6 +127,9 @@ public final class EnvironmentConfigFactory {
         // Set ssl config
         SSLConfig sslConfig = extractSSLConfig(extension);
         environmentConfig.setSslConfig(sslConfig);
+
+        // Initialize the token
+        initializeToken(extension, environmentConfig, authConfig);
 
         return environmentConfig;
     }
@@ -185,12 +192,6 @@ public final class EnvironmentConfigFactory {
         AuthConfig authConfig = new AuthConfig();
         AuthExtension authExtension = extension.getAuthExtension();
         if (authExtension != null) {
-            // Set a token if available
-            String token = authExtension.getToken();
-            if (token != null && !token.isEmpty()) {
-                authConfig.setToken(token);
-            }
-
             // Set username and password if available
             String username = authExtension.getUsername();
             String password = authExtension.getPassword();
@@ -227,6 +228,22 @@ public final class EnvironmentConfigFactory {
         String baseUrl = extension.getBaseUrl();
         assertNotNullNorEmpty(baseUrl, PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_EMPTY_BASE_URL", extension.getId()));
         return baseUrl;
+    }
+
+    /**
+     * Uses the extension's token initializer to initialize the token in the auth config, if available.
+     *
+     * @param extension         The extension which contains the token initializer or null.
+     * @param environmentConfig The environment config that will be used to retrieve the token.
+     * @param authConfig        The auth config which will contain the retrieved token.
+     * @throws EnvironmentConfigException If a error during token initialization occurs.
+     */
+    private static void initializeToken(EnvironmentExtension extension, EnvironmentConfig environmentConfig, AuthConfig authConfig) throws EnvironmentConfigException {
+        TokenInitializer tokenInitializer = extension.getAuthExtension().getToken();
+        if (tokenInitializer != null) {
+            String token = tokenInitializer.initialize(environmentConfig);
+            authConfig.setToken(token);
+        }
     }
 
     /**

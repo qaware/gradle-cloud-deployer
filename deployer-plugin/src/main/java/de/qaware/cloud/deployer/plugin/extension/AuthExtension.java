@@ -15,6 +15,14 @@
  */
 package de.qaware.cloud.deployer.plugin.extension;
 
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+import de.qaware.cloud.deployer.plugin.token.DCOSApiTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.DCOSAuthTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.DefaultTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
+
+import java.io.File;
+
 /**
  * Contains the authorization configuration for a environment.
  */
@@ -33,7 +41,39 @@ public class AuthExtension {
     /**
      * The token used for authorization.
      */
-    private String token;
+    private TokenInitializer token;
+
+    /**
+     * Creates a dcos api token initializer which uses the specified file.
+     *
+     * @param tokenFile The file which contains the dcos auth token.
+     * @return The dcos api token initializer.
+     * @throws ResourceConfigException If the token can't be initialized.
+     */
+    public TokenInitializer dcosAuthToken(File tokenFile) throws ResourceConfigException {
+        return new DCOSAuthTokenInitializer(tokenFile);
+    }
+
+    /**
+     * Creates a dcos auth token initializer.
+     *
+     * @return The dcos auth token initializer.
+     * @throws ResourceConfigException If the token can't be initialized.
+     */
+    public TokenInitializer dcosApiToken() throws ResourceConfigException {
+        return new DCOSApiTokenInitializer();
+    }
+
+    /**
+     * Creates a default token initializer.
+     *
+     * @param tokenFile The file which contains the token.
+     * @return The default token initializer.
+     * @throws ResourceConfigException If the token can't be initialized.
+     */
+    public TokenInitializer defaultToken(File tokenFile) throws ResourceConfigException {
+        return new DefaultTokenInitializer(tokenFile);
+    }
 
     /**
      * Returns the username used for authorization.
@@ -72,20 +112,20 @@ public class AuthExtension {
     }
 
     /**
-     * Returns the token used for authorization.
+     * Returns the token initializer used for authorization.
      *
-     * @return The token.
+     * @return The token initializer.
      */
-    public String getToken() {
+    public TokenInitializer getToken() {
         return token;
     }
 
     /**
-     * Sets the token used for authorization.
+     * Sets the token initializer used for authorization.
      *
-     * @param token The token.
+     * @param token The token initializer.
      */
-    public void setToken(String token) {
+    public void setToken(TokenInitializer token) {
         this.token = token;
     }
 }
