@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
@@ -38,10 +39,10 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-public class KubernetesSoftUpdateStrategyTest extends TestCase {
+public class KubernetesReplaceUpdateStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
-    private KubernetesSoftUpdateStrategy softUpdateStrategy;
+    private KubernetesReplaceUpdateStrategy softUpdateStrategy;
     private List<KubernetesResource> resourcesV1;
     private List<KubernetesResource> resourcesV2;
     private KubernetesClient kubernetesClient;
@@ -49,14 +50,14 @@ public class KubernetesSoftUpdateStrategyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment("SOFT");
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment(UpdateStrategy.REPLACE);
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
         KubernetesEnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
-        softUpdateStrategy = new KubernetesSoftUpdateStrategy();
+        softUpdateStrategy = new KubernetesReplaceUpdateStrategy();
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();

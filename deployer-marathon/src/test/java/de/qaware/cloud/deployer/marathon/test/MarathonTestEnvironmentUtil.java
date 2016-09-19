@@ -15,13 +15,13 @@
  */
 package de.qaware.cloud.deployer.marathon.test;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import de.qaware.cloud.deployer.dcos.token.TokenResource;
 import mesosphere.marathon.client.Marathon;
 
@@ -35,9 +35,9 @@ public class MarathonTestEnvironmentUtil {
     private static final String MARATHON_TOKEN_ENV = "MARATHON_TOKEN";
 
     // Constants.
-    private static final String MARATHON_DEFAULT_UPDATE_STRATEGY = "HARD";
+    private static final UpdateStrategy MARATHON_DEFAULT_UPDATE_STRATEGY = UpdateStrategy.REPLACE;
 
-    private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, String updateStrategy) {
+    private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, UpdateStrategy updateStrategy) {
         return new EnvironmentConfig("test", environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
     }
 
@@ -53,7 +53,7 @@ public class MarathonTestEnvironmentUtil {
         return createTestEnvironment(MARATHON_DEFAULT_UPDATE_STRATEGY);
     }
 
-    public static MarathonTestEnvironment createTestEnvironment(String updateStrategy) throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
+    public static MarathonTestEnvironment createTestEnvironment(UpdateStrategy updateStrategy) throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 MARATHON_TOKEN_ENV,
                 MARATHON_URL_ENV

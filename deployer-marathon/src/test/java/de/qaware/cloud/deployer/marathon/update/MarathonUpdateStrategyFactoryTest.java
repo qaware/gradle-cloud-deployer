@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.marathon.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import junit.framework.TestCase;
 
 import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
@@ -23,17 +24,17 @@ import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MA
 public class MarathonUpdateStrategyFactoryTest extends TestCase {
 
     public void testCreateWithSoftUpdateStrategy() throws ResourceException {
-        MarathonUpdateStrategy soft = MarathonUpdateStrategyFactory.create("SOFT");
-        assertTrue(soft instanceof MarathonSoftUpdateStrategy);
+        MarathonUpdateStrategy soft = MarathonUpdateStrategyFactory.create(UpdateStrategy.REPLACE);
+        assertTrue(soft instanceof MarathonReplaceUpdateStrategy);
     }
 
     public void testCreateWithUnknownUpdateStrategy() {
         boolean exceptionThrown = false;
         try {
-            MarathonUpdateStrategyFactory.create("BLA");
+            MarathonUpdateStrategyFactory.create(UpdateStrategy.RESET);
         } catch (ResourceException e) {
             exceptionThrown = true;
-            assertEquals(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_UPDATE_STRATEGY", "BLA"), e.getMessage());
+            assertEquals(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_UPDATE_STRATEGY", "RESET"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }

@@ -16,7 +16,6 @@
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.update.KubernetesHardUpdateStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public final class NamespaceUtil {
     /**
      * The logger of this class.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesHardUpdateStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceUtil.class);
 
     /**
      * UTILITY.

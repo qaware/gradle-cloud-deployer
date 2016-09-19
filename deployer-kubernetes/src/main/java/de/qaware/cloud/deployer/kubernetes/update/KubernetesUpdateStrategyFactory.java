@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
@@ -31,20 +32,20 @@ public final class KubernetesUpdateStrategyFactory {
     }
 
     /**
-     * Accepts a string representation of an update strategy and instantiates a new object of this strategy.
+     * Accepts an update strategy and instantiates a new object of this strategy.
      *
-     * @param updateStrategy The string representation of the update strategy.
+     * @param updateStrategy The update strategy.
      * @return A new object of the specified strategy.
      * @throws ResourceException If the string specifies a not existing update strategy.
      */
-    public static KubernetesUpdateStrategy create(String updateStrategy) throws ResourceException {
+    public static KubernetesUpdateStrategy create(UpdateStrategy updateStrategy) throws ResourceException {
         switch (updateStrategy) {
-            case "HARD":
-                return new KubernetesHardUpdateStrategy();
-            case "SOFT":
-                return new KubernetesSoftUpdateStrategy();
+            case RESET:
+                return new KubernetesResetUpdateStrategy();
+            case REPLACE:
+                return new KubernetesReplaceUpdateStrategy();
             default:
-                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_UPDATE_STRATEGY", updateStrategy));
+                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_UPDATE_STRATEGY", updateStrategy));
         }
     }
 }

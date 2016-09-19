@@ -19,6 +19,7 @@ import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.plugin.extension.AuthExtension;
 import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
@@ -41,7 +42,7 @@ public final class EnvironmentConfigFactory {
     /**
      * The default update strategy.
      */
-    private static final String DEFAULT_UPDATE_STRATEGY = "SOFT";
+    private static final UpdateStrategy DEFAULT_UPDATE_STRATEGY = UpdateStrategy.REPLACE;
 
     /**
      * UTILITY.
@@ -89,7 +90,7 @@ public final class EnvironmentConfigFactory {
     private static KubernetesEnvironmentConfig createKubernetesEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
         String id = extractId(extension);
         String baseUrl = extractBaseUrl(extension);
-        String updateStrategy = extractUpdateStrategy(extension);
+        UpdateStrategy updateStrategy = extractUpdateStrategy(extension);
         String namespace = extractNamespace(extension);
         KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(id, baseUrl, updateStrategy, namespace);
 
@@ -117,7 +118,7 @@ public final class EnvironmentConfigFactory {
     private static EnvironmentConfig createEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
         String id = extractId(extension);
         String baseUrl = extractBaseUrl(extension);
-        String updateStrategy = extractUpdateStrategy(extension);
+        UpdateStrategy updateStrategy = extractUpdateStrategy(extension);
         EnvironmentConfig environmentConfig = new EnvironmentConfig(id, baseUrl, updateStrategy);
 
         // Set authorization config
@@ -209,10 +210,28 @@ public final class EnvironmentConfigFactory {
      * @param extension The extension which contains the update strategy.
      * @return The extracted update strategy.
      */
-    private static String extractUpdateStrategy(EnvironmentExtension extension) {
-        String updateStrategy = extension.getUpdateStrategy();
-        if (updateStrategy == null || updateStrategy.isEmpty()) {
-            updateStrategy = DEFAULT_UPDATE_STRATEGY;
+    private static UpdateStrategy extractUpdateStrategy(EnvironmentExtension extension) throws EnvironmentConfigException {
+        String updateStrategyString = extension.getUpdateStrategy();
+
+        // Not defined? Return default
+        if (updateStrategyString == null || updateStrategyString.isEmpty()) {
+            return DEFAULT_UPDATE_STRATEGY;
+        }
+
+        // Otherwise try to identify
+        UpdateStrategy updateStrategy;
+        switch (updateStrategyString) {
+            case "RESET":
+                updateStrategy = UpdateStrategy.RESET;
+                break;
+            case "REPLACE":
+                updateStrategy = UpdateStrategy.REPLACE;
+                break;
+            case "UPDATE":
+                updateStrategy = UpdateStrategy.UPDATE;
+                break;
+            default:
+                throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_UNKNOWN_UPDATE_STRATEGY", updateStrategyString));
         }
         return updateStrategy;
     }

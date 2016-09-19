@@ -22,6 +22,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
@@ -44,7 +45,7 @@ public class KubernetesTestEnvironmentUtil {
     private static final String KUBERNETES_PASSWORD_ENV = "KUBERNETES_PASSWORD";
 
     // Constants.
-    private static final String KUBERNETES_DEFAULT_UPDATE_STRATEGY = "HARD";
+    private static final UpdateStrategy KUBERNETES_DEFAULT_UPDATE_STRATEGY = UpdateStrategy.RESET;
 
     private static AtomicInteger subNamespaceCounter = new AtomicInteger(0);
 
@@ -65,7 +66,7 @@ public class KubernetesTestEnvironmentUtil {
         return new DefaultKubernetesClient(config);
     }
 
-    private static KubernetesEnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, String updateStrategy, String namespace) {
+    private static KubernetesEnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, UpdateStrategy updateStrategy, String namespace) {
         KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig("test", environmentVariables.get(KUBERNETES_URL_ENV), updateStrategy, namespace);
         AuthConfig authConfig = new AuthConfig();
         authConfig.setUsername(environmentVariables.get(KUBERNETES_USERNAME_ENV));
@@ -88,7 +89,7 @@ public class KubernetesTestEnvironmentUtil {
         return createTestEnvironment(KUBERNETES_DEFAULT_UPDATE_STRATEGY);
     }
 
-    public static KubernetesTestEnvironment createTestEnvironment(String updateStrategy) throws IOException, ResourceConfigException, ResourceException {
+    public static KubernetesTestEnvironment createTestEnvironment(UpdateStrategy updateStrategy) throws IOException, ResourceConfigException, ResourceException {
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 KUBERNETES_URL_ENV,
                 KUBERNETES_USERNAME_ENV,

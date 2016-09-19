@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import junit.framework.TestCase;
 
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
@@ -23,22 +24,22 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 public class KubernetesUpdateStrategyFactoryTest extends TestCase {
 
     public void testCreateWithHardUpdateStrategy() throws ResourceException {
-        KubernetesUpdateStrategy hard = KubernetesUpdateStrategyFactory.create("HARD");
-        assertTrue(hard instanceof KubernetesHardUpdateStrategy);
+        KubernetesUpdateStrategy hard = KubernetesUpdateStrategyFactory.create(UpdateStrategy.RESET);
+        assertTrue(hard instanceof KubernetesResetUpdateStrategy);
     }
 
     public void testCreateWithSoftUpdateStrategy() throws ResourceException {
-        KubernetesUpdateStrategy soft = KubernetesUpdateStrategyFactory.create("SOFT");
-        assertTrue(soft instanceof KubernetesSoftUpdateStrategy);
+        KubernetesUpdateStrategy soft = KubernetesUpdateStrategyFactory.create(UpdateStrategy.REPLACE);
+        assertTrue(soft instanceof KubernetesReplaceUpdateStrategy);
     }
 
     public void testCreateWithUnknownStrategy() {
         boolean exceptionThrown = false;
         try {
-            KubernetesUpdateStrategyFactory.create("BLA");
+            KubernetesUpdateStrategyFactory.create(UpdateStrategy.UPDATE);
         } catch (ResourceException e) {
             exceptionThrown = true;
-            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_UPDATE_STRATEGY", "BLA"), e.getMessage());
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_UPDATE_STRATEGY", "UPDATE"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }

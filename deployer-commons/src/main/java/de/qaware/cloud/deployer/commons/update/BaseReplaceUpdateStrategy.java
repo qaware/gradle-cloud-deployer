@@ -19,10 +19,9 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 
 /**
- * Implements a basic version of the soft update strategy. Meaning that all resources not included in the resources list
- * stay untouched.
+ * Implements a basic version of the replace update strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-public abstract class BaseSoftUpdateStrategy {
+public abstract class BaseReplaceUpdateStrategy {
 
     /**
      * Deploys the specified resources. If the resource already exists, it will be deleted first.

@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
+import de.qaware.cloud.deployer.commons.update.BaseReplaceUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
@@ -28,39 +29,28 @@ import java.util.List;
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
 /**
- * Implements the hard update strategy. Meaning that the whole namespace is deleted before the deploying.
+ * Implements the replace update strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-public class KubernetesHardUpdateStrategy implements KubernetesUpdateStrategy {
+class KubernetesReplaceUpdateStrategy extends BaseReplaceUpdateStrategy implements KubernetesUpdateStrategy {
 
     /**
      * The logger of this class.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesHardUpdateStrategy.class);
-
-    /**
-     * Deploys the list of resources.
-     *
-     * @param resources The resources to deploy.
-     * @throws ResourceException If an error during deployment occurs.
-     */
-    private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
-        for (Resource resource : resources) {
-            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
-            resource.create();
-        }
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesReplaceUpdateStrategy.class);
 
     @Override
     public void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
-        // 1. Delete the old namespace
-        NamespaceUtil.safeDeleteNamespace(namespaceResource);
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
 
-        // 2. Create the new namespace
+        // 1. Create the namespace if it doesn't exist
         NamespaceUtil.safeCreateNamespace(namespaceResource);
 
-        // 3. Create resources in the namespace
-        deployResources(resources);
+        // 2. Update existing resources (delete and create again) and create new ones
+        for (Resource resource : resources) {
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
+            super.deploy(resource);
+        }
+
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
     }
 }

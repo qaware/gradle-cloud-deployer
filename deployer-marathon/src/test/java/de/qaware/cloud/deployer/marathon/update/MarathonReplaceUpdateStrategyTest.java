@@ -34,7 +34,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MarathonSoftUpdateStrategyTest extends TestCase {
+public class MarathonReplaceUpdateStrategyTest extends TestCase {
 
     private Marathon marathonClient;
     private MarathonUpdateStrategy softUpdateStrategy;
@@ -50,7 +50,7 @@ public class MarathonSoftUpdateStrategyTest extends TestCase {
         EnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
 
         // Create update strategy
-        softUpdateStrategy = new MarathonSoftUpdateStrategy();
+        softUpdateStrategy = new MarathonReplaceUpdateStrategy();
 
         // Create config and resource factory
         MarathonResourceConfigFactory resourceConfigFactory = new MarathonResourceConfigFactory();

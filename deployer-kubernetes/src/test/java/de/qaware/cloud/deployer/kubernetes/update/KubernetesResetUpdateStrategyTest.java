@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
@@ -39,10 +40,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KubernetesHardUpdateStrategyTest extends TestCase {
+public class KubernetesResetUpdateStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
-    private KubernetesHardUpdateStrategy hardUpdateStrategy;
+    private KubernetesResetUpdateStrategy hardUpdateStrategy;
     private List<KubernetesResource> resourcesV1;
     private List<KubernetesResource> resourcesV2;
     private List<KubernetesResource> resourcesV3;
@@ -51,14 +52,14 @@ public class KubernetesHardUpdateStrategyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment("HARD");
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment(UpdateStrategy.RESET);
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
         KubernetesEnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
         // Create update strategy
-        hardUpdateStrategy = new KubernetesHardUpdateStrategy();
+        hardUpdateStrategy = new KubernetesResetUpdateStrategy();
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();

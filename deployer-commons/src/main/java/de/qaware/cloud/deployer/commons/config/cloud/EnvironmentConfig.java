@@ -15,6 +15,8 @@
  */
 package de.qaware.cloud.deployer.commons.config.cloud;
 
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+
 /**
  * Represents a configuration for a environment.
  */
@@ -33,7 +35,7 @@ public class EnvironmentConfig {
     /**
      * The update strategy which is used in this environment.
      */
-    private final String updateStrategy;
+    private final UpdateStrategy updateStrategy;
 
     /**
      * The authorization configuration for this environment.
@@ -52,7 +54,7 @@ public class EnvironmentConfig {
      * @param baseUrl        The base url of this environment.
      * @param updateStrategy The update strategy which is used for this environment.
      */
-    public EnvironmentConfig(String id, String baseUrl, String updateStrategy) {
+    public EnvironmentConfig(String id, String baseUrl, UpdateStrategy updateStrategy) {
         this.id = id;
         this.baseUrl = baseUrl;
         this.updateStrategy = updateStrategy;
@@ -81,7 +83,7 @@ public class EnvironmentConfig {
      *
      * @return The update strategy.
      */
-    public String getUpdateStrategy() {
+    public UpdateStrategy getUpdateStrategy() {
         return updateStrategy;
     }
 

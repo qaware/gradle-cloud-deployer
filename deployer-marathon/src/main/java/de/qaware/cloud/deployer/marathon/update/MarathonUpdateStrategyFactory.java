@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.marathon.update;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
 
 import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
@@ -31,18 +32,18 @@ public final class MarathonUpdateStrategyFactory {
     }
 
     /**
-     * Accepts a string representation of an update strategy and instantiates a new object of this strategy.
+     * Accepts an update strategy and instantiates a new object of this strategy.
      *
      * @param updateStrategy The string representation of the update strategy.
      * @return A new object of the specified strategy.
      * @throws ResourceException If the string specifies a not existing update strategy.
      */
-    public static MarathonUpdateStrategy create(String updateStrategy) throws ResourceException {
+    public static MarathonUpdateStrategy create(UpdateStrategy updateStrategy) throws ResourceException {
         switch (updateStrategy) {
-            case "SOFT":
-                return new MarathonSoftUpdateStrategy();
+            case REPLACE:
+                return new MarathonReplaceUpdateStrategy();
             default:
-                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNKNOWN_UPDATE_STRATEGY", updateStrategy));
+                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_UPDATE_STRATEGY", updateStrategy));
         }
     }
 }
