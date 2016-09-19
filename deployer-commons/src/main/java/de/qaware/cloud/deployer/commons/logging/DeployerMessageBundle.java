@@ -48,29 +48,15 @@ public class DeployerMessageBundle {
     }
 
     /**
-     * Returns the log message with the specified id and additionally replaces a placeholder within the string with the
-     * specified value.
+     * Returns the log message with the specified id and additionally replaces multiple placeholders within the string with the
+     * specified values.
      *
-     * @param id    The id of the log message.
-     * @param value The value of the placeholder.
+     * @param id     The id of the log message.
+     * @param values The values of the placeholders.
      * @return The log message.
      */
-    public String getMessage(String id, String value) {
-        String originalMessage = messageBundle.getString(id);
-        return MessageFormat.format(originalMessage, value);
-    }
-
-
-    /**
-     * Returns the log message with the specified id and additionally replaces a placeholder within the string with the
-     * specified value.
-     *
-     * @param id    The id of the log message.
-     * @param value The value of the placeholder.
-     * @return The log message.
-     */
-    public String getMessage(String id, Object value) {
-        String originalMessage = messageBundle.getString(id);
-        return MessageFormat.format(originalMessage, value.toString());
+    public String getMessage(String id, Object... values) {
+        String message = getMessage(id);
+        return MessageFormat.format(message, values);
     }
 }
