@@ -15,9 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
@@ -65,9 +63,9 @@ public final class NamespaceResourceConfigFactory {
 
         try {
             Namespace namespace = new Namespace(name, NAMESPACE_VERSION, NAMESPACE_KIND);
-            String namespaceDescriptionContent = new ObjectMapper(new JsonFactory()).writeValueAsString(namespace);
+            String namespaceDescriptionContent = ContentTreeUtil.writeAsString(ContentType.JSON, namespace);
             return new KubernetesResourceConfig(NAMESPACE_DEFAULT_FILENAME, ContentType.JSON, namespaceDescriptionContent);
-        } catch (JsonProcessingException e) {
+        } catch (ResourceConfigException e) {
             throw new ResourceConfigException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_NAMESPACE_CREATION"), e);
         }
     }

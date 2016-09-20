@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
+import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
@@ -48,13 +49,14 @@ final class DeploymentLabelUtil {
     static void addLabel(KubernetesResourceConfig resourceConfig, String label, String value) throws ResourceException {
         if (Objects.equals(resourceConfig.getResourceVersion(), "extensions/v1beta1") && Objects.equals(resourceConfig.getResourceType(), "Deployment")) {
             try {
-                JsonNode objectTree = ContentTreeUtil.createObjectTree(resourceConfig.getContentType(), resourceConfig.getContent());
+                ContentType contentType = resourceConfig.getContentType();
+                JsonNode objectTree = ContentTreeUtil.createObjectTree(contentType, resourceConfig.getContent());
                 JsonNode specNode = ContentTreeUtil.readNodeValue(objectTree, "spec");
                 JsonNode templateNode = ContentTreeUtil.readNodeValue(specNode, "template");
                 JsonNode metadataNode = ContentTreeUtil.readNodeValue(templateNode, "metadata");
                 JsonNode labelsNode = ContentTreeUtil.readNodeValue(metadataNode, "labels");
                 ContentTreeUtil.addField(labelsNode, label, value);
-                resourceConfig.setContent(objectTree.toString());
+                resourceConfig.setContent(ContentTreeUtil.writeAsString(contentType, objectTree));
             } catch (ResourceConfigException e) {
                 throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_LABEL_MARKING_INVALID_PATH", resourceConfig.getFilename()), e);
             }

@@ -47,19 +47,9 @@ public final class ContentTreeUtil {
      * @throws ResourceConfigException If the content type isn't supported.
      */
     public static JsonNode createObjectTree(ContentType contentType, String content) throws ResourceConfigException {
-        ObjectMapper mapper;
-        switch (contentType) {
-            case YAML:
-                mapper = new ObjectMapper(new YAMLFactory());
-                break;
-            case JSON:
-                mapper = new ObjectMapper(new JsonFactory());
-                break;
-            default:
-                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNKNOWN_CONTENT_TYPE_NO_FILE"));
-        }
         try {
-            return mapper.readTree(content);
+            ObjectMapper objectMapper = retrieveObjectMapper(contentType);
+            return objectMapper.readTree(content);
         } catch (JsonProcessingException ex) {
             throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_PARSING"), ex);
         } catch (IOException ex) {
@@ -109,5 +99,44 @@ public final class ContentTreeUtil {
     public static void addField(JsonNode contentObjectTree, String fieldName, String value) {
         ObjectNode objectNode = (ObjectNode) contentObjectTree;
         objectNode.put(fieldName, value);
+    }
+
+    /**
+     * Writes the specified content as a string in the specified format.
+     *
+     * @param contentType The format the object is written to.
+     * @param object      The object that will be written.
+     * @return The written object as string.
+     * @throws ResourceConfigException If a error during object writing occurs.
+     */
+    public static String writeAsString(ContentType contentType, Object object) throws ResourceConfigException {
+        try {
+            ObjectMapper objectMapper = retrieveObjectMapper(contentType);
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException ex) {
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_WRITING"), ex);
+        }
+    }
+
+    /**
+     * Returns the object mapper for the specified content type.
+     *
+     * @param contentType The content type.
+     * @return The object mapper.
+     * @throws ResourceConfigException If the specified content type is unsupported.
+     */
+    private static ObjectMapper retrieveObjectMapper(ContentType contentType) throws ResourceConfigException {
+        ObjectMapper mapper;
+        switch (contentType) {
+            case YAML:
+                mapper = new ObjectMapper(new YAMLFactory());
+                break;
+            case JSON:
+                mapper = new ObjectMapper(new JsonFactory());
+                break;
+            default:
+                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_UNSUPPORTED_CONTENT_TYPE"));
+        }
+        return mapper;
     }
 }
