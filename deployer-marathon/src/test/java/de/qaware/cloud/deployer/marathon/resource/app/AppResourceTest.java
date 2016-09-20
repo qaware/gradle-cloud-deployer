@@ -46,7 +46,6 @@ public class AppResourceTest extends TestCase {
         appDescription = appDescription.replace("zwitscher-eureka", "zwitscher-eureka-" + testCounter.getAndIncrement());
 
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, appDescription);
-        resourceConfig.setResourceId(resourceConfig.getResourceId());
         appResource = new AppResource(resourceConfig, clientFactory);
 
         removeApp();

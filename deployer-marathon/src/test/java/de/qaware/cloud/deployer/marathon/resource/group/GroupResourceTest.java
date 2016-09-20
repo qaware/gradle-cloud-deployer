@@ -46,7 +46,6 @@ public class GroupResourceTest extends TestCase {
         groupDescription = groupDescription.replace("group-test", "group-test-" + testCounter.getAndIncrement());
 
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, groupDescription);
-        resourceConfig.setResourceId(resourceConfig.getResourceId());
         groupResource = new GroupResource(resourceConfig, clientFactory);
 
         removeGroup();
