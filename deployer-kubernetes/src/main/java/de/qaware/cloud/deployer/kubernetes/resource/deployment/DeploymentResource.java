@@ -100,6 +100,17 @@ public class DeploymentResource extends KubernetesResource {
         executeDeleteCallAndBlock(replicaSetDeleteCall);
     }
 
+    // TODO: move into Resource interface!
+    /**
+     * Updates this resource.
+     *
+     * @throws ResourceException If an error during updating occurs.
+     */
+    public void update() throws ResourceException {
+        Call<ResponseBody> request = deploymentClient.update(getId(), getNamespace(), createUpdateRequestBody());
+        executeCall(request);
+    }
+
     @Override
     public String toString() {
         return "Deployment: " + getNamespace() + "/" + getId();

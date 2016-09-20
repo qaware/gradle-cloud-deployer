@@ -15,11 +15,16 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.base;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
+import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
@@ -52,6 +57,25 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
      */
     public String getNamespace() {
         return namespace;
+    }
+
+    /**
+     * Creates the request body for a kubernetes update operation. It's always json and has a special media
+     * type (application/strategic-merge-patch+json).
+     *
+     * @return The json request body with the special media type (application/strategic-merge-patch+json)
+     * @throws ResourceException If an error during mapping occurs.
+     */
+    protected RequestBody createUpdateRequestBody() throws ResourceException {
+        try {
+            String content = getResourceConfig().getContent();
+            ContentType contentType = getResourceConfig().getContentType();
+            JsonNode objectTree = ContentTreeUtil.createObjectTree(contentType, content);
+            String jsonContent = ContentTreeUtil.writeAsString(ContentType.JSON, objectTree);
+            return RequestBody.create(MediaType.parse("application/strategic-merge-patch+json"), jsonContent);
+        } catch (ResourceConfigException e) {
+            throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_COULD_NOT_CREATE_JSON_REPRESENTATION", toString()), e);
+        }
     }
 
     @Override

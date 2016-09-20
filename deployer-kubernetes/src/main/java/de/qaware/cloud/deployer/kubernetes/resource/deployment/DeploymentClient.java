@@ -57,6 +57,17 @@ interface DeploymentClient {
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
 
     /**
+     * Updates the deployment resource with the specified name.
+     *
+     * @param name                  The deployment's name.
+     * @param namespace             The namespace of the deployment.
+     * @param deploymentDescription The request body which contains the updated deployment.
+     * @return The server's http response.
+     */
+    @PATCH("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
+    Call<ResponseBody> update(@Path("name") String name, @Path("namespace") String namespace, @Body RequestBody deploymentDescription);
+
+    /**
      * Updates the scale of the deployment resource with the specified name.
      *
      * @param name      The deployment's name.
