@@ -157,11 +157,12 @@ public class DeploymentResourceTest extends TestCase {
     }
 
     public void testUpdate() throws ResourceException, TimeoutException, InterruptedException {
+
         // Check that the deployment doesn't exist already
         Deployment deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
         assertNull(deploymentV1);
 
-        // Create deployment - already checked above in testCreate()
+        // Create deployment v1 - already checked above in testCreate()
         deploymentResourceV1.create();
 
         // Retrieve deployment v1
