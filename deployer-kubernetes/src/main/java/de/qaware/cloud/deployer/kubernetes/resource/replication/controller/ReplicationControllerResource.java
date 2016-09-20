@@ -79,6 +79,21 @@ public class ReplicationControllerResource extends KubernetesResource {
         executeDeleteCallAndBlock(deleteCall);
     }
 
+    /**
+     * Updates this replication controller. As the replication controller is more or less deprecated, the update strategy
+     * won't be implemented as in the kubectl and therefore rolling updates aren't possible.
+     * Use deployments instead - those offer rolling updates.
+     *
+     * @throws ResourceException If an error during updating occurs.
+     */
+    public void update() throws ResourceException {
+        // Create old replication controller
+        delete();
+
+        // Recreate with new config
+        create();
+    }
+
     @Override
     public String toString() {
         return "ReplicationController: " + getNamespace() + "/" + getId();
