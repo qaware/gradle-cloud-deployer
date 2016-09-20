@@ -206,4 +206,42 @@ public class DeploymentResourceTest extends TestCase {
             assertEquals("nginx:1.9.1", podSpec.getContainers().get(0).getImage());
         }
     }
+
+    public void testEmptyUpdate() throws ResourceException {
+        // Check that the deployment doesn't exist already
+        Deployment deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
+        assertNull(deploymentV1);
+
+        // Create deployment v1 - already checked above in testCreate()
+        deploymentResourceV1.create();
+
+        // Retrieve deployment v1
+        deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
+
+        // Retrieve replica set v1
+        List<ReplicaSet> replicaSetsV1 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
+
+        // Retrieve pods v1
+        List<Pod> podsV1 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
+
+        // Update with the same deployment - no changes!
+        deploymentResourceV1.update();
+
+        // Retrieve deployment v1
+        Deployment deploymentV2 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
+        assertNotNull(deploymentV2);
+
+        // Check that everything is still the same
+        // Check deployments
+        assertEquals(deploymentV1.getMetadata().getUid(), deploymentV2.getMetadata().getUid());
+        assertEquals(deploymentV1.getMetadata().getCreationTimestamp(), deploymentV2.getMetadata().getCreationTimestamp());
+
+        // Check replica sets
+        List<ReplicaSet> replicaSetsV2 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
+        assertEquals(replicaSetsV1, replicaSetsV2);
+
+        // Check pods
+        List<Pod> podsV2 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
+        assertEquals(podsV1, podsV2);
+    }
 }
