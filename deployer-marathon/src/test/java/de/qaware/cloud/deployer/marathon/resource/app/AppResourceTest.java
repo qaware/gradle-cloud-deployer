@@ -43,7 +43,7 @@ public class AppResourceTest extends TestCase {
 
         ClientFactory clientFactory = testEnvironment.getClientFactory();
         String appDescription = FileUtil.readFileContent("/resource/app/app.json");
-        appDescription = appDescription.replace("zwitscher-eureka", "zwitscher-eureka-" + testCounter.getAndIncrement());
+        appDescription = appDescription.replace("zwitscher-eureka", "zwitscher-eureka-app-" + testCounter.getAndIncrement());
 
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, appDescription);
         appResource = new AppResource(resourceConfig, clientFactory);
