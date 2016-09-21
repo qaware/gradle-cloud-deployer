@@ -40,7 +40,7 @@ interface GroupClient {
      * @param groupDescription The request body which contains the group.
      * @return The server's http response.
      */
-    @POST("/service/marathon/v2/groups")
+    @POST("/service/marathon/v2/groups?force=true")
     Call<ResponseBody> create(@Body RequestBody groupDescription);
 
     /**

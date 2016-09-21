@@ -40,7 +40,7 @@ interface AppClient {
      * @param appDescription The request body which contains the app.
      * @return The server's http response.
      */
-    @POST("/service/marathon/v2/apps")
+    @POST("/service/marathon/v2/apps?force=true")
     Call<ResponseBody> create(@Body RequestBody appDescription);
 
     /**
@@ -49,6 +49,6 @@ interface AppClient {
      * @param appId The app's id.
      * @return The server's http response.
      */
-    @DELETE("/service/marathon/v2/apps/{appId}")
+    @DELETE("/service/marathon/v2/apps/{appId}?force=true")
     Call<ResponseBody> delete(@Path("appId") String appId);
 }
