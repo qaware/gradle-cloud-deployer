@@ -25,14 +25,18 @@ import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
 import io.fabric8.kubernetes.api.model.Service;
+import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class ServiceResourceTest extends TestCase {
 
     private KubernetesClient kubernetesClient;
     private NamespaceResource namespaceResource;
-    private ServiceResource serviceResource;
+    private ServiceResource serviceResourceV1;
+    private ServiceResource serviceResourceV2;
 
     @Override
     public void setUp() throws Exception {
@@ -42,11 +46,16 @@ public class ServiceResourceTest extends TestCase {
         kubernetesClient = testEnvironment.getKubernetesClient();
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
-        // Create the ServiceResource object
+        // Create the service resource v1 object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String serviceDescription = FileUtil.readFileContent("/service/service.yml");
-        KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, serviceDescription);
-        serviceResource = new ServiceResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+        String serviceDescriptionV1 = FileUtil.readFileContent("/service/service-v1.yml");
+        KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, serviceDescriptionV1);
+        serviceResourceV1 = new ServiceResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
+
+        // Create the service resource v2 object
+        String serviceDescriptionV2 = FileUtil.readFileContent("/service/service-v2.yml");
+        KubernetesResourceConfig resourceConfigV2 = new KubernetesResourceConfig("test", ContentType.YAML, serviceDescriptionV2);
+        serviceResourceV2 = new ServiceResource(namespaceResource.getNamespace(), resourceConfigV2, clientFactory);
     }
 
     @Override
@@ -57,56 +66,113 @@ public class ServiceResourceTest extends TestCase {
     public void testExists() throws ResourceException {
 
         // Check that the service doesn't exist already
-        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
         assertNull(service);
 
         // Test exists method
-        assertFalse(serviceResource.exists());
+        assertFalse(serviceResourceV1.exists());
 
         // Create service
-        serviceResource.create();
+        serviceResourceV1.create();
 
         // Check that the service exists
-        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
+        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
         assertNotNull(service);
 
         // Test exists method
-        assertTrue(serviceResource.exists());
+        assertTrue(serviceResourceV1.exists());
     }
 
     public void testCreate() throws ResourceException {
 
         // Check that the service doesn't exist already
-        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
         assertNull(service);
 
         // Create service
-        serviceResource.create();
+        serviceResourceV1.create();
 
         // Check that the service exists
-        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
+        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
         assertNotNull(service);
 
         // Compare services
-        assertEquals(service.getMetadata().getName(), serviceResource.getId());
-        assertEquals(service.getApiVersion(), serviceResource.getResourceConfig().getResourceVersion());
-        assertEquals(service.getKind(), serviceResource.getResourceConfig().getResourceType());
+        assertEquals(service.getMetadata().getName(), serviceResourceV1.getId());
+        assertEquals(service.getApiVersion(), serviceResourceV1.getResourceConfig().getResourceVersion());
+        assertEquals(service.getKind(), serviceResourceV1.getResourceConfig().getResourceType());
     }
 
     public void testDelete() throws ResourceException {
 
         // Create service
-        serviceResource.create();
+        serviceResourceV1.create();
 
         // Check that the service exists
-        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
+        Service service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
         assertNotNull(service);
 
         // Delete service
-        serviceResource.delete();
+        serviceResourceV1.delete();
 
         // Check that service doesn't exist anymore
-        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResource);
+        service = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
         assertNull(service);
+    }
+
+    public void testUpdate() throws ResourceException {
+
+        // Check that the service doesn't exist already
+        Service serviceV1 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
+        assertNull(serviceV1);
+
+        // Create service
+        serviceResourceV1.create();
+
+        // Retrieve service v1
+        serviceV1 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
+
+        // Update service
+        serviceResourceV2.update();
+
+        // Retrieve service v2
+        Service serviceV2 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
+
+        // Check service
+        assertFalse(serviceV1.equals(serviceV2));
+        List<ServicePort> portsV1 = serviceV1.getSpec().getPorts();
+        List<ServicePort> portsV2 = serviceV2.getSpec().getPorts();
+        assertEquals(1, portsV1.size());
+        assertEquals(1, portsV2.size());
+        assertEquals(new Integer(8761), portsV1.get(0).getPort());
+        assertEquals(new Integer(8762), portsV2.get(0).getPort());
+    }
+
+    public void testEmptyUpdate() throws ResourceException {
+
+        // Check that the service doesn't exist already
+        Service serviceV1 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
+        assertNull(serviceV1);
+
+        // Create service
+        serviceResourceV1.create();
+
+        // Retrieve service v1
+        serviceV1 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
+
+        // Update service v1
+        serviceResourceV1.update();
+
+        // Retrieve service v2
+        Service serviceV2 = KubernetesClientUtil.retrieveService(kubernetesClient, serviceResourceV1);
+
+        // Check service
+        assertEquals(serviceV1.getMetadata().getUid(), serviceV2.getMetadata().getUid());
+        assertEquals(serviceV1.getMetadata().getCreationTimestamp(), serviceV2.getMetadata().getCreationTimestamp());
+        List<ServicePort> portsV1 = serviceV1.getSpec().getPorts();
+        List<ServicePort> portsV2 = serviceV2.getSpec().getPorts();
+        assertEquals(1, portsV1.size());
+        assertEquals(1, portsV2.size());
+        assertEquals(new Integer(8761), portsV1.get(0).getPort());
+        assertEquals(new Integer(8761), portsV2.get(0).getPort());
     }
 }

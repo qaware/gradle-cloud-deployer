@@ -56,4 +56,15 @@ interface ServiceClient {
      */
     @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}/services/{name}", hasBody = true)
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
+
+    /**
+     * Updates the specified service.
+     *
+     * @param name               The name of the service which will be updated.
+     * @param namespace          The namespace of the service.
+     * @param serviceDescription The request body which contains the updated service.
+     * @return The server's http response.
+     */
+    @PATCH("/api/v1/namespaces/{namespace}/services/{name}")
+    Call<ResponseBody> update(@Path("name") String name, @Path("namespace") String namespace, @Body RequestBody serviceDescription);
 }
