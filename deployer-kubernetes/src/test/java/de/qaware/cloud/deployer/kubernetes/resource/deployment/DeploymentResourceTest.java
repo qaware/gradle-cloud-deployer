@@ -15,13 +15,16 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
+import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.*;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
+import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
+import de.qaware.cloud.deployer.kubernetes.test.PodDeletionBlocker;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
@@ -238,10 +241,14 @@ public class DeploymentResourceTest extends TestCase {
 
         // Check replica sets
         List<ReplicaSet> replicaSetsV2 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(replicaSetsV1, replicaSetsV2);
+        ReplicaSet replicaSetV1 = replicaSetsV1.get(0);
+        ReplicaSet replicaSetV2 = replicaSetsV2.get(0);
+        assertEquals(replicaSetV1.getMetadata().getName(), replicaSetV2.getMetadata().getName());
 
         // Check pods
         List<Pod> podsV2 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(podsV1, podsV2);
+        assertEquals(podsV1.get(0).getMetadata().getName(), podsV2.get(0).getMetadata().getName());
+        assertEquals(podsV1.get(1).getMetadata().getName(), podsV2.get(1).getMetadata().getName());
+        assertEquals(podsV1.get(2).getMetadata().getName(), podsV2.get(2).getMetadata().getName());
     }
 }
