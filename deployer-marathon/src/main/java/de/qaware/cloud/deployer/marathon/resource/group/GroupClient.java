@@ -51,4 +51,14 @@ interface GroupClient {
      */
     @DELETE("/service/marathon/v2/groups/{groupId}?force=true")
     Call<ResponseBody> delete(@Path("groupId") String groupId);
+
+    /**
+     * Updates the specified group.
+     *
+     * @param groupId        The groups's id.
+     * @param groupDescription The request body with the updated group.
+     * @return The server's http response.
+     */
+    @PUT("/service/marathon/v2/groups/{groupId}?force=true")
+    Call<ResponseBody> update(@Path("groupId") String groupId, @Body RequestBody groupDescription);
 }
