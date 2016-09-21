@@ -100,7 +100,6 @@ public class DeploymentResource extends KubernetesResource {
         executeDeleteCallAndBlock(replicaSetDeleteCall);
     }
 
-    // TODO: move into Resource interface!
     /**
      * Updates this resource.
      *
