@@ -59,17 +59,6 @@ interface ReplicationControllerClient {
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 
     /**
-     * Updates the specified replication controller.
-     *
-     * @param name                             The name of the replication controller that will be updated.
-     * @param namespace                        The namespace of the replication controller.
-     * @param replicationControllerDescription The request body which contains the updated replication controller.
-     * @return The server's http response.
-     */
-    @PATCH("/api/v1/namespaces/{namespace}/replicationcontrollers/{name}")
-    Call<ResponseBody> update(@Path("name") String name, @Path("namespace") String namespace, @Body RequestBody replicationControllerDescription);
-
-    /**
      * Updates the scale of the replication controller resource with the specified name.
      *
      * @param name      The replication controller's name.
