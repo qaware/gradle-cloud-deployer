@@ -65,6 +65,16 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
     }
 
     /**
+     * Default kubernetes resource supports no update.
+     *
+     * @throws ResourceException If the resource supports no update.
+     */
+    @Override
+    public void update() throws ResourceException {
+        throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_RESOURCE_SUPPORTS_NO_UPDATES"));
+    }
+
+    /**
      * Creates the request body for a kubernetes update operation. It's always json and has a special media
      * type (application/strategic-merge-patch+json).
      *

@@ -63,11 +63,7 @@ public class ServiceResource extends KubernetesResource {
         executeDeleteCallAndBlock(deleteCall);
     }
 
-    /**
-     * Updates this service.
-     *
-     * @throws ResourceException If an error during updating occurs.
-     */
+    @Override
     public void update() throws ResourceException {
         Call<ResponseBody> updateCall = serviceClient.update(getId(), getNamespace(), createUpdateRequestBody());
         executeCall(updateCall);

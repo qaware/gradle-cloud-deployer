@@ -61,11 +61,7 @@ public class AppResource extends MarathonResource {
         executeDeleteCallAndBlock(deleteCall);
     }
 
-    /**
-     * Updates this app.
-     *
-     * @throws ResourceException If an error during updating occurs.
-     */
+    @Override
     public void update() throws ResourceException {
         Call<ResponseBody> updateCall = appClient.update(getId(), createRequestBody());
         executeCall(updateCall);

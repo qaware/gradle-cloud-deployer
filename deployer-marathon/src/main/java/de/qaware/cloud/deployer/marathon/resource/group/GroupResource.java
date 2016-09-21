@@ -61,11 +61,7 @@ public class GroupResource extends MarathonResource {
         executeDeleteCallAndBlock(deleteCall);
     }
 
-    /**
-     * Updates this group.
-     *
-     * @throws ResourceException If an error during updating occurs.
-     */
+    @Override
     public void update() throws ResourceException {
         Call<ResponseBody> updateCall = groupClient.update(getId(), createRequestBody());
         executeCall(updateCall);

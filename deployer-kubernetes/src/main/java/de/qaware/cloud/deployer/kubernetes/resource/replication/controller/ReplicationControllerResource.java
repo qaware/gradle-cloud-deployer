@@ -18,9 +18,9 @@ package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
 import de.qaware.cloud.deployer.kubernetes.resource.api.scale.Scale;
+import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -78,21 +78,6 @@ public class ReplicationControllerResource extends KubernetesResource {
         // Delete controller
         Call<ResponseBody> deleteCall = replicationControllerClient.delete(getId(), getNamespace(), new DeleteOptions(0));
         executeDeleteCallAndBlock(deleteCall);
-    }
-
-    /**
-     * Updates this replication controller. As the replication controller is more or less deprecated, the update strategy
-     * won't be implemented as in the kubectl and therefore rolling updates aren't possible.
-     * Use deployments instead - those offer rolling updates.
-     *
-     * @throws ResourceException If an error during updating occurs.
-     */
-    public void update() throws ResourceException {
-        // Create old replication controller
-        delete();
-
-        // Recreate with new config
-        create();
     }
 
     @Override

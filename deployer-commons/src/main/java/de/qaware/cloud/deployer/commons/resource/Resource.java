@@ -44,4 +44,11 @@ public interface Resource {
      * @throws ResourceException If the request wasn't successful.
      */
     void delete() throws ResourceException;
+
+    /**
+     * Updates the resource.
+     *
+     * @throws ResourceException If an error during updating occurs.
+     */
+    void update() throws ResourceException;
 }
