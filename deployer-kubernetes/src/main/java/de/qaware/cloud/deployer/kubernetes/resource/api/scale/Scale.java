@@ -17,14 +17,13 @@ package de.qaware.cloud.deployer.kubernetes.resource.api.scale;
 
 import de.qaware.cloud.deployer.kubernetes.resource.api.KubernetesApiObject;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Represents a kubernetes scale as specified in the kubernetes api.
  */
-public class Scale extends KubernetesApiObject implements Serializable {
+public class Scale extends KubernetesApiObject {
 
     /**
      * The inner scale specification.

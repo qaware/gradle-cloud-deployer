@@ -18,12 +18,10 @@ package de.qaware.cloud.deployer.kubernetes.resource.api.delete.options;
 
 import de.qaware.cloud.deployer.kubernetes.resource.api.KubernetesApiObject;
 
-import java.io.Serializable;
-
 /**
  * Represents a delete options object of the kubernetes api.
  */
-public class DeleteOptions extends KubernetesApiObject implements Serializable {
+public class DeleteOptions extends KubernetesApiObject {
 
     /**
      * The api version.
