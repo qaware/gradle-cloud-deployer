@@ -26,7 +26,6 @@ import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
 import de.qaware.cloud.deployer.kubernetes.test.PodDeletionBlocker;
 import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.PodSpec;
 import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import junit.framework.TestCase;
@@ -39,7 +38,6 @@ public class ReplicationControllerResourceTest extends TestCase {
     private KubernetesClient kubernetesClient;
     private NamespaceResource namespaceResource;
     private ReplicationControllerResource replicationControllerResourceV1;
-    private ReplicationControllerResource replicationControllerResourceV2;
 
     @Override
     public void setUp() throws Exception {
@@ -54,11 +52,6 @@ public class ReplicationControllerResourceTest extends TestCase {
         String controllerDescriptionV1 = FileUtil.readFileContent("/replication/controller/replication-controller-v1.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, controllerDescriptionV1);
         replicationControllerResourceV1 = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
-
-        // Create the replication controller resource v2 object
-        String controllerDescriptionV2 = FileUtil.readFileContent("/replication/controller/replication-controller-v2.yml");
-        KubernetesResourceConfig resourceConfigV2 = new KubernetesResourceConfig("test", ContentType.YAML, controllerDescriptionV2);
-        replicationControllerResourceV2 = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfigV2, clientFactory);
     }
 
     @Override
@@ -143,57 +136,5 @@ public class ReplicationControllerResourceTest extends TestCase {
         // Check that controller doesn't exist anymore
         controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
         assertNull(controller);
-    }
-
-    public void testUpdate() throws ResourceException, TimeoutException, InterruptedException {
-
-        // Check that the controller doesn't exist already
-        ReplicationController controllerV1 = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNull(controllerV1);
-
-        // Create controller v1
-        replicationControllerResourceV1.create();
-
-        // Retrieve controller v1
-        controllerV1 = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNotNull(controllerV1);
-
-        // Check if the pods were created
-        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResourceV1).getItems();
-        assertEquals(3, pods.size());
-
-        // Create event blockers
-        Pod pod0 = pods.get(0);
-        PodDeletionBlocker deleteBlocker0 = new PodDeletionBlocker(kubernetesClient, pod0);
-        Pod pod1 = pods.get(1);
-        PodDeletionBlocker deleteBlocker1 = new PodDeletionBlocker(kubernetesClient, pod1);
-        Pod pod2 = pods.get(2);
-        PodDeletionBlocker deleteBlocker2 = new PodDeletionBlocker(kubernetesClient, pod2);
-
-        // Update controller v2
-        replicationControllerResourceV2.update();
-
-        // Wait until old pods were deleted
-        deleteBlocker0.block();
-        deleteBlocker1.block();
-        deleteBlocker2.block();
-
-        // Check that controller still exists
-        ReplicationController controllerV2 = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNotNull(controllerV2);
-
-        // Compare controller v1 and v2
-        assertFalse(controllerV1.getMetadata().getResourceVersion().equals(controllerV2.getMetadata().getResourceVersion()));
-
-        // Check if the pods were created
-        pods = KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResourceV1).getItems();
-        assertEquals(3, pods.size());
-
-        // Check if the pods were updated
-        for (Pod pod : pods) {
-            PodSpec podSpec = pod.getSpec();
-            assertEquals(1, podSpec.getContainers().size());
-            assertEquals("nginx:1.9.1", podSpec.getContainers().get(0).getImage());
-        }
     }
 }
