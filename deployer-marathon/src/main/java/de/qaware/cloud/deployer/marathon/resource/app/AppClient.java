@@ -51,4 +51,14 @@ interface AppClient {
      */
     @DELETE("/service/marathon/v2/apps/{appId}?force=true")
     Call<ResponseBody> delete(@Path("appId") String appId);
+
+    /**
+     * Updates the specified app.
+     *
+     * @param appId          The app's id.
+     * @param appDescription The request body with the updated app.
+     * @return The server's http response.
+     */
+    @PUT("/service/marathon/v2/apps/{appId}?force=true")
+    Call<ResponseBody> update(@Path("appId") String appId, @Body RequestBody appDescription);
 }
