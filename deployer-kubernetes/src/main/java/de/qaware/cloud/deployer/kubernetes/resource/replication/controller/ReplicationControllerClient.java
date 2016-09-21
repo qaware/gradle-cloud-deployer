@@ -15,7 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
-import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
+import de.qaware.cloud.deployer.kubernetes.resource.api.scale.Scale;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,17 +50,16 @@ interface ReplicationControllerClient {
     /**
      * Deletes the replication controller resource with the specified name.
      *
-     * @param name      The replication controller's name.
-     * @param namespace The namespace of the replication controller.
+     * @param name          The replication controller's name.
+     * @param namespace     The namespace of the replication controller.
+     * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @DELETE("/api/v1/namespaces/{namespace}/replicationcontrollers/{name}")
-    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
+    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}/replicationcontrollers/{name}", hasBody = true)
+    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 
     /**
-     * Updates the specified replication controller. As the replication controller is more or less deprecated,
-     * the update strategy won't be implemented as in the kubectl and therefore rolling updates aren't possible.
-     * Use deployments instead - those offer rolling updates.
+     * Updates the specified replication controller.
      *
      * @param name                             The name of the replication controller that will be updated.
      * @param namespace                        The namespace of the replication controller.

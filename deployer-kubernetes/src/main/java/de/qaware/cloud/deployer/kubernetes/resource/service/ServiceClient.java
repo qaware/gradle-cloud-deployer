@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.service;
 
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -48,10 +49,11 @@ interface ServiceClient {
     /**
      * Deletes the service resource with the specified name.
      *
-     * @param name      The service's name.
-     * @param namespace The namespace of the service.
+     * @param name          The service's name.
+     * @param namespace     The namespace of the service.
+     * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @DELETE("/api/v1/namespaces/{namespace}/services/{name}")
-    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
+    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}/services/{name}", hasBody = true)
+    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 }

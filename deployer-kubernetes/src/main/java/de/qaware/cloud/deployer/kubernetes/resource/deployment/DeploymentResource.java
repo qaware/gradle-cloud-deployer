@@ -19,7 +19,8 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
+import de.qaware.cloud.deployer.kubernetes.resource.api.scale.Scale;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -87,12 +88,12 @@ public class DeploymentResource extends KubernetesResource {
     @Override
     public void delete() throws ResourceException {
         // Scale down pods
-        Scale scale = new Scale(getId(), getNamespace(), 0, SCALE_VERSION, SCALE_KIND);
+        Scale scale = new Scale(SCALE_VERSION, SCALE_KIND, getId(), getNamespace(), 0);
         Call<ResponseBody> updateScaleCall = deploymentClient.updateScale(getId(), getNamespace(), scale);
         executeCall(updateScaleCall);
 
         // Delete deployment
-        Call<ResponseBody> deploymentDeleteCall = deploymentClient.delete(getId(), getNamespace());
+        Call<ResponseBody> deploymentDeleteCall = deploymentClient.delete(getId(), getNamespace(), new DeleteOptions(0));
         executeDeleteCallAndBlock(deploymentDeleteCall);
 
         // Delete the replica set

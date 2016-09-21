@@ -19,6 +19,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -57,7 +58,7 @@ public class NamespaceResource extends KubernetesResource {
 
     @Override
     public void delete() throws ResourceException {
-        Call<ResponseBody> deleteCall = namespaceClient.delete(getId());
+        Call<ResponseBody> deleteCall = namespaceClient.delete(getId(), new DeleteOptions(0));
         executeDeleteCallAndBlock(deleteCall);
     }
 

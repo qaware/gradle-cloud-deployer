@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource.scale;
+package de.qaware.cloud.deployer.kubernetes.resource.api.scale;
+
+import de.qaware.cloud.deployer.kubernetes.resource.api.KubernetesApiObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -22,17 +24,7 @@ import java.util.Map;
 /**
  * Represents a kubernetes scale as specified in the kubernetes api.
  */
-public class Scale implements Serializable {
-
-    /**
-     * The api version of the namespace.
-     */
-    private final String apiVersion;
-
-    /**
-     * The kind of the namespace.
-     */
-    private final String kind;
+public class Scale extends KubernetesApiObject implements Serializable {
 
     /**
      * The inner scale specification.
@@ -47,36 +39,17 @@ public class Scale implements Serializable {
     /**
      * Creates a new scale object using the specified params.
      *
+     * @param apiVersion The api version to use.
+     * @param kind       The kind of the scale.
      * @param name       The name of the scale.
      * @param namespace  The namespace of the scale.
      * @param replicas   The number of replicas to use.
-     * @param apiVersion The api version to use.
-     * @param kind       The kind of the scale.
      */
-    public Scale(String name, String namespace, int replicas, String apiVersion, String kind) {
+    public Scale(String apiVersion, String kind, String name, String namespace, int replicas) {
+        super(apiVersion, kind);
         spec = new ScaleSpec(replicas);
         metadata.put("name", name);
         metadata.put("namespace", namespace);
-        this.apiVersion = apiVersion;
-        this.kind = kind;
-    }
-
-    /**
-     * Returns the api version.
-     *
-     * @return The api version.
-     */
-    public String getApiVersion() {
-        return apiVersion;
-    }
-
-    /**
-     * Returns the kind.
-     *
-     * @return The kind.
-     */
-    public String getKind() {
-        return kind;
     }
 
     /**

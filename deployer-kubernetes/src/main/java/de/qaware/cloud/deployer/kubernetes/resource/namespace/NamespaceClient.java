@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -46,9 +47,10 @@ interface NamespaceClient {
     /**
      * Deletes the namespace resource with the specified name.
      *
-     * @param namespace The name of the namespace.
+     * @param namespace     The name of the namespace.
+     * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @DELETE("/api/v1/namespaces/{namespace}")
-    Call<ResponseBody> delete(@Path("namespace") String namespace);
+    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}", hasBody = true)
+    Call<ResponseBody> delete(@Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 }

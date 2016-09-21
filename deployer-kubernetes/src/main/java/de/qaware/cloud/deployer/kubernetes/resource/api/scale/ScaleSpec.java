@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.resource.scale;
+package de.qaware.cloud.deployer.kubernetes.resource.api.scale;
 
 import java.io.Serializable;
 

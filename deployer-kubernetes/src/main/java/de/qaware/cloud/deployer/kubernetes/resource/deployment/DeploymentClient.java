@@ -15,7 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
-import de.qaware.cloud.deployer.kubernetes.resource.scale.Scale;
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
+import de.qaware.cloud.deployer.kubernetes.resource.api.scale.Scale;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,12 +50,13 @@ interface DeploymentClient {
     /**
      * Deletes the deployment resource with the specified name.
      *
-     * @param name      The deployment's name.
-     * @param namespace The namespace of the deployment.
+     * @param name          The deployment's name.
+     * @param namespace     The namespace of the deployment.
+     * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @DELETE("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
-    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace);
+    @HTTP(method = "DELETE", path = "/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}", hasBody = true)
+    Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 
     /**
      * Updates the deployment resource with the specified name.
