@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.update;
+package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
 /**
- * Factory which returns a kubernetes update strategy.
+ * Factory which returns a kubernetes strategy.
  */
-public final class KubernetesUpdateStrategyFactory {
+public final class KubernetesStrategyFactory {
 
     /**
      * UTILITY.
      */
-    private KubernetesUpdateStrategyFactory() {
+    private KubernetesStrategyFactory() {
     }
 
     /**
-     * Accepts an update strategy and instantiates a new object of this strategy.
+     * Accepts an strategy and instantiates a new object of this strategy.
      *
-     * @param updateStrategy The update strategy.
+     * @param strategy The strategy.
      * @return A new object of the specified strategy.
-     * @throws ResourceException If the string specifies a not existing update strategy.
+     * @throws ResourceException If the string specifies a not existing strategy.
      */
-    public static KubernetesUpdateStrategy create(UpdateStrategy updateStrategy) throws ResourceException {
-        switch (updateStrategy) {
+    public static KubernetesStrategy create(Strategy strategy) throws ResourceException {
+        switch (strategy) {
             case RESET:
-                return new KubernetesResetUpdateStrategy();
+                return new KubernetesResetStrategy();
             case REPLACE:
-                return new KubernetesReplaceUpdateStrategy();
+                return new KubernetesReplaceStrategy();
             default:
-                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_UPDATE_STRATEGY", updateStrategy));
+                throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_STRATEGY", strategy));
         }
     }
 }

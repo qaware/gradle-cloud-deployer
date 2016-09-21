@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.update;
-
-import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
-
-import java.util.List;
+package de.qaware.cloud.deployer.commons.strategy;
 
 /**
- * A marathon update strategy describes how to deploy a number of resources in a marathon cloud.
+ * Represents the available strategy strategies.
  */
-public interface MarathonUpdateStrategy {
-
+public enum Strategy {
     /**
-     * Deploys the specified resources.
-     *
-     * @param resources The resources to deploy.
-     * @throws ResourceException If an error during deployment occurs.
+     * Reset everything.
      */
-    void deploy(List<MarathonResource> resources) throws ResourceException;
+    RESET,
+    /**
+     * Just replace (delete and recreate) existing resources, leave the other resources untouched.
+     */
+    REPLACE,
+    /**
+     * Update existing resources, leave the other resources untouched.
+     */
+    UPDATE
 }

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.update;
+package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
@@ -40,10 +40,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KubernetesResetUpdateStrategyTest extends TestCase {
+public class KubernetesResetStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
-    private KubernetesResetUpdateStrategy hardUpdateStrategy;
+    private KubernetesResetStrategy resetStrategy;
     private List<KubernetesResource> resourcesV1;
     private List<KubernetesResource> resourcesV2;
     private List<KubernetesResource> resourcesV3;
@@ -52,14 +52,14 @@ public class KubernetesResetUpdateStrategyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment(UpdateStrategy.RESET);
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment(Strategy.RESET);
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
         KubernetesEnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
-        // Create update strategy
-        hardUpdateStrategy = new KubernetesResetUpdateStrategy();
+        // Create strategy
+        resetStrategy = new KubernetesResetStrategy();
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
@@ -67,19 +67,19 @@ public class KubernetesResetUpdateStrategyTest extends TestCase {
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/update/hard-update-v1.yml").getPath()));
+        filesV1.add(new File(this.getClass().getResource("/strategy/reset-strategy-v1.yml").getPath()));
         List<KubernetesResourceConfig> configsV1 = resourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/update/hard-update-v2.yml").getPath()));
+        filesV2.add(new File(this.getClass().getResource("/strategy/reset-strategy-v2.yml").getPath()));
         List<KubernetesResourceConfig> configsV2 = resourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
 
         // Create the resources for v3
         List<File> filesV3 = new ArrayList<>();
-        filesV3.add(new File(this.getClass().getResource("/update/hard-update-v3.yml").getPath()));
+        filesV3.add(new File(this.getClass().getResource("/strategy/reset-strategy-v3.yml").getPath()));
         List<KubernetesResourceConfig> configsV3 = resourceConfigFactory.createConfigs(filesV3);
         resourcesV3 = factory.createResources(configsV3);
     }
@@ -91,7 +91,7 @@ public class KubernetesResetUpdateStrategyTest extends TestCase {
 
     public void testSingleDeployment() throws ResourceException {
         // Deploy v1
-        hardUpdateStrategy.deploy(namespaceResource, resourcesV1);
+        resetStrategy.deploy(namespaceResource, resourcesV1);
         String version = "v1";
 
         // Check that everything was deployed correctly
@@ -126,11 +126,11 @@ public class KubernetesResetUpdateStrategyTest extends TestCase {
 
     public void testMultipleDeployments() throws ResourceException {
         // Deploy v1 - already tested above
-        hardUpdateStrategy.deploy(namespaceResource, resourcesV1);
+        resetStrategy.deploy(namespaceResource, resourcesV1);
 
 
         // Deploy v2
-        hardUpdateStrategy.deploy(namespaceResource, resourcesV2);
+        resetStrategy.deploy(namespaceResource, resourcesV2);
         String version = "v2";
 
         // Check that everything was deployed correctly
@@ -163,7 +163,7 @@ public class KubernetesResetUpdateStrategyTest extends TestCase {
 
 
         // Deploy v3
-        hardUpdateStrategy.deploy(namespaceResource, resourcesV3);
+        resetStrategy.deploy(namespaceResource, resourcesV3);
         version = "v3";
 
         // Check that everything was deployed correctly

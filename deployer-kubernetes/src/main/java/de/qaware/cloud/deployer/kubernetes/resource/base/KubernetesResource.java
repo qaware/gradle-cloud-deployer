@@ -34,7 +34,7 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 public abstract class KubernetesResource extends BaseResource<KubernetesResourceConfig> {
 
     /**
-     * The content type which is used for an update request.
+     * The content type which is used for an strategy request.
      */
     private static final String UPDATE_CONTENT_TYPE = "application/merge-patch+json";
 
@@ -65,9 +65,9 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
     }
 
     /**
-     * Default kubernetes resource supports no update.
+     * Default kubernetes resource supports no strategy.
      *
-     * @throws ResourceException If the resource supports no update.
+     * @throws ResourceException If the resource supports no strategy.
      */
     @Override
     public void update() throws ResourceException {
@@ -75,7 +75,7 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
     }
 
     /**
-     * Creates the request body for a kubernetes update operation. It's always json and has a special media
+     * Creates the request body for a kubernetes strategy operation. It's always json and has a special media
      * type (application/strategic-merge-patch+json).
      *
      * @return The json request body with the special media type (application/strategic-merge-patch+json)

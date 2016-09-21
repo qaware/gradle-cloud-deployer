@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.update;
+package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -34,10 +34,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MarathonReplaceUpdateStrategyTest extends TestCase {
+public class MarathonReplaceStrategyTest extends TestCase {
 
     private Marathon marathonClient;
-    private MarathonUpdateStrategy softUpdateStrategy;
+    private MarathonStrategy replaceStrategy;
     private List<MarathonResource> resourcesSingle;
     private List<MarathonResource> resourcesMultipleV1;
     private List<MarathonResource> resourcesMultipleV2;
@@ -49,8 +49,8 @@ public class MarathonReplaceUpdateStrategyTest extends TestCase {
         marathonClient = testEnvironment.getMarathonClient();
         EnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
 
-        // Create update strategy
-        softUpdateStrategy = new MarathonReplaceUpdateStrategy();
+        // Create strategy
+        replaceStrategy = new MarathonReplaceStrategy();
 
         // Create config and resource factory
         MarathonResourceConfigFactory resourceConfigFactory = new MarathonResourceConfigFactory();
@@ -58,25 +58,25 @@ public class MarathonReplaceUpdateStrategyTest extends TestCase {
 
         // Create the resources for the single deployment test
         List<File> filesSingle = new ArrayList<>();
-        filesSingle.add(new File(this.getClass().getResource("/update/soft-update-eureka.json").getPath()));
-        filesSingle.add(new File(this.getClass().getResource("/update/soft-update-config.json").getPath()));
-        filesSingle.add(new File(this.getClass().getResource("/update/soft-update-group.json").getPath()));
+        filesSingle.add(new File(this.getClass().getResource("/strategy/replace-strategy-eureka.json").getPath()));
+        filesSingle.add(new File(this.getClass().getResource("/strategy/replace-strategy-config.json").getPath()));
+        filesSingle.add(new File(this.getClass().getResource("/strategy/replace-strategy-group.json").getPath()));
         List<MarathonResourceConfig> configsSingle = resourceConfigFactory.createConfigs(filesSingle);
         resourcesSingle = resourceFactory.createResources(configsSingle);
 
         // Create the resources for the multiple deployment test v1
         List<File> filesMultipleV1 = new ArrayList<>();
-        filesMultipleV1.add(new File(this.getClass().getResource("/update/soft-update-v1-eureka.json").getPath()));
-        filesMultipleV1.add(new File(this.getClass().getResource("/update/soft-update-v1-config.json").getPath()));
-        filesMultipleV1.add(new File(this.getClass().getResource("/update/soft-update-v1-group.json").getPath()));
+        filesMultipleV1.add(new File(this.getClass().getResource("/strategy/replace-strategy-v1-eureka.json").getPath()));
+        filesMultipleV1.add(new File(this.getClass().getResource("/strategy/replace-strategy-v1-config.json").getPath()));
+        filesMultipleV1.add(new File(this.getClass().getResource("/strategy/replace-strategy-v1-group.json").getPath()));
         List<MarathonResourceConfig> configsMultipleV1 = resourceConfigFactory.createConfigs(filesMultipleV1);
         resourcesMultipleV1 = resourceFactory.createResources(configsMultipleV1);
 
         // Create the resources for the multiple deployment test v2
         List<File> filesMultipleV2 = new ArrayList<>();
-        filesMultipleV2.add(new File(this.getClass().getResource("/update/soft-update-v2-eureka.json").getPath()));
-        filesMultipleV2.add(new File(this.getClass().getResource("/update/soft-update-v2-nginx.json").getPath()));
-        filesMultipleV2.add(new File(this.getClass().getResource("/update/soft-update-v2-group.json").getPath()));
+        filesMultipleV2.add(new File(this.getClass().getResource("/strategy/replace-strategy-v2-eureka.json").getPath()));
+        filesMultipleV2.add(new File(this.getClass().getResource("/strategy/replace-strategy-v2-nginx.json").getPath()));
+        filesMultipleV2.add(new File(this.getClass().getResource("/strategy/replace-strategy-v2-group.json").getPath()));
         List<MarathonResourceConfig> configsMultipleV2 = resourceConfigFactory.createConfigs(filesMultipleV2);
         resourcesMultipleV2 = resourceFactory.createResources(configsMultipleV2);
 
@@ -93,7 +93,7 @@ public class MarathonReplaceUpdateStrategyTest extends TestCase {
         int appsV1 = 5;
 
         // Deploy v1
-        softUpdateStrategy.deploy(resourcesSingle);
+        replaceStrategy.deploy(resourcesSingle);
 
         // Check that everything was deployed correctly
         MarathonResource eurekaAppResource = resourcesSingle.get(0);
@@ -126,10 +126,10 @@ public class MarathonReplaceUpdateStrategyTest extends TestCase {
         int appsV2 = 6;
 
         // Deploy v1 - already tested above
-        softUpdateStrategy.deploy(resourcesMultipleV1);
+        replaceStrategy.deploy(resourcesMultipleV1);
 
         // Deploy v2
-        softUpdateStrategy.deploy(resourcesMultipleV2);
+        replaceStrategy.deploy(resourcesMultipleV2);
 
         // Check that everything was deployed correctly
         MarathonResource configAppResource = resourcesMultipleV1.get(1);

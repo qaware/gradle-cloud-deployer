@@ -37,9 +37,9 @@ public class EnvironmentExtension {
     private String baseUrl;
 
     /**
-     * The update strategy which is used in this environment.
+     * The strategy which is used in this environment.
      */
-    private String updateStrategy;
+    private String strategy;
 
     /**
      * The project this environment belongs to.
@@ -136,21 +136,21 @@ public class EnvironmentExtension {
     }
 
     /**
-     * Returns the update strategy used in this environment.
+     * Returns the strategy used in this environment.
      *
-     * @return The update strategy.
+     * @return The strategy.
      */
-    public String getUpdateStrategy() {
-        return updateStrategy;
+    public String getStrategy() {
+        return strategy;
     }
 
     /**
-     * Sets the update strategy used in this environment.
+     * Sets the strategy used in this environment.
      *
-     * @param updateStrategy The update strategy.
+     * @param strategy The strategy.
      */
-    public void setUpdateStrategy(String updateStrategy) {
-        this.updateStrategy = updateStrategy;
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
     }
 
     /**

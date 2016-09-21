@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.config.cloud;
 
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 
 /**
  * A custom environment config for kubernetes.
@@ -33,11 +33,11 @@ public class KubernetesEnvironmentConfig extends EnvironmentConfig {
      *
      * @param id             The id of this environment.
      * @param baseUrl        The base url of this environment.
-     * @param updateStrategy The update strategy which is used for this environment.
+     * @param strategy The strategy which is used for this environment.
      * @param namespace      The namespace which is used for deployment.
      */
-    public KubernetesEnvironmentConfig(String id, String baseUrl, UpdateStrategy updateStrategy, String namespace) {
-        super(id, baseUrl, updateStrategy);
+    public KubernetesEnvironmentConfig(String id, String baseUrl, Strategy strategy, String namespace) {
+        super(id, baseUrl, strategy);
         this.namespace = namespace;
     }
 

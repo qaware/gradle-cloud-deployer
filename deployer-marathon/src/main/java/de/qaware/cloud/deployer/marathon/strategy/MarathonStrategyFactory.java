@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.update;
+package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 
 import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
- * Factory which returns a marathon update strategy.
+ * Factory which returns a marathon strategy.
  */
-public final class MarathonUpdateStrategyFactory {
+public final class MarathonStrategyFactory {
 
     /**
      * UTILITY.
      */
-    private MarathonUpdateStrategyFactory() {
+    private MarathonStrategyFactory() {
     }
 
     /**
-     * Accepts an update strategy and instantiates a new object of this strategy.
+     * Accepts an strategy and instantiates a new object of this strategy.
      *
-     * @param updateStrategy The string representation of the update strategy.
+     * @param strategy The string representation of the strategy.
      * @return A new object of the specified strategy.
-     * @throws ResourceException If the string specifies a not existing update strategy.
+     * @throws ResourceException If the string specifies a not existing strategy.
      */
-    public static MarathonUpdateStrategy create(UpdateStrategy updateStrategy) throws ResourceException {
-        switch (updateStrategy) {
+    public static MarathonStrategy create(Strategy strategy) throws ResourceException {
+        switch (strategy) {
             case REPLACE:
-                return new MarathonReplaceUpdateStrategy();
+                return new MarathonReplaceStrategy();
             default:
-                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_UPDATE_STRATEGY", updateStrategy));
+                throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_STRATEGY", strategy));
         }
     }
 }

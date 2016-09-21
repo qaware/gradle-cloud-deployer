@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.update;
+package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import junit.framework.TestCase;
 
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
-public class KubernetesUpdateStrategyFactoryTest extends TestCase {
+public class KubernetesStrategyFactoryTest extends TestCase {
 
-    public void testCreateWithHardUpdateStrategy() throws ResourceException {
-        KubernetesUpdateStrategy hard = KubernetesUpdateStrategyFactory.create(UpdateStrategy.RESET);
-        assertTrue(hard instanceof KubernetesResetUpdateStrategy);
+    public void testCreateWithResetStrategy() throws ResourceException {
+        KubernetesStrategy resetStrategy = KubernetesStrategyFactory.create(Strategy.RESET);
+        assertTrue(resetStrategy instanceof KubernetesResetStrategy);
     }
 
-    public void testCreateWithSoftUpdateStrategy() throws ResourceException {
-        KubernetesUpdateStrategy soft = KubernetesUpdateStrategyFactory.create(UpdateStrategy.REPLACE);
-        assertTrue(soft instanceof KubernetesReplaceUpdateStrategy);
+    public void testCreateWithReplaceStrategy() throws ResourceException {
+        KubernetesStrategy replaceStrategy = KubernetesStrategyFactory.create(Strategy.REPLACE);
+        assertTrue(replaceStrategy instanceof KubernetesReplaceStrategy);
     }
 
     public void testCreateWithUnknownStrategy() {
         boolean exceptionThrown = false;
         try {
-            KubernetesUpdateStrategyFactory.create(UpdateStrategy.UPDATE);
+            KubernetesStrategyFactory.create(Strategy.UPDATE);
         } catch (ResourceException e) {
             exceptionThrown = true;
-            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_UPDATE_STRATEGY", "UPDATE"), e.getMessage());
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_STRATEGY", "UPDATE"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }

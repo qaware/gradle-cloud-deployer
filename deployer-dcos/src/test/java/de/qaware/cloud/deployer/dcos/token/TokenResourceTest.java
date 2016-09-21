@@ -18,7 +18,7 @@ package de.qaware.cloud.deployer.dcos.token;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import de.qaware.cloud.deployer.dcos.test.DcosTestEnvironmentUtil;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class TokenResourceTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        this.environmentConfig = DcosTestEnvironmentUtil.createEnvironmentConfig(UpdateStrategy.REPLACE);
+        this.environmentConfig = DcosTestEnvironmentUtil.createEnvironmentConfig(Strategy.REPLACE);
         this.authToken = DcosTestEnvironmentUtil.getToken();
     }
 
@@ -47,10 +47,10 @@ public class TokenResourceTest extends TestCase {
     }
 
     public void testRetrieveApiTokenInvalidAddress() throws ResourceException {
-        EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getUpdateStrategy());
+        EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getStrategy());
         assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
 
-        newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getUpdateStrategy());
+        newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getStrategy());
         assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
     }
 

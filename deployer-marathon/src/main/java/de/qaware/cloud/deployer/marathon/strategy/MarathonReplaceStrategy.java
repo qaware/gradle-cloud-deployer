@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.update;
+package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
-import de.qaware.cloud.deployer.commons.update.BaseReplaceUpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.BaseReplaceStrategy;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +27,14 @@ import java.util.List;
 import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
 /**
- * Implements the replace update strategy. Meaning that all resources not included in the resources list stay untouched.
+ * Implements the replace strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-class MarathonReplaceUpdateStrategy extends BaseReplaceUpdateStrategy implements MarathonUpdateStrategy {
+class MarathonReplaceStrategy extends BaseReplaceStrategy implements MarathonStrategy {
 
     /**
      * The logger of this class.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(MarathonReplaceUpdateStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MarathonReplaceStrategy.class);
 
     @Override
     public void deploy(List<MarathonResource> resources) throws ResourceException {

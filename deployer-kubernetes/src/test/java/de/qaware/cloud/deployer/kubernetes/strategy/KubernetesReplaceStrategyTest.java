@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.update;
+package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfigFactory;
@@ -39,10 +39,10 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-public class KubernetesReplaceUpdateStrategyTest extends TestCase {
+public class KubernetesReplaceStrategyTest extends TestCase {
 
     private NamespaceResource namespaceResource;
-    private KubernetesReplaceUpdateStrategy softUpdateStrategy;
+    private KubernetesReplaceStrategy replaceStrategy;
     private List<KubernetesResource> resourcesV1;
     private List<KubernetesResource> resourcesV2;
     private KubernetesClient kubernetesClient;
@@ -50,14 +50,14 @@ public class KubernetesReplaceUpdateStrategyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment(UpdateStrategy.REPLACE);
+        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment(Strategy.REPLACE);
         namespaceResource = testEnvironment.getNamespaceResource();
         kubernetesClient = testEnvironment.getKubernetesClient();
         KubernetesEnvironmentConfig environmentConfig = testEnvironment.getEnvironmentConfig();
         KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
 
-        // Create update strategy
-        softUpdateStrategy = new KubernetesReplaceUpdateStrategy();
+        // Create strategy
+        replaceStrategy = new KubernetesReplaceStrategy();
 
         // Create config and resource factory
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
@@ -65,13 +65,13 @@ public class KubernetesReplaceUpdateStrategyTest extends TestCase {
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/update/soft-update-v1.yml").getPath()));
+        filesV1.add(new File(this.getClass().getResource("/strategy/replace-strategy-v1.yml").getPath()));
         List<KubernetesResourceConfig> configsV1 = resourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/update/soft-update-v2.yml").getPath()));
+        filesV2.add(new File(this.getClass().getResource("/strategy/replace-strategy-v2.yml").getPath()));
         List<KubernetesResourceConfig> configsV2 = resourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
     }
@@ -83,7 +83,7 @@ public class KubernetesReplaceUpdateStrategyTest extends TestCase {
 
     public void testSingleDeployment() throws ResourceException {
         // Deploy v1
-        softUpdateStrategy.deploy(namespaceResource, resourcesV1);
+        replaceStrategy.deploy(namespaceResource, resourcesV1);
         String version = "v1";
 
         // Check that everything was deployed correctly
@@ -139,7 +139,7 @@ public class KubernetesReplaceUpdateStrategyTest extends TestCase {
 
     public void testMultipleDeployments() throws ResourceException, TimeoutException, InterruptedException {
         // Deploy v1 - already tested above
-        softUpdateStrategy.deploy(namespaceResource, resourcesV1);
+        replaceStrategy.deploy(namespaceResource, resourcesV1);
         String version1 = "v1";
 
         KubernetesResource deploymentResource0 = resourcesV1.get(1);
@@ -153,7 +153,7 @@ public class KubernetesReplaceUpdateStrategyTest extends TestCase {
         PodDeletionBlocker podDeletionBlocker0c = new PodDeletionBlocker(kubernetesClient, pod0c);
 
         // Deploy v2
-        softUpdateStrategy.deploy(namespaceResource, resourcesV2);
+        replaceStrategy.deploy(namespaceResource, resourcesV2);
         String version2 = "v2";
 
         // Wait until the pods are deleted

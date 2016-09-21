@@ -24,8 +24,8 @@ import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceCon
 import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.update.KubernetesUpdateStrategy;
-import de.qaware.cloud.deployer.kubernetes.update.KubernetesUpdateStrategyFactory;
+import de.qaware.cloud.deployer.kubernetes.strategy.KubernetesStrategy;
+import de.qaware.cloud.deployer.kubernetes.strategy.KubernetesStrategyFactory;
 
 import java.io.File;
 import java.util.List;
@@ -65,10 +65,10 @@ public class KubernetesDeployer extends BaseDeployer<KubernetesEnvironmentConfig
         // 4. Create the namespace resource
         NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
 
-        // 5. Retrieve a update strategy
-        KubernetesUpdateStrategy updateStrategy = KubernetesUpdateStrategyFactory.create(environmentConfig.getUpdateStrategy());
+        // 5. Retrieve a strategy
+        KubernetesStrategy strategy = KubernetesStrategyFactory.create(environmentConfig.getStrategy());
 
         // 6. Deploy the resources using the strategy
-        updateStrategy.deploy(namespaceResource, resources);
+        strategy.deploy(namespaceResource, resources);
     }
 }

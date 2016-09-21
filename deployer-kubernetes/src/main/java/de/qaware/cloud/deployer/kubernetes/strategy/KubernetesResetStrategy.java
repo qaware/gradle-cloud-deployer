@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.kubernetes.update;
+package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
-import de.qaware.cloud.deployer.commons.update.BaseReplaceUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
@@ -29,28 +28,39 @@ import java.util.List;
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
 
 /**
- * Implements the replace update strategy. Meaning that all resources not included in the resources list stay untouched.
+ * Implements the reset strategy. Meaning that the whole namespace is deleted before the deployment.
  */
-class KubernetesReplaceUpdateStrategy extends BaseReplaceUpdateStrategy implements KubernetesUpdateStrategy {
+public class KubernetesResetStrategy implements KubernetesStrategy {
 
     /**
      * The logger of this class.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesReplaceUpdateStrategy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KubernetesResetStrategy.class);
+
+    /**
+     * Deploys the list of resources.
+     *
+     * @param resources The resources to deploy.
+     * @throws ResourceException If an error during deployment occurs.
+     */
+    private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
+        for (Resource resource : resources) {
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
+            resource.create();
+        }
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
+    }
 
     @Override
     public void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
+        // 1. Delete the old namespace
+        NamespaceUtil.safeDeleteNamespace(namespaceResource);
 
-        // 1. Create the namespace if it doesn't exist
+        // 2. Create the new namespace
         NamespaceUtil.safeCreateNamespace(namespaceResource);
 
-        // 2. Update existing resources (delete and create again) and create new ones
-        for (Resource resource : resources) {
-            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
-            super.deploy(resource);
-        }
-
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
+        // 3. Create resources in the namespace
+        deployResources(resources);
     }
 }

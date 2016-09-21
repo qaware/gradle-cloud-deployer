@@ -23,8 +23,8 @@ import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfigFactory;
 import de.qaware.cloud.deployer.marathon.resource.MarathonResourceFactory;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
-import de.qaware.cloud.deployer.marathon.update.MarathonUpdateStrategy;
-import de.qaware.cloud.deployer.marathon.update.MarathonUpdateStrategyFactory;
+import de.qaware.cloud.deployer.marathon.strategy.MarathonStrategy;
+import de.qaware.cloud.deployer.marathon.strategy.MarathonStrategyFactory;
 
 import java.io.File;
 import java.util.List;
@@ -62,10 +62,10 @@ public class MarathonDeployer extends BaseDeployer<EnvironmentConfig> {
         // 3. Create the resources for the configs out of step 1.
         List<MarathonResource> resources = resourceFactory.createResources(resourceConfigs);
 
-        // 4. Retrieve a update strategy
-        MarathonUpdateStrategy updateStrategy = MarathonUpdateStrategyFactory.create(environmentConfig.getUpdateStrategy());
+        // 4. Retrieve a strategy
+        MarathonStrategy strategy = MarathonStrategyFactory.create(environmentConfig.getStrategy());
 
         // 5. Deploy the resources using the strategy
-        updateStrategy.deploy(resources);
+        strategy.deploy(resources);
     }
 }

@@ -21,7 +21,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import de.qaware.cloud.deployer.dcos.token.TokenResource;
 import mesosphere.marathon.client.Marathon;
 
@@ -35,10 +35,10 @@ public class MarathonTestEnvironmentUtil {
     private static final String MARATHON_TOKEN_ENV = "MARATHON_TOKEN";
 
     // Constants.
-    private static final UpdateStrategy MARATHON_DEFAULT_UPDATE_STRATEGY = UpdateStrategy.REPLACE;
+    private static final Strategy MARATHON_DEFAULT_STRATEGY = Strategy.REPLACE;
 
-    private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, UpdateStrategy updateStrategy) {
-        return new EnvironmentConfig("test", environmentVariables.get(MARATHON_URL_ENV), updateStrategy);
+    private static EnvironmentConfig createEnvironmentConfig(Map<String, String> environmentVariables, Strategy strategy) {
+        return new EnvironmentConfig("test", environmentVariables.get(MARATHON_URL_ENV), strategy);
     }
 
     private static ClientFactory createClientFactory(EnvironmentConfig environmentConfig) throws ResourceException {
@@ -50,16 +50,16 @@ public class MarathonTestEnvironmentUtil {
     }
 
     public static MarathonTestEnvironment createTestEnvironment() throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
-        return createTestEnvironment(MARATHON_DEFAULT_UPDATE_STRATEGY);
+        return createTestEnvironment(MARATHON_DEFAULT_STRATEGY);
     }
 
-    public static MarathonTestEnvironment createTestEnvironment(UpdateStrategy updateStrategy) throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
+    public static MarathonTestEnvironment createTestEnvironment(Strategy strategy) throws ResourceConfigException, ResourceException, IOException, EnvironmentConfigException {
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 MARATHON_TOKEN_ENV,
                 MARATHON_URL_ENV
         );
 
-        EnvironmentConfig environmentConfig = createEnvironmentConfig(environmentVariables, updateStrategy);
+        EnvironmentConfig environmentConfig = createEnvironmentConfig(environmentVariables, strategy);
 
         // Replace the token.
         TokenResource tokenResource = new TokenResource(environmentConfig);

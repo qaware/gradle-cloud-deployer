@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.commons.update;
+package de.qaware.cloud.deployer.commons.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 
 /**
- * Implements a basic version of the replace update strategy. Meaning that all resources not included in the resources list stay untouched.
+ * Implements a basic version of the replace strategy. Meaning that all resources not included in the resources list stay untouched.
  */
-public abstract class BaseReplaceUpdateStrategy {
+public abstract class BaseReplaceStrategy {
 
     /**
      * Deploys the specified resources. If the resource already exists, it will be deleted first.

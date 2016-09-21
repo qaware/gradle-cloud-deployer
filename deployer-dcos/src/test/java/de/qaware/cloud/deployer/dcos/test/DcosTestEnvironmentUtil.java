@@ -19,7 +19,7 @@ import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,14 +33,14 @@ public final class DcosTestEnvironmentUtil {
     private DcosTestEnvironmentUtil() {
     }
 
-    public static EnvironmentConfig createEnvironmentConfig(UpdateStrategy updateStrategy) throws IOException {
+    public static EnvironmentConfig createEnvironmentConfig(Strategy strategy) throws IOException {
         // Retrieve env variables
         Map<String, String> environmentVariables = TestEnvironmentUtil.loadEnvironmentVariables(
                 DCOS_URL_ENV
         );
 
         // Create environment config.
-        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", environmentVariables.get(DCOS_URL_ENV), updateStrategy);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", environmentVariables.get(DCOS_URL_ENV), strategy);
         environmentConfig.setSslConfig(new SSLConfig());
         environmentConfig.setAuthConfig(new AuthConfig());
         return environmentConfig;

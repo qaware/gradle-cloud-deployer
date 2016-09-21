@@ -19,7 +19,7 @@ import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
 import de.qaware.cloud.deployer.plugin.extension.AuthExtension;
 import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
@@ -37,9 +37,9 @@ import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN
 public final class EnvironmentConfigFactory {
 
     /**
-     * The default update strategy.
+     * The default strategy.
      */
-    private static final UpdateStrategy DEFAULT_UPDATE_STRATEGY = UpdateStrategy.REPLACE;
+    private static final Strategy DEFAULT_STRATEGY = Strategy.REPLACE;
 
     /**
      * UTILITY.
@@ -87,9 +87,9 @@ public final class EnvironmentConfigFactory {
     private static KubernetesEnvironmentConfig createKubernetesEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
         String id = extractId(extension);
         String baseUrl = extractBaseUrl(extension);
-        UpdateStrategy updateStrategy = extractUpdateStrategy(extension);
+        Strategy strategy = extractStrategy(extension);
         String namespace = extractNamespace(extension);
-        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(id, baseUrl, updateStrategy, namespace);
+        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(id, baseUrl, strategy, namespace);
 
         // Set authorization config
         AuthConfig authConfig = extractAuthConfig(extension);
@@ -115,8 +115,8 @@ public final class EnvironmentConfigFactory {
     private static EnvironmentConfig createEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
         String id = extractId(extension);
         String baseUrl = extractBaseUrl(extension);
-        UpdateStrategy updateStrategy = extractUpdateStrategy(extension);
-        EnvironmentConfig environmentConfig = new EnvironmentConfig(id, baseUrl, updateStrategy);
+        Strategy strategy = extractStrategy(extension);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig(id, baseUrl, strategy);
 
         // Set authorization config
         AuthConfig authConfig = extractAuthConfig(extension);
@@ -204,35 +204,35 @@ public final class EnvironmentConfigFactory {
     }
 
     /**
-     * Extracts the update strategy out of the specified extension, if none is defined the default update strategy is used.
+     * Extracts the strategy out of the specified extension, if none is defined the default strategy is used.
      *
-     * @param extension The extension which contains the update strategy.
-     * @return The extracted update strategy.
+     * @param extension The extension which contains the strategy.
+     * @return The extracted strategy.
      */
-    private static UpdateStrategy extractUpdateStrategy(EnvironmentExtension extension) throws EnvironmentConfigException {
-        String updateStrategyString = extension.getUpdateStrategy();
+    private static Strategy extractStrategy(EnvironmentExtension extension) throws EnvironmentConfigException {
+        String strategyString = extension.getStrategy();
 
         // Not defined? Return default
-        if (updateStrategyString == null || updateStrategyString.isEmpty()) {
-            return DEFAULT_UPDATE_STRATEGY;
+        if (strategyString == null || strategyString.isEmpty()) {
+            return DEFAULT_STRATEGY;
         }
 
         // Otherwise try to identify
-        UpdateStrategy updateStrategy;
-        switch (updateStrategyString) {
+        Strategy strategy;
+        switch (strategyString) {
             case "RESET":
-                updateStrategy = UpdateStrategy.RESET;
+                strategy = Strategy.RESET;
                 break;
             case "REPLACE":
-                updateStrategy = UpdateStrategy.REPLACE;
+                strategy = Strategy.REPLACE;
                 break;
             case "UPDATE":
-                updateStrategy = UpdateStrategy.UPDATE;
+                strategy = Strategy.UPDATE;
                 break;
             default:
-                throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_UNKNOWN_UPDATE_STRATEGY", updateStrategyString));
+                throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_UNKNOWN_STRATEGY", strategyString));
         }
-        return updateStrategy;
+        return strategy;
     }
 
     /**

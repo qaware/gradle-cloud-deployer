@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.marathon.update;
+package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.update.UpdateStrategy;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import junit.framework.TestCase;
 
 import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 
-public class MarathonUpdateStrategyFactoryTest extends TestCase {
+public class MarathonStrategyFactoryTest extends TestCase {
 
-    public void testCreateWithSoftUpdateStrategy() throws ResourceException {
-        MarathonUpdateStrategy soft = MarathonUpdateStrategyFactory.create(UpdateStrategy.REPLACE);
-        assertTrue(soft instanceof MarathonReplaceUpdateStrategy);
+    public void testCreateWithReplaceStrategy() throws ResourceException {
+        MarathonStrategy replaceStrategy = MarathonStrategyFactory.create(Strategy.REPLACE);
+        assertTrue(replaceStrategy instanceof MarathonReplaceStrategy);
     }
 
-    public void testCreateWithUnknownUpdateStrategy() {
+    public void testCreateWithUnknownStrategy() {
         boolean exceptionThrown = false;
         try {
-            MarathonUpdateStrategyFactory.create(UpdateStrategy.RESET);
+            MarathonStrategyFactory.create(Strategy.RESET);
         } catch (ResourceException e) {
             exceptionThrown = true;
-            assertEquals(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_UPDATE_STRATEGY", "RESET"), e.getMessage());
+            assertEquals(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_STRATEGY", "RESET"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }
