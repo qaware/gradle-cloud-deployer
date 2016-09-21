@@ -27,10 +27,7 @@ import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
 import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
@@ -58,7 +55,7 @@ public final class EnvironmentConfigFactory {
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
     public static Map<EnvironmentConfig, List<File>> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        Map<EnvironmentConfig, List<File>> configs = new TreeMap<>();
+        Map<EnvironmentConfig, List<File>> configs = new LinkedHashMap<>();
         for (EnvironmentExtension extension : extensions) {
             configs.put(createKubernetesEnvironmentConfig(extension), extension.getFiles());
         }
@@ -73,7 +70,7 @@ public final class EnvironmentConfigFactory {
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
     public static Map<EnvironmentConfig, List<File>> createEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        Map<EnvironmentConfig, List<File>> configs = new TreeMap<>();
+        Map<EnvironmentConfig, List<File>> configs = new LinkedHashMap<>();
         for (EnvironmentExtension extension : extensions) {
             configs.put(createEnvironmentConfig(extension), extension.getFiles());
         }
@@ -168,16 +165,18 @@ public final class EnvironmentConfigFactory {
      * @return The extracted ssl config.
      */
     private static SSLConfig extractSSLConfig(EnvironmentExtension extension) {
-        SSLConfig sslConfig;
+        SSLConfig sslConfig = new SSLConfig();
         SSLExtension sslExtension = extension.getSslExtension();
-        if (sslExtension.isTrustAll()) {
-            sslConfig = new SSLConfig(true);
-        } else {
-            String certificate = sslExtension.getCertificate();
-            if (sslExtension.getCertificate() != null && !certificate.isEmpty()) {
-                sslConfig = new SSLConfig(certificate);
+        if (sslExtension != null) {
+            if (sslExtension.isTrustAll()) {
+                sslConfig = new SSLConfig(true);
             } else {
-                sslConfig = new SSLConfig();
+                String certificate = sslExtension.getCertificate();
+                if (sslExtension.getCertificate() != null && !certificate.isEmpty()) {
+                    sslConfig = new SSLConfig(certificate);
+                } else {
+                    sslConfig = new SSLConfig();
+                }
             }
         }
         return sslConfig;
