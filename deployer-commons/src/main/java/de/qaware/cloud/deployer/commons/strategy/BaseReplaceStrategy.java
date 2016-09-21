@@ -19,7 +19,8 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 
 /**
- * Implements a basic version of the replace strategy. Meaning that all resources not included in the resources list stay untouched.
+ * Implements a basic version of the replace strategy. Meaning that all resources not included in the resources list
+ * stay untouched. All included resources are replaced.
  */
 public abstract class BaseReplaceStrategy {
 

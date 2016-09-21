@@ -30,6 +30,7 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 
 /**
  * Implements the replace strategy. Meaning that all resources not included in the resources list stay untouched.
+ * All included resources are replaced.
  */
 class KubernetesReplaceStrategy extends BaseReplaceStrategy implements KubernetesStrategy {
 

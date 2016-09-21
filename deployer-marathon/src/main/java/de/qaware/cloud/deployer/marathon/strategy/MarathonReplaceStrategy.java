@@ -28,6 +28,7 @@ import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MA
 
 /**
  * Implements the replace strategy. Meaning that all resources not included in the resources list stay untouched.
+ * All included resources are replaced.
  */
 class MarathonReplaceStrategy extends BaseReplaceStrategy implements MarathonStrategy {
 
