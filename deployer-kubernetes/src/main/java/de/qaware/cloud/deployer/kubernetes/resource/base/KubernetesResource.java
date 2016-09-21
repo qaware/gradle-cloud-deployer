@@ -34,9 +34,9 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 public abstract class KubernetesResource extends BaseResource<KubernetesResourceConfig> {
 
     /**
-     * The media type which is used for an update request.
+     * The content type which is used for an update request.
      */
-    private static final String UPDATE_MEDIA_TYPE = "application/strategic-merge-patch+json";
+    private static final String UPDATE_CONTENT_TYPE = "application/merge-patch+json";
 
     /**
      * The resource's namespace.
@@ -77,7 +77,7 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
             ContentType contentType = getResourceConfig().getContentType();
             JsonNode objectTree = ContentTreeUtil.createObjectTree(contentType, content);
             String jsonContent = ContentTreeUtil.writeAsString(ContentType.JSON, objectTree);
-            return RequestBody.create(MediaType.parse(UPDATE_MEDIA_TYPE), jsonContent);
+            return RequestBody.create(MediaType.parse(UPDATE_CONTENT_TYPE), jsonContent);
         } catch (ResourceConfigException e) {
             throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_COULD_NOT_CREATE_JSON_REPRESENTATION", toString()), e);
         }
