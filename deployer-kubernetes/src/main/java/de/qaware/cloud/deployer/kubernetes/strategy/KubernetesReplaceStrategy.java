@@ -41,10 +41,11 @@ class KubernetesReplaceStrategy extends BaseReplaceStrategy implements Kubernete
 
     @Override
     public void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
 
         // 1. Create the namespace if it doesn't exist
         NamespaceUtil.safeCreateNamespace(namespaceResource);
+
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
 
         // 2. Update existing resources (delete and create again) and create new ones
         for (Resource resource : resources) {
