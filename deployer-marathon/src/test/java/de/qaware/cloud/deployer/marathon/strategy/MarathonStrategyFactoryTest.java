@@ -28,6 +28,11 @@ public class MarathonStrategyFactoryTest extends TestCase {
         assertTrue(replaceStrategy instanceof MarathonReplaceStrategy);
     }
 
+    public void testCreateWithUpdateStrategy() throws ResourceException {
+        MarathonStrategy updateStrategy = MarathonStrategyFactory.create(Strategy.UPDATE);
+        assertTrue(updateStrategy instanceof MarathonUpdateStrategy);
+    }
+
     public void testCreateWithUnknownStrategy() {
         boolean exceptionThrown = false;
         try {

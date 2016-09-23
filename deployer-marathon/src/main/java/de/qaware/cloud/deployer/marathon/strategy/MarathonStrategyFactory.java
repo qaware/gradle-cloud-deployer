@@ -42,6 +42,8 @@ public final class MarathonStrategyFactory {
         switch (strategy) {
             case REPLACE:
                 return new MarathonReplaceStrategy();
+            case UPDATE:
+                return new MarathonUpdateStrategy();
             default:
                 throw new ResourceException(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_UNSUPPORTED_STRATEGY", strategy));
         }
