@@ -16,42 +16,46 @@
 package de.qaware.cloud.deployer.plugin.token;
 
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
-import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.dcos.token.TokenResource;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
 /**
- * Initializes a dcos api token using a dcos auth token from the specified file.
+ * Initializes a dcos authorization token which is retrieved from the dcos.toml file in the user's home directory.
  */
 public class DcosAuthTokenInitializer implements TokenInitializer {
 
     /**
-     * The file which contains the dcos auth token.
+     * The user's home directory.
      */
-    private final File authTokenFile;
+    private static final String USER_HOME = System.getProperty("user.home");
 
     /**
-     * Creates a new dcos auth token initializer.
-     *
-     * @param tokenFile The file which contains the dcos auth token.
+     * The path of the dcos config file relative to the user's home directory.
      */
-    public DcosAuthTokenInitializer(File tokenFile) {
-        this.authTokenFile = tokenFile;
-    }
+    private static final String DCOS_CONFIG_FILE = "/.dcos/dcos.toml";
+
+    /**
+     * The property which contains the dcos authorization token.
+     */
+    private static final String DCOS_TOKEN_PROPERTY = "dcos_acs_token";
 
     @Override
     public String initialize(EnvironmentConfig environmentConfig) throws EnvironmentConfigException {
-        try {
-            String authToken = FileUtil.readFileContent(authTokenFile);
-            return new TokenResource(environmentConfig).retrieveApiToken(authToken);
-        } catch (ResourceConfigException | ResourceException e) {
-            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_DCOS_API_TOKEN"), e);
+        try (FileInputStream inputStream = new FileInputStream(USER_HOME + DCOS_CONFIG_FILE)) {
+            // Load the token
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            String token = (String) properties.get(DCOS_TOKEN_PROPERTY);
+
+            // Remove "-characters and assign
+            return token.substring(1, token.length() - 1);
+        } catch (IOException e) {
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_CONFIG_NOT_FOUND"), e);
         }
     }
 }

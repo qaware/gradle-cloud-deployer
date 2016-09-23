@@ -26,7 +26,7 @@ import java.io.IOException;
 import static de.qaware.cloud.deployer.dcos.logging.DcosMessageBundle.DCOS_MESSAGE_BUNDLE;
 
 /**
- * Retrieves a dcos api token using a dcos auth token.
+ * Retrieves a dcos authentication token using a OpenId connect id token.
  */
 public final class TokenResource {
 
@@ -47,11 +47,11 @@ public final class TokenResource {
     }
 
     /**
-     * Retrieves the dcos api token using a dcos auth token.
+     * Retrieves a dcos authentication token using a OpenId connect id token.
      *
-     * @param authToken The dcos auth token which is used to authorize.
-     * @return The dcos api token.
-     * @throws EnvironmentConfigException If the specified dcos auth token isn't valid.
+     * @param authToken The OpenId connect id token which is used to authorize.
+     * @return The dcos authentication token.
+     * @throws EnvironmentConfigException If the specified OpenId connect id token isn't valid.
      * @throws ResourceException          If a problem with the cloud config exists.
      */
     public String retrieveApiToken(String authToken) throws EnvironmentConfigException, ResourceException {
@@ -66,7 +66,7 @@ public final class TokenResource {
                     throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
                 }
 
-                // Return api token.
+                // Return authentication token.
                 return tokenResponse.body().getToken();
             } catch (IOException e) {
                 throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"), e);

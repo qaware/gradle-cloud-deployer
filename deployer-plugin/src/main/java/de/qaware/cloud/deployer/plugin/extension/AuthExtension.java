@@ -16,8 +16,8 @@
 package de.qaware.cloud.deployer.plugin.extension;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import de.qaware.cloud.deployer.plugin.token.DcosApiTokenInitializer;
 import de.qaware.cloud.deployer.plugin.token.DcosAuthTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.OpenIdConnectIdToken;
 import de.qaware.cloud.deployer.plugin.token.DefaultTokenInitializer;
 import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
 
@@ -44,14 +44,14 @@ public class AuthExtension {
     private TokenInitializer token;
 
     /**
-     * Creates a dcos api token initializer which uses the specified file.
+     * Creates a OpenId Connect Id token initializer which uses the specified file.
      *
-     * @param tokenFile The file which contains the dcos auth token.
-     * @return The dcos api token initializer.
+     * @param tokenFile The file which contains the OpenId Connect Id token.
+     * @return The OpenId Connect Id token initializer.
      * @throws ResourceConfigException If the token can't be initialized.
      */
-    public TokenInitializer dcosAuthToken(File tokenFile) throws ResourceConfigException {
-        return new DcosAuthTokenInitializer(tokenFile);
+    public TokenInitializer openId(File tokenFile) throws ResourceConfigException {
+        return new OpenIdConnectIdToken(tokenFile);
     }
 
     /**
@@ -60,8 +60,8 @@ public class AuthExtension {
      * @return The dcos auth token initializer.
      * @throws ResourceConfigException If the token can't be initialized.
      */
-    public TokenInitializer dcosApiToken() throws ResourceConfigException {
-        return new DcosApiTokenInitializer();
+    public TokenInitializer dcosAuthToken() throws ResourceConfigException {
+        return new DcosAuthTokenInitializer();
     }
 
     /**
