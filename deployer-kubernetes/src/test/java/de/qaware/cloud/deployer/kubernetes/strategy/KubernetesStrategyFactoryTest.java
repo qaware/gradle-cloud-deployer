@@ -33,13 +33,18 @@ public class KubernetesStrategyFactoryTest extends TestCase {
         assertTrue(replaceStrategy instanceof KubernetesReplaceStrategy);
     }
 
-    public void testCreateWithUnknownStrategy() {
+    public void testCreateWithUpdateStrategy() throws ResourceException {
+        KubernetesStrategy updateStrategy = KubernetesStrategyFactory.create(Strategy.UPDATE);
+        assertTrue(updateStrategy instanceof KubernetesUpdateStrategy);
+    }
+
+    public void testCreateWithNull() {
         boolean exceptionThrown = false;
         try {
-            KubernetesStrategyFactory.create(Strategy.UPDATE);
+            KubernetesStrategyFactory.create(null);
         } catch (ResourceException e) {
             exceptionThrown = true;
-            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_STRATEGY", "UPDATE"), e.getMessage());
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_STRATEGY", "null"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }

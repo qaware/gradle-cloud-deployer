@@ -71,7 +71,7 @@ public abstract class KubernetesResource extends BaseResource<KubernetesResource
      */
     @Override
     public void update() throws ResourceException {
-        throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_RESOURCE_SUPPORTS_NO_UPDATES"));
+        throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_RESOURCE_SUPPORTS_NO_UPDATES", this.toString()));
     }
 
     /**

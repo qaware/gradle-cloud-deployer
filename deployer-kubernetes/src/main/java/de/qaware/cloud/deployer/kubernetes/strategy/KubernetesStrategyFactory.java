@@ -39,11 +39,19 @@ public final class KubernetesStrategyFactory {
      * @throws ResourceException If the string specifies a not existing strategy.
      */
     public static KubernetesStrategy create(Strategy strategy) throws ResourceException {
+
+        // Check if the strategy is defined
+        if (strategy == null) {
+            throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_STRATEGY", "null"));
+        }
+
         switch (strategy) {
             case RESET:
                 return new KubernetesResetStrategy();
             case REPLACE:
                 return new KubernetesReplaceStrategy();
+            case UPDATE:
+                return new KubernetesUpdateStrategy();
             default:
                 throw new ResourceException(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNSUPPORTED_STRATEGY", strategy));
         }
