@@ -109,9 +109,9 @@ public class DeployTask extends DefaultTask {
      * @return The environment with the specified id, or NULL if not found.
      */
     private Map.Entry<EnvironmentConfig, List<File>> retrieveEnvironment(Map<EnvironmentConfig, List<File>> allEnvironments, String environmentId) {
-        for (Map.Entry<EnvironmentConfig, List<File>> environment : allEnvironments.entrySet()) {
-            if (environment.getKey().getId().equals(environmentId)) {
-                return environment;
+        for (Map.Entry<EnvironmentConfig, List<File>> curEnvironment : allEnvironments.entrySet()) {
+            if (curEnvironment.getKey().getId().equals(environmentId)) {
+                return curEnvironment;
             }
         }
         return null;
