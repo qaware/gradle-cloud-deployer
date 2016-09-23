@@ -18,9 +18,13 @@ package de.qaware.cloud.deployer.commons.resource;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
  * Implementation of a basic resource factory. It creates resources out of configs.
@@ -36,12 +40,20 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
     private final ClientFactory clientFactory;
 
     /**
+     * The logger of this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseResourceFactory.class);
+
+    /**
      * Creates a new base resource factory.
      *
      * @param environmentConfig The configuration of the environment this factory belongs to.
      * @throws ResourceException If a error during ping resource creation or connectivity testing occurs.
      */
     public BaseResourceFactory(EnvironmentConfig environmentConfig) throws ResourceException {
+
+        LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_PINGING_ENVIRONMENT", environmentConfig.getId()));
+
         // Test connectivity
         BasePingResource pingResource = createPingResource(environmentConfig);
         pingResource.ping();
