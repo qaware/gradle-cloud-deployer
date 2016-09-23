@@ -27,25 +27,25 @@ import java.util.List;
 public class EnvironmentExtension {
 
     /**
+     * The type of deployer this extension is defined for.
+     */
+    private final DeployerType deployerType;
+    /**
+     * The project this environment belongs to.
+     */
+    private final Project project;
+    /**
      * The id of this environment.
      */
     private String id;
-
     /**
      * The base url of the environment.
      */
     private String baseUrl;
-
     /**
      * The strategy which is used in this environment.
      */
     private String strategy;
-
-    /**
-     * The project this environment belongs to.
-     */
-    private Project project;
-
     /**
      * The ssl configuration for this environment.
      */
@@ -69,9 +69,11 @@ public class EnvironmentExtension {
     /**
      * Creates a new environment extension.
      *
-     * @param project The project this extension belongs to.
+     * @param deployerType The type of deployer which belongs to this environment.
+     * @param project      The project this extension belongs to.
      */
-    public EnvironmentExtension(Project project) {
+    EnvironmentExtension(DeployerType deployerType, Project project) {
+        this.deployerType = deployerType;
         this.project = project;
     }
 
@@ -115,6 +117,15 @@ public class EnvironmentExtension {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * Returns the type of deployer this extension is defined for.
+     *
+     * @return The deployer type.
+     */
+    public DeployerType getDeployerType() {
+        return deployerType;
     }
 
     /**

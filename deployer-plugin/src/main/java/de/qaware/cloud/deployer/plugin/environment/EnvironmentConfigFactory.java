@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.plugin.config.cloud;
+package de.qaware.cloud.deployer.plugin.environment;
 
 import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
@@ -26,15 +26,12 @@ import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
 import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
 import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
 
-import java.io.File;
-import java.util.*;
-
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
 /**
  * This factory maps environment extensions to environment configs and validates them.
  */
-public final class EnvironmentConfigFactory {
+final class EnvironmentConfigFactory {
 
     /**
      * The default strategy.
@@ -48,75 +45,15 @@ public final class EnvironmentConfigFactory {
     }
 
     /**
-     * Creates a map of kubernetes environment configs and their files out of the specified extensions.
-     *
-     * @param extensions THe extensions which are used to create the kubernetes environment configs.
-     * @return The map of kubernetes environment configs and their files.
-     * @throws EnvironmentConfigException If necessary parameters are missing.
-     */
-    public static Map<EnvironmentConfig, List<File>> createKubernetesEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        Map<EnvironmentConfig, List<File>> configs = new LinkedHashMap<>();
-        for (EnvironmentExtension extension : extensions) {
-            configs.put(createKubernetesEnvironmentConfig(extension), extension.getFiles());
-        }
-        return configs;
-    }
-
-    /**
-     * Creates a map of environment configs and their files out of the specified extensions.
-     *
-     * @param extensions The extensions which are used to create the environment configs.
-     * @return The map of environment configs and their files.
-     * @throws EnvironmentConfigException If necessary parameters are missing.
-     */
-    public static Map<EnvironmentConfig, List<File>> createEnvironmentConfigs(Collection<EnvironmentExtension> extensions) throws EnvironmentConfigException {
-        Map<EnvironmentConfig, List<File>> configs = new LinkedHashMap<>();
-        for (EnvironmentExtension extension : extensions) {
-            configs.put(createEnvironmentConfig(extension), extension.getFiles());
-        }
-        return configs;
-    }
-
-    /**
-     * Creates a new environment config using the specified extension.
-     *
-     * @param extension The extension which contains the configuration.
-     * @return The created environment config.
-     * @throws EnvironmentConfigException If necessary parameters are missing.
-     */
-    private static KubernetesEnvironmentConfig createKubernetesEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
-        String id = extractId(extension);
-        String baseUrl = extractBaseUrl(extension);
-        Strategy strategy = extractStrategy(extension);
-        String namespace = extractNamespace(extension);
-        KubernetesEnvironmentConfig environmentConfig = new KubernetesEnvironmentConfig(id, baseUrl, strategy, namespace);
-
-        // Set authorization config
-        AuthConfig authConfig = extractAuthConfig(extension);
-        environmentConfig.setAuthConfig(authConfig);
-
-        // Set ssl config
-        SSLConfig sslConfig = extractSSLConfig(extension);
-        environmentConfig.setSslConfig(sslConfig);
-
-        // Initialize the token
-        initializeToken(extension, environmentConfig, authConfig);
-
-        return environmentConfig;
-    }
-
-    /**
      * Creates a new kubernetes environment config using the specified extension.
      *
      * @param extension The extension which contains the configuration.
      * @return The created kubernetes config.
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
-    private static EnvironmentConfig createEnvironmentConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
-        String id = extractId(extension);
-        String baseUrl = extractBaseUrl(extension);
-        Strategy strategy = extractStrategy(extension);
-        EnvironmentConfig environmentConfig = new EnvironmentConfig(id, baseUrl, strategy);
+    static EnvironmentConfig create(EnvironmentExtension extension) throws EnvironmentConfigException {
+        // Initialize the config object
+        EnvironmentConfig environmentConfig = initializeConfig(extension);
 
         // Set authorization config
         AuthConfig authConfig = extractAuthConfig(extension);
@@ -130,6 +67,33 @@ public final class EnvironmentConfigFactory {
         initializeToken(extension, environmentConfig, authConfig);
 
         return environmentConfig;
+    }
+
+    /**
+     * Initializes a environment config object using the specified extension.
+     *
+     * @param extension The extension which defines the necessary values.
+     * @return The created environment config.
+     * @throws EnvironmentConfigException If necessary values are not specified.
+     */
+    private static EnvironmentConfig initializeConfig(EnvironmentExtension extension) throws EnvironmentConfigException {
+        // Extract values
+        String id = extractId(extension);
+        String baseUrl = extractBaseUrl(extension);
+        Strategy strategy = extractStrategy(extension);
+
+        // Init
+        EnvironmentConfig config;
+        switch (extension.getDeployerType()) {
+            case KUBERNETES:
+                String namespace = extractNamespace(extension);
+                config = new KubernetesEnvironmentConfig(id, baseUrl, strategy, namespace);
+                break;
+            default:
+                config = new EnvironmentConfig(id, baseUrl, strategy);
+                break;
+        }
+        return config;
     }
 
     /**

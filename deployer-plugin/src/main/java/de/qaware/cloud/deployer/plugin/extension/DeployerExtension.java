@@ -29,12 +29,7 @@ public class DeployerExtension {
     /**
      * Contains all configs defined in this deployer extension.
      */
-    private Collection<EnvironmentExtension> marathonConfigs = new ArrayList<>();
-
-    /**
-     * Contains all kubernetes configs defined in this deployer extension.
-     */
-    private Collection<EnvironmentExtension> kubernetesConfigs = new ArrayList<>();
+    private Collection<EnvironmentExtension> configs = new ArrayList<>();
 
     /**
      * The project this deployer extension belongs to.
@@ -57,8 +52,9 @@ public class DeployerExtension {
      * @return The new marathon environment extension.
      */
     public EnvironmentExtension marathon(Closure closure) {
-        EnvironmentExtension config = (EnvironmentExtension) project.configure(new EnvironmentExtension(project), closure);
-        marathonConfigs.add(config);
+        EnvironmentExtension config = new EnvironmentExtension(DeployerType.MARATHON, project);
+        config = (EnvironmentExtension) project.configure(config, closure);
+        configs.add(config);
         return config;
     }
 
@@ -69,26 +65,18 @@ public class DeployerExtension {
      * @return The new kubernetes environment extension.
      */
     public EnvironmentExtension kubernetes(Closure closure) {
-        EnvironmentExtension config = (EnvironmentExtension) project.configure(new EnvironmentExtension(project), closure);
-        kubernetesConfigs.add(config);
+        EnvironmentExtension config = new EnvironmentExtension(DeployerType.KUBERNETES, project);
+        config = (EnvironmentExtension) project.configure(config, closure);
+        configs.add(config);
         return config;
     }
 
     /**
-     * Returns the marathon configs for this deployer extension.
+     * Returns the configs for this deployer extension.
      *
      * @return The configs.
      */
-    public Collection<EnvironmentExtension> getMarathonConfigs() {
-        return marathonConfigs;
-    }
-
-    /**
-     * Returns the kubernetes configs for this deployer extension.
-     *
-     * @return The configs.
-     */
-    public Collection<EnvironmentExtension> getKubernetesConfigs() {
-        return kubernetesConfigs;
+    public Collection<EnvironmentExtension> getConfigs() {
+        return configs;
     }
 }

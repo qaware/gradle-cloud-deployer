@@ -15,105 +15,45 @@
  */
 package de.qaware.cloud.deployer.plugin.task;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.Deployer;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
-import de.qaware.cloud.deployer.marathon.MarathonDeployer;
-import de.qaware.cloud.deployer.plugin.config.cloud.EnvironmentConfigFactory;
-import de.qaware.cloud.deployer.plugin.extension.DeployerExtension;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
-import org.gradle.api.internal.tasks.options.Option;
+import de.qaware.cloud.deployer.plugin.environment.Environment;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
-
-import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
 /**
  * Represents a task which deploys one specified environment.
  */
-public class DeployTask extends DefaultTask {
+public class DeployTask extends BaseSingleEnvironmentTask {
 
     /**
-     * The selected environment.
-     */
-    private String environment;
-
-    /**
-     * Sets the environment name. This method may also be called when
-     * the environment name is set via the command line option.
+     * Creates a new deploy task object.
      *
-     * @param environment The environment name.
+     * @throws EnvironmentConfigException If an error during config creation occurs.
      */
-    @Option(option = "environment", description = "The environment that will be used.")
-    public void setEnvironment(String environment) {
-        this.environment = environment;
+    public DeployTask() throws EnvironmentConfigException {
+        super();
     }
 
     /**
      * Deploys the environment with the specified id.
      *
-     * @throws ResourceException          If a error during resource interaction with the backend occurs.
-     * @throws ResourceConfigException    If a error during config creation/parsing occurs.
-     * @throws EnvironmentConfigException If a error during config creation occurs.
+     * @throws ResourceException       If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException If a error during config creation/parsing occurs.
      */
     @TaskAction
-    public void deploy() throws ResourceException, ResourceConfigException, EnvironmentConfigException {
+    public void deploy() throws ResourceException, ResourceConfigException {
 
-        // Retrieve project
-        Project project = getProject();
+        // Retrieve necessary data
+        Environment environment = getEnvironment();
+        Deployer deployer = environment.getDeployer();
+        List<File> files = environment.getFiles();
 
-        // Retrieve the id of the environment to deploy
-        if (environment == null || environment.isEmpty()) {
-            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_EMPTY_ID"));
-        }
-
-        // Retrieve the configuration
-        DeployerExtension deployerExtension = project.getExtensions().findByType(DeployerExtension.class);
-
-        // Map the configurations
-        Map<EnvironmentConfig, List<File>> marathonConfigs = EnvironmentConfigFactory.createEnvironmentConfigs(deployerExtension.getMarathonConfigs());
-        Map<EnvironmentConfig, List<File>> kubernetesConfigs = EnvironmentConfigFactory.createKubernetesEnvironmentConfigs(deployerExtension.getKubernetesConfigs());
-
-        // Is it a marathon environment?
-        Map.Entry<EnvironmentConfig, List<File>> environmentConfig = retrieveEnvironment(marathonConfigs, environment);
-        if (environmentConfig != null) {
-            MarathonDeployer deployer = new MarathonDeployer(environmentConfig.getKey());
-            deployer.deploy(environmentConfig.getValue());
-            return;
-        }
-
-        // Is it a kubernetes environment?
-        environmentConfig = retrieveEnvironment(kubernetesConfigs, environment);
-        if (environmentConfig != null) {
-            KubernetesDeployer deployer = new KubernetesDeployer((KubernetesEnvironmentConfig) environmentConfig.getKey());
-            deployer.deploy(environmentConfig.getValue());
-            return;
-        }
-
-        // Throw an error if an environment with the specified id doesn't exist
-        throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_ID_DOES_NOT_EXIST", environment));
-    }
-
-    /**
-     * Retrieves the environment with the specified id out of the map with all environments.
-     *
-     * @param allEnvironments A map containing all environments.
-     * @param environmentId The id of the environment to retrieve.
-     * @return The environment with the specified id, or NULL if not found.
-     */
-    private Map.Entry<EnvironmentConfig, List<File>> retrieveEnvironment(Map<EnvironmentConfig, List<File>> allEnvironments, String environmentId) {
-        for (Map.Entry<EnvironmentConfig, List<File>> curEnvironment : allEnvironments.entrySet()) {
-            if (curEnvironment.getKey().getId().equals(environmentId)) {
-                return curEnvironment;
-            }
-        }
-        return null;
+        // Deploy
+        deployer.deploy(files);
     }
 }

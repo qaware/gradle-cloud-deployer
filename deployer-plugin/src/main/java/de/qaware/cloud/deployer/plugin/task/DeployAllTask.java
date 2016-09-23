@@ -15,56 +15,46 @@
  */
 package de.qaware.cloud.deployer.plugin.task;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.Deployer;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
-import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;
-import de.qaware.cloud.deployer.marathon.MarathonDeployer;
-import de.qaware.cloud.deployer.plugin.config.cloud.EnvironmentConfigFactory;
-import de.qaware.cloud.deployer.plugin.extension.DeployerExtension;
-import org.gradle.api.DefaultTask;
+import de.qaware.cloud.deployer.plugin.environment.Environment;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Represents a task which deploys the all environments.
+ * Represents a task which deploys all environments.
  */
-public class DeployAllTask extends DefaultTask {
+public class DeployAllTask extends BaseAllEnvironmentsTask {
 
     /**
-     * Deploys all environments in the specified configuration.
+     * Creates a new deploy all task object.
      *
-     * @throws ResourceException          If a error during resource interaction with the backend occurs.
-     * @throws ResourceConfigException    If a error during config creation/parsing occurs.
-     * @throws EnvironmentConfigException If a error during config creation occurs.
+     * @throws EnvironmentConfigException If an error during config creation occurs.
+     */
+    DeployAllTask() throws EnvironmentConfigException {
+        super();
+    }
+
+    /**
+     * Deploys all environments in the configuration.
+     *
+     * @throws ResourceException       If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException If a error during config creation/parsing occurs.
      */
     @TaskAction
-    public void deployAll() throws ResourceException, ResourceConfigException, EnvironmentConfigException {
-        // Retrieve the configuration
-        DeployerExtension extension = getProject().getExtensions().findByType(DeployerExtension.class);
+    public void deployAll() throws ResourceException, ResourceConfigException {
 
-        // Map the configurations
-        Map<EnvironmentConfig, List<File>> marathonConfigs = EnvironmentConfigFactory.createEnvironmentConfigs(extension.getMarathonConfigs());
-        Map<EnvironmentConfig, List<File>> kubernetesConfigs = EnvironmentConfigFactory.createKubernetesEnvironmentConfigs(extension.getKubernetesConfigs());
+        // Retrieve necessary data
+        List<Environment> environments = getEnvironments();
 
-        // Call marathon deployer
-        for (Map.Entry<EnvironmentConfig, List<File>> environment : marathonConfigs.entrySet()) {
-            EnvironmentConfig environmentConfig = environment.getKey();
-            List<File> files = environment.getValue();
-            MarathonDeployer deployer = new MarathonDeployer(environmentConfig);
-            deployer.deploy(files);
-        }
-
-        // Call kubernetes deployer
-        for (Map.Entry<EnvironmentConfig, List<File>> environment : kubernetesConfigs.entrySet()) {
-            KubernetesEnvironmentConfig environmentConfig = (KubernetesEnvironmentConfig) environment.getKey();
-            List<File> files = environment.getValue();
-            KubernetesDeployer deployer = new KubernetesDeployer(environmentConfig);
+        // Deploy every environment
+        for (Environment environment : environments) {
+            Deployer deployer = environment.getDeployer();
+            List<File> files = environment.getFiles();
             deployer.deploy(files);
         }
     }
