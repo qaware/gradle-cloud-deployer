@@ -39,14 +39,13 @@ class MarathonReplaceStrategy extends BaseReplaceStrategy implements MarathonStr
 
     @Override
     public void deploy(List<MarathonResource> resources) throws ResourceException {
-        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_REPLACING_RESOURCES_STARTED"));
 
         // Update existing resources (delete and create again) and create new ones
         for (Resource resource : resources) {
-            LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
             super.deploy(resource);
         }
 
-        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_DONE"));
+        LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_REPLACING_RESOURCES_DONE"));
     }
 }

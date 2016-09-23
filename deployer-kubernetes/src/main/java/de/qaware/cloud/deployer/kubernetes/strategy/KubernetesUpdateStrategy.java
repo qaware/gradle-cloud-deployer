@@ -62,7 +62,6 @@ class KubernetesUpdateStrategy extends BaseUpdateStrategy implements KubernetesS
 
         // 3. Update existing resources and create new ones
         for (Resource resource : resources) {
-            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
             super.deploy(resource);
         }
 

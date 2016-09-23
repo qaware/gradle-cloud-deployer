@@ -45,14 +45,13 @@ class KubernetesReplaceStrategy extends BaseReplaceStrategy implements Kubernete
         // 1. Create the namespace if it doesn't exist
         NamespaceUtil.safeCreateNamespace(namespaceResource);
 
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLACING_RESOURCES_STARTED"));
 
         // 2. Update existing resources (delete and create again) and create new ones
         for (Resource resource : resources) {
-            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
             super.deploy(resource);
         }
 
-        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));
+        LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLACING_RESOURCES_DONE"));
     }
 }

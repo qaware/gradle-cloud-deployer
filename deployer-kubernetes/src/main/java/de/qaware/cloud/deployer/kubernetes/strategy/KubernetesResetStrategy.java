@@ -30,7 +30,7 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 /**
  * Implements the reset strategy. Meaning that the whole namespace is deleted before the deployment.
  */
-public class KubernetesResetStrategy implements KubernetesStrategy {
+class KubernetesResetStrategy implements KubernetesStrategy {
 
     /**
      * The logger of this class.
@@ -46,7 +46,7 @@ public class KubernetesResetStrategy implements KubernetesStrategy {
     private static void deployResources(List<KubernetesResource> resources) throws ResourceException {
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_STARTED"));
         for (Resource resource : resources) {
-            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
+            LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_RECREATING_SINGLE_RESOURCE", resource));
             resource.create();
         }
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYING_RESOURCES_DONE"));

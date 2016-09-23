@@ -17,12 +17,21 @@ package de.qaware.cloud.deployer.commons.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
  * Implements a basic version of the update strategy. Meaning that all resources not included in the resources list
  * stay untouched. All included resources are updated or created.
  */
 public abstract class BaseUpdateStrategy {
+
+    /**
+     * The logger of this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseUpdateStrategy.class);
 
     /**
      * Deploys the specified resources. If the resource already exists, it will be updated.
@@ -32,8 +41,10 @@ public abstract class BaseUpdateStrategy {
      */
     public void deploy(Resource resource) throws ResourceException {
         if (resource.exists()) {
+            LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_UPDATING_SINGLE_RESOURCE", resource));
             resource.update();
         } else {
+            LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_CREATING_SINGLE_RESOURCE", resource));
             resource.create();
         }
     }

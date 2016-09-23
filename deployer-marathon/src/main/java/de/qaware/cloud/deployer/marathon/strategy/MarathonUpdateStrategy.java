@@ -43,7 +43,6 @@ class MarathonUpdateStrategy extends BaseUpdateStrategy implements MarathonStrat
 
         // Update existing resources and create new ones
         for (Resource resource : resources) {
-            LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_DEPLOYING_RESOURCES_SINGLE_RESOURCE", resource));
             super.deploy(resource);
         }
 
