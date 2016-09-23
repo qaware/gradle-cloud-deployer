@@ -26,6 +26,7 @@ import de.qaware.cloud.deployer.plugin.config.cloud.EnvironmentConfigFactory;
 import de.qaware.cloud.deployer.plugin.extension.DeployerExtension;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.internal.tasks.options.Option;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -39,7 +40,21 @@ import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN
  */
 public class DeployTask extends DefaultTask {
 
-    private static final String ENVIRONMENT_PROPERTY_NAME = "environment";
+    /**
+     * The selected environment.
+     */
+    private String environment;
+
+    /**
+     * Sets the environment name. This method may also be called when
+     * the environment name is set via the command line option.
+     *
+     * @param environment The environment name.
+     */
+    @Option(option = "environment", description = "The environment that will be used.")
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
 
     /**
      * Deploys the environment with the specified id.
@@ -55,8 +70,7 @@ public class DeployTask extends DefaultTask {
         Project project = getProject();
 
         // Retrieve the id of the environment to deploy
-        String environmentId = (String) project.getProperties().get(ENVIRONMENT_PROPERTY_NAME);
-        if (environmentId == null || environmentId.isEmpty()) {
+        if (environment == null || environment.isEmpty()) {
             throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_EMPTY_ID"));
         }
 
@@ -68,7 +82,7 @@ public class DeployTask extends DefaultTask {
         Map<EnvironmentConfig, List<File>> kubernetesConfigs = EnvironmentConfigFactory.createKubernetesEnvironmentConfigs(deployerExtension.getKubernetesConfigs());
 
         // Is it a marathon environment?
-        Map.Entry<EnvironmentConfig, List<File>> environmentConfig = retrieveEnvironment(marathonConfigs, environmentId);
+        Map.Entry<EnvironmentConfig, List<File>> environmentConfig = retrieveEnvironment(marathonConfigs, environment);
         if (environmentConfig != null) {
             MarathonDeployer deployer = new MarathonDeployer(environmentConfig.getKey());
             deployer.deploy(environmentConfig.getValue());
@@ -76,7 +90,7 @@ public class DeployTask extends DefaultTask {
         }
 
         // Is it a kubernetes environment?
-        environmentConfig = retrieveEnvironment(kubernetesConfigs, environmentId);
+        environmentConfig = retrieveEnvironment(kubernetesConfigs, environment);
         if (environmentConfig != null) {
             KubernetesDeployer deployer = new KubernetesDeployer((KubernetesEnvironmentConfig) environmentConfig.getKey());
             deployer.deploy(environmentConfig.getValue());
@@ -84,7 +98,7 @@ public class DeployTask extends DefaultTask {
         }
 
         // Throw an error if an environment with the specified id doesn't exist
-        throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_ID_DOES_NOT_EXIST", environmentId));
+        throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_DEPLOY_ERROR_ID_DOES_NOT_EXIST", environment));
     }
 
     /**
