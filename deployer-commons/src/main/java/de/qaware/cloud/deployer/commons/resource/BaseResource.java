@@ -118,7 +118,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
         try {
             Response<ResponseBody> response = call.execute();
             if (!isSuccessResponse(response)) {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code(), retrieveBody(response)));
             }
         } catch (IOException e) {
             throw new ResourceException(e);
@@ -147,7 +147,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
             } else if (ResponseInterpreterUtil.isNotFoundResponse(response)) {
                 return false;
             } else {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code(), retrieveBody(response)));
             }
         } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
@@ -177,7 +177,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
                     blocker.block();
                 }
             } else {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code(), retrieveBody(response)));
             }
         } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
@@ -207,7 +207,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
                     blocker.block();
                 }
             } else {
-                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code()));
+                throw new ResourceException(COMMONS_MESSAGE_BUNDLE.getMessage(ERROR_UNHANDLED_HTTP_STATUS_CODE, response.code(), retrieveBody(response)));
             }
         } catch (IOException | InterruptedException e) {
             throw new ResourceException(e);
@@ -260,5 +260,27 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
      */
     private boolean isServerErrorResponse(Response<ResponseBody> response) {
         return ResponseInterpreterUtil.isServerErrorResponse(response);
+    }
+
+    /**
+     * Returns the body of the specified response.
+     *
+     * @param response The response.
+     * @return The body of the response or the message if the body is not defined.
+     */
+    private String retrieveBody(Response<ResponseBody> response) {
+        String message;
+        try {
+            if (response.errorBody() != null) {
+                message = response.errorBody().string();
+            } else if (response.body() != null) {
+                message = response.body().string();
+            } else {
+                message = response.message();
+            }
+        } catch (IOException e) {
+            message = COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_NO_RESPONSE_BODY");
+        }
+        return message;
     }
 }
