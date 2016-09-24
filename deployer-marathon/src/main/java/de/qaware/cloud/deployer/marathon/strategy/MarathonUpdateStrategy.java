@@ -41,8 +41,13 @@ class MarathonUpdateStrategy extends BaseUpdateStrategy implements MarathonStrat
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_UPDATING_RESOURCES_STARTED"));
 
         // Update existing resources and create new ones
-        update(resources);
+        updateResources(resources);
 
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_UPDATING_RESOURCES_DONE"));
+    }
+
+    @Override
+    public void delete(List<MarathonResource> resources) throws ResourceException {
+        deleteResources(resources);
     }
 }

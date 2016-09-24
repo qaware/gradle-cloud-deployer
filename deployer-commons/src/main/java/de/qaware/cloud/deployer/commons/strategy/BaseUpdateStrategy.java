@@ -28,7 +28,7 @@ import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMM
  * Implements a basic version of the update strategy. Meaning that all resources not included in the resources list
  * stay untouched. All included resources are updated or created.
  */
-public abstract class BaseUpdateStrategy {
+public abstract class BaseUpdateStrategy extends BaseDeletionStrategy {
 
     /**
      * The logger of this class.
@@ -43,7 +43,7 @@ public abstract class BaseUpdateStrategy {
      * @param <ResourceType> The type of the resources.
      * @throws ResourceException If an error during updating or deployment occurs.
      */
-    protected <ResourceType extends Resource> void update(List<ResourceType> resources) throws ResourceException {
+    protected <ResourceType extends Resource> void updateResources(List<ResourceType> resources) throws ResourceException {
         for (Resource resource : resources) {
             if (resource.exists()) {
                 LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_UPDATING_SINGLE_RESOURCE", resource));

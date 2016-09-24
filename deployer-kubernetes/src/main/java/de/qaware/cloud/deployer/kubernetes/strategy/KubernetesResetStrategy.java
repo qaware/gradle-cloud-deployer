@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
+import de.qaware.cloud.deployer.commons.strategy.BaseDeletionStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceUtil;
@@ -30,7 +31,7 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 /**
  * Implements the reset strategy. Meaning that the whole namespace is deleted before the deployment.
  */
-class KubernetesResetStrategy implements KubernetesStrategy {
+class KubernetesResetStrategy extends BaseDeletionStrategy implements KubernetesStrategy {
 
     /**
      * The logger of this class.
@@ -62,5 +63,11 @@ class KubernetesResetStrategy implements KubernetesStrategy {
 
         // 3. Create resources in the namespace
         deployResources(resources);
+    }
+
+    @Override
+    public void delete(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
+        // Delete the complete namespace
+        NamespaceUtil.safeDeleteNamespace(namespaceResource);
     }
 }

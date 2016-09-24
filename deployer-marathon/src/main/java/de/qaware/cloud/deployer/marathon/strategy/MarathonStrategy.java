@@ -32,4 +32,12 @@ public interface MarathonStrategy {
      * @throws ResourceException If an error during deployment occurs.
      */
     void deploy(List<MarathonResource> resources) throws ResourceException;
+
+    /**
+     * Deletes the specified resource.
+     *
+     * @param resources The resources to delete.
+     * @throws ResourceException If an error during deletion occurs.
+     */
+    void delete(List<MarathonResource> resources) throws ResourceException;
 }

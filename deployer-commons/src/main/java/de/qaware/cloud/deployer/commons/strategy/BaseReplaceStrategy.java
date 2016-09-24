@@ -28,7 +28,7 @@ import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMM
  * Implements a basic version of the replace strategy. Meaning that all resources not included in the resources list
  * stay untouched. All included resources are replaced or created.
  */
-public abstract class BaseReplaceStrategy {
+public abstract class BaseReplaceStrategy extends BaseDeletionStrategy {
 
     /**
      * The logger of this class.
@@ -43,7 +43,7 @@ public abstract class BaseReplaceStrategy {
      * @param <ResourceType> The type of the resource.
      * @throws ResourceException If an error during deletion or deployment occurs.
      */
-    protected <ResourceType extends Resource> void replace(List<ResourceType> resources) throws ResourceException {
+    protected <ResourceType extends Resource> void replaceResources(List<ResourceType> resources) throws ResourceException {
         for (Resource resource : resources) {
             if (resource.exists()) {
                 LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_RECREATING_SINGLE_RESOURCE", resource));

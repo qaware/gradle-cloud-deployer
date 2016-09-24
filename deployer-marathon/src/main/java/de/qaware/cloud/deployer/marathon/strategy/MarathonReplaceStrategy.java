@@ -41,8 +41,13 @@ class MarathonReplaceStrategy extends BaseReplaceStrategy implements MarathonStr
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_REPLACING_RESOURCES_STARTED"));
 
         // Replace existing resources and create new ones
-        replace(resources);
+        replaceResources(resources);
 
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_REPLACING_RESOURCES_DONE"));
+    }
+
+    @Override
+    public void delete(List<MarathonResource> resources) throws ResourceException {
+        deleteResources(resources);
     }
 }

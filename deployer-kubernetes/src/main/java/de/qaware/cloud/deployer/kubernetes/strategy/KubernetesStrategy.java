@@ -30,8 +30,17 @@ public interface KubernetesStrategy {
      * Deploys the specified resources to the specified namespace.
      *
      * @param namespaceResource The namespace the resources will be deployed in.
-     * @param resources The resources to deploy.
+     * @param resources         The resources to deploy.
      * @throws ResourceException If an error during deployment occurs.
      */
     void deploy(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException;
+
+    /**
+     * Deletes the specified resources.
+     *
+     * @param namespaceResource The namespace resource the resources are located in.
+     * @param resources         The resources to delete.
+     * @throws ResourceException If an error during deletion occurs.
+     */
+    void delete(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException;
 }

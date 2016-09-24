@@ -60,9 +60,15 @@ class KubernetesUpdateStrategy extends BaseUpdateStrategy implements KubernetesS
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_UPDATING_RESOURCES_STARTED"));
 
         // 3. Update existing resources and create new ones
-        update(resources);
+        updateResources(resources);
 
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_UPDATING_RESOURCES_DONE"));
+    }
+
+    @Override
+    public void delete(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
+        // Delete the resources and let the namespace untouched
+        deleteResources(resources);
     }
 
     /**

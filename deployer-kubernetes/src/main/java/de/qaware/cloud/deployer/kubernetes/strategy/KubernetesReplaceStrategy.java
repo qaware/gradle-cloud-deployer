@@ -47,8 +47,14 @@ class KubernetesReplaceStrategy extends BaseReplaceStrategy implements Kubernete
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLACING_RESOURCES_STARTED"));
 
         // 2. Replace existing resources and create new ones
-        replace(resources);
+        replaceResources(resources);
 
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLACING_RESOURCES_DONE"));
+    }
+
+    @Override
+    public void delete(NamespaceResource namespaceResource, List<KubernetesResource> resources) throws ResourceException {
+        // Delete the resources and let the namespace untouched
+        deleteResources(resources);
     }
 }
