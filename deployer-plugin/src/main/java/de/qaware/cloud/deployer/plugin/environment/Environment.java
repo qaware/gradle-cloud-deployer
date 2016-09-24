@@ -53,7 +53,7 @@ public class Environment {
      * @param deployer The environment's deployer.
      * @param files    The environment's files.
      */
-    Environment(String id, EnvironmentConfig config, Deployer deployer, List<File> files) {
+    Environment(EnvironmentConfig config, Deployer deployer, List<File> files) {
         this.id = config.getId();
         this.config = config;
         this.deployer = deployer;
