@@ -16,11 +16,6 @@
 package de.qaware.cloud.deployer.commons;
 
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
-import de.qaware.cloud.deployer.commons.error.ResourceException;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * The base implementation of a deployer.
