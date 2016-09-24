@@ -43,29 +43,57 @@ public class MarathonDeployer extends BaseDeployer<EnvironmentConfig> {
         super(environmentConfig);
     }
 
-    /**
-     * Deploys the list of marathon config files.
-     *
-     * @param files The marathon config files to deploy.
-     * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
-     * @throws ResourceException       If a problem during resource deletion/creation occurs.
-     */
+    @Override
     public void deploy(List<File> files) throws ResourceConfigException, ResourceException {
+        // 1. Retrieve selected strategy
+        MarathonStrategy strategy = createStrategy();
+
+        // 2. Create resources
+        List<MarathonResource> resources = createResources(files);
+
+        // 3. Deploy the resources using the strategy
+        strategy.deploy(resources);
+    }
+
+    @Override
+    public void delete(List<File> files) throws ResourceConfigException, ResourceException {
+        // 1. Retrieve selected strategy
+        MarathonStrategy strategy = createStrategy();
+
+        // 2. Create resources
+        List<MarathonResource> resources = createResources(files);
+
+        // 3. Delete the resources using the strategy
+        strategy.delete(resources);
+    }
+
+    /**
+     * Creates the marathon resources using the list of config files.
+     *
+     * @param files The config files which contain the resource configuration.
+     * @return The created marathon resources.
+     * @throws ResourceConfigException If an error during config parsing and interpretation occurs.
+     * @throws ResourceException       If an error during resource creation occurs.
+     */
+    private List<MarathonResource> createResources(List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
-        EnvironmentConfig environmentConfig = getEnvironmentConfig();
         MarathonResourceConfigFactory resourceConfigFactory = new MarathonResourceConfigFactory();
         List<MarathonResourceConfig> resourceConfigs = resourceConfigFactory.createConfigs(files);
 
         // 2. Create a resource factory for the specified namespace
-        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(getEnvironmentConfig());
 
         // 3. Create the resources for the configs out of step 1.
-        List<MarathonResource> resources = resourceFactory.createResources(resourceConfigs);
+        return resourceFactory.createResources(resourceConfigs);
+    }
 
-        // 4. Retrieve a strategy
-        MarathonStrategy strategy = MarathonStrategyFactory.create(environmentConfig.getStrategy());
-
-        // 5. Deploy the resources using the strategy
-        strategy.deploy(resources);
+    /**
+     * Creates the strategy which is defined in the environment config.
+     *
+     * @return The created strategy.
+     * @throws ResourceException If an error during strategy creation occurs.
+     */
+    private MarathonStrategy createStrategy() throws ResourceException {
+        return MarathonStrategyFactory.create(getEnvironmentConfig().getStrategy());
     }
 }

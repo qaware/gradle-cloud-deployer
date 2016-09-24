@@ -33,4 +33,13 @@ public interface Deployer {
      * @throws ResourceException       If a problem during resource deletion/creation occurs.
      */
     void deploy(List<File> files) throws ResourceConfigException, ResourceException;
+
+    /**
+     * Deletes the list of resources in the cloud.
+     *
+     * @param files The files which define the resources to delete.
+     * @throws ResourceConfigException If an error during config parsing and interpretation occurs.
+     * @throws ResourceException       If an error during resource deletion occurs.
+     */
+    void delete(List<File> files) throws ResourceConfigException, ResourceException;
 }

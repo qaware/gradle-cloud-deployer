@@ -44,13 +44,43 @@ public class KubernetesDeployer extends BaseDeployer<KubernetesEnvironmentConfig
         super(environmentConfig);
     }
 
-    /**
-     * Deploys the list of kubernetes config files.
-     *
-     * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
-     * @throws ResourceException       If a problem during resource deletion/creation occurs.
-     */
+    @Override
     public void deploy(List<File> files) throws ResourceConfigException, ResourceException {
+        // 1. Create resources
+        EnvironmentResourceContainer resourceContainer = createResources(files);
+        NamespaceResource namespaceResource = resourceContainer.namespaceResource;
+        List<KubernetesResource> resources = resourceContainer.resources;
+
+        // 2. Retrieve a strategy
+        KubernetesStrategy strategy = createStrategy();
+
+        // 3. Deploy the resources using the strategy
+        strategy.deploy(namespaceResource, resources);
+    }
+
+    @Override
+    public void delete(List<File> files) throws ResourceConfigException, ResourceException {
+        // 1. Create resources
+        EnvironmentResourceContainer resourceContainer = createResources(files);
+        NamespaceResource namespaceResource = resourceContainer.namespaceResource;
+        List<KubernetesResource> resources = resourceContainer.resources;
+
+        // 2. Retrieve a strategy
+        KubernetesStrategy strategy = createStrategy();
+
+        // 3. Delete resources using the strategy
+        strategy.delete(namespaceResource, resources);
+    }
+
+    /**
+     * Creates all resources as defined in the specified config files.
+     *
+     * @param files The files which contain the resource configuration.
+     * @return A container which contains all resources.
+     * @throws ResourceConfigException If an error during config parsing and interpretation occurs.
+     * @throws ResourceException       If an error during resource creation occurs.
+     */
+    private EnvironmentResourceContainer createResources(List<File> files) throws ResourceConfigException, ResourceException {
         // 1. Read and create resource configs
         KubernetesEnvironmentConfig environmentConfig = getEnvironmentConfig();
         KubernetesResourceConfigFactory resourceConfigFactory = new KubernetesResourceConfigFactory();
@@ -65,10 +95,42 @@ public class KubernetesDeployer extends BaseDeployer<KubernetesEnvironmentConfig
         // 4. Create the namespace resource
         NamespaceResource namespaceResource = resourceFactory.getNamespaceResource();
 
-        // 5. Retrieve a strategy
-        KubernetesStrategy strategy = KubernetesStrategyFactory.create(environmentConfig.getStrategy());
+        return new EnvironmentResourceContainer(namespaceResource, resources);
+    }
 
-        // 6. Deploy the resources using the strategy
-        strategy.deploy(namespaceResource, resources);
+    /**
+     * Creates the strategy which is defined in the environment config.
+     *
+     * @return The created strategy.
+     * @throws ResourceException If an error during strategy creation occurs.
+     */
+    private KubernetesStrategy createStrategy() throws ResourceException {
+        return KubernetesStrategyFactory.create(getEnvironmentConfig().getStrategy());
+    }
+
+    /**
+     * A container which contains all necessary resources for this environment.
+     */
+    private final class EnvironmentResourceContainer {
+        /**
+         * The namespace resource of the environment.
+         */
+        private final NamespaceResource namespaceResource;
+
+        /**
+         * The list of resources which belong to this environment.
+         */
+        private final List<KubernetesResource> resources;
+
+        /**
+         * Creates a new container using the specified params.
+         *
+         * @param namespaceResource The namespace resource of the environment.
+         * @param resources         The resources which belong to this environment.
+         */
+        private EnvironmentResourceContainer(NamespaceResource namespaceResource, List<KubernetesResource> resources) {
+            this.namespaceResource = namespaceResource;
+            this.resources = resources;
+        }
     }
 }
