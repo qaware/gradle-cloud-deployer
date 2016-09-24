@@ -61,7 +61,6 @@ public final class EnvironmentFactory {
     private static Environment createEnvironment(EnvironmentExtension extension) throws EnvironmentConfigException {
         EnvironmentConfig config = EnvironmentConfigFactory.create(extension);
         Deployer deployer = DeployerFactory.create(extension, config);
-        String id = config.getId();
-        return new Environment(id, config, deployer, extension.getFiles());
+        return new Environment(config, deployer, extension.getFiles());
     }
 }
