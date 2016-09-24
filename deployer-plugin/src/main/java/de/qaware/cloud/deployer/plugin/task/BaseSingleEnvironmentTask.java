@@ -27,27 +27,17 @@ import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN
 /**
  * Implements basic functionality of a task which is executed for a single environment.
  */
-abstract class BaseSingleEnvironmentTask extends BaseAllEnvironmentsTask {
+public abstract class BaseSingleEnvironmentTask extends BaseAllEnvironmentsTask {
 
     /**
-     * The selected environment.
+     * The selected environment's id.
      */
     private String environmentId;
 
     /**
-     * The environment config of the selected environment.
+     * The environment representation of the selected environment.
      */
     private Environment environment;
-
-    /**
-     * Creates a new base single environment task object and instantiates the selected environment.
-     *
-     * @throws EnvironmentConfigException If the selected environment doesn't exist.
-     */
-    BaseSingleEnvironmentTask() throws EnvironmentConfigException {
-        super();
-        setupEnvironment();
-    }
 
     /**
      * Sets the environment id. This method may also be called when
@@ -55,7 +45,7 @@ abstract class BaseSingleEnvironmentTask extends BaseAllEnvironmentsTask {
      *
      * @param environmentId The environment id.
      */
-    @Option(option = "environment", description = "The environment that will be used.")
+    @Option(option = "environmentId", description = "The id of the environment that will be used.")
     public void setEnvironmentId(String environmentId) {
         this.environmentId = environmentId;
     }
@@ -65,7 +55,7 @@ abstract class BaseSingleEnvironmentTask extends BaseAllEnvironmentsTask {
      *
      * @return The environment.
      */
-    public Environment getEnvironment() {
+    Environment getEnvironment() {
         return environment;
     }
 
@@ -74,7 +64,9 @@ abstract class BaseSingleEnvironmentTask extends BaseAllEnvironmentsTask {
      *
      * @throws EnvironmentConfigException If an error during environment creation or environment retrieving occurs.
      */
-    private void setupEnvironment() throws EnvironmentConfigException {
+    void setupEnvironment() throws EnvironmentConfigException {
+        // Setup all environments
+        setupEnvironments();
 
         // Retrieve the id of the environment to deploy
         if (environmentId == null || environmentId.isEmpty()) {

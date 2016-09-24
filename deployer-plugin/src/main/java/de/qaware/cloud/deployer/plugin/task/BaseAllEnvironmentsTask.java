@@ -26,21 +26,12 @@ import java.util.List;
 /**
  * Implements basic functionality for a task which uses all environments.
  */
-abstract class BaseAllEnvironmentsTask extends DefaultTask {
+public abstract class BaseAllEnvironmentsTask extends DefaultTask {
 
     /**
      * Contains all environments.
      */
     private List<Environment> environments;
-
-    /**
-     * Creates a new base all environments task. It sets up all environments.
-     *
-     * @throws EnvironmentConfigException If an error during environment setup occurs.
-     */
-    BaseAllEnvironmentsTask() throws EnvironmentConfigException {
-        setupEnvironments();
-    }
 
     /**
      * Returns all environments.
@@ -56,7 +47,7 @@ abstract class BaseAllEnvironmentsTask extends DefaultTask {
      *
      * @throws EnvironmentConfigException If an error during environment setup occurs.
      */
-    private void setupEnvironments() throws EnvironmentConfigException {
+    void setupEnvironments() throws EnvironmentConfigException {
 
         // Retrieve the deployer configuration
         DeployerExtension deployerExtension = getProject().getExtensions().findByType(DeployerExtension.class);

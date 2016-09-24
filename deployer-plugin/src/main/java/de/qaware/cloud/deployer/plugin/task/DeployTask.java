@@ -31,22 +31,16 @@ import java.util.List;
 public class DeployTask extends BaseSingleEnvironmentTask {
 
     /**
-     * Creates a new deploy task object.
-     *
-     * @throws EnvironmentConfigException If an error during config creation occurs.
-     */
-    public DeployTask() throws EnvironmentConfigException {
-        super();
-    }
-
-    /**
      * Deploys the environment with the specified id.
      *
-     * @throws ResourceException       If a error during resource interaction with the backend occurs.
-     * @throws ResourceConfigException If a error during config creation/parsing occurs.
+     * @throws ResourceException          If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException    If a error during config creation/parsing occurs.
+     * @throws EnvironmentConfigException If an error during environment parsing/creation occurs.
      */
     @TaskAction
-    public void deploy() throws ResourceException, ResourceConfigException {
+    public void deploy() throws ResourceException, ResourceConfigException, EnvironmentConfigException {
+        // Setup environment
+        setupEnvironment();
 
         // Retrieve necessary data
         Environment environment = getEnvironment();

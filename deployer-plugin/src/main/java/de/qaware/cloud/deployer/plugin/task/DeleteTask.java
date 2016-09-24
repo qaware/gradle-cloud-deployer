@@ -26,30 +26,28 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Represents a task which deploys all environments.
+ * Represents a task which deletes one specified environment.
  */
-public class DeployAllTask extends BaseAllEnvironmentsTask {
+public class DeleteTask extends BaseSingleEnvironmentTask {
 
     /**
-     * Deploys all environments in the configuration.
+     * Deletes the environment with the specified id.
      *
-     * @throws ResourceException          If an error during resource interaction with the backend occurs.
-     * @throws ResourceConfigException    If an error during config creation/parsing occurs.
+     * @throws ResourceException          If a error during resource interaction with the backend occurs.
+     * @throws ResourceConfigException    If a error during config creation/parsing occurs.
      * @throws EnvironmentConfigException If an error during environment parsing/creation occurs.
      */
     @TaskAction
-    public void deployAll() throws ResourceException, ResourceConfigException, EnvironmentConfigException {
-        // Setup environments
-        setupEnvironments();
+    public void delete() throws ResourceException, ResourceConfigException, EnvironmentConfigException {
+        // Setup environment
+        setupEnvironment();
 
         // Retrieve necessary data
-        List<Environment> environments = getEnvironments();
+        Environment environment = getEnvironment();
+        Deployer deployer = environment.getDeployer();
+        List<File> files = environment.getFiles();
 
-        // Deploy every environment
-        for (Environment environment : environments) {
-            Deployer deployer = environment.getDeployer();
-            List<File> files = environment.getFiles();
-            deployer.deploy(files);
-        }
+        // Delete resources
+        deployer.delete(files);
     }
 }

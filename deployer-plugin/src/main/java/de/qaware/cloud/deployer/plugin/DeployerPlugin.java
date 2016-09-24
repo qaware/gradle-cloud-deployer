@@ -16,6 +16,8 @@
 package de.qaware.cloud.deployer.plugin;
 
 import de.qaware.cloud.deployer.plugin.extension.DeployerExtension;
+import de.qaware.cloud.deployer.plugin.task.DeleteAllTask;
+import de.qaware.cloud.deployer.plugin.task.DeleteTask;
 import de.qaware.cloud.deployer.plugin.task.DeployAllTask;
 import de.qaware.cloud.deployer.plugin.task.DeployTask;
 import org.gradle.api.Plugin;
@@ -34,7 +36,13 @@ public class DeployerPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getExtensions().create("deployer", DeployerExtension.class, project);
+
+        // Deploy tasks
         project.getTasks().create("deployAll", DeployAllTask.class);
         project.getTasks().create("deploy", DeployTask.class);
+
+        // Delete tasks
+        project.getTasks().create("deleteAll", DeleteAllTask.class);
+        project.getTasks().create("delete", DeleteTask.class);
     }
 }
