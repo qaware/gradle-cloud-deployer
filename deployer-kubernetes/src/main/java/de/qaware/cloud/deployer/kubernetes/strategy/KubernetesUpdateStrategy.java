@@ -16,7 +16,6 @@
 package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.strategy.BaseUpdateStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -61,9 +60,7 @@ class KubernetesUpdateStrategy extends BaseUpdateStrategy implements KubernetesS
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_UPDATING_RESOURCES_STARTED"));
 
         // 3. Update existing resources and create new ones
-        for (Resource resource : resources) {
-            super.deploy(resource);
-        }
+        update(resources);
 
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_UPDATING_RESOURCES_DONE"));
     }

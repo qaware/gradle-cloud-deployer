@@ -20,6 +20,8 @@ import de.qaware.cloud.deployer.commons.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
@@ -34,18 +36,22 @@ public abstract class BaseUpdateStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseUpdateStrategy.class);
 
     /**
-     * Deploys the specified resources. If the resource already exists, it will be updated.
+     * Updates the specified resources. If a resource already exists, it will be updated. If it doesn't exist, it will
+     * be created.
      *
-     * @param resource The resource to deploy.
+     * @param resources      The resources to update.
+     * @param <ResourceType> The type of the resources.
      * @throws ResourceException If an error during updating or deployment occurs.
      */
-    public void deploy(Resource resource) throws ResourceException {
-        if (resource.exists()) {
-            LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_UPDATING_SINGLE_RESOURCE", resource));
-            resource.update();
-        } else {
-            LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_CREATING_SINGLE_RESOURCE", resource));
-            resource.create();
+    protected <ResourceType extends Resource> void update(List<ResourceType> resources) throws ResourceException {
+        for (Resource resource : resources) {
+            if (resource.exists()) {
+                LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_UPDATING_SINGLE_RESOURCE", resource));
+                resource.update();
+            } else {
+                LOGGER.info(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_CREATING_SINGLE_RESOURCE", resource));
+                resource.create();
+            }
         }
     }
 }

@@ -16,7 +16,6 @@
 package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.strategy.BaseUpdateStrategy;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import org.slf4j.Logger;
@@ -42,9 +41,7 @@ class MarathonUpdateStrategy extends BaseUpdateStrategy implements MarathonStrat
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_UPDATING_RESOURCES_STARTED"));
 
         // Update existing resources and create new ones
-        for (Resource resource : resources) {
-            super.deploy(resource);
-        }
+        update(resources);
 
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_UPDATING_RESOURCES_DONE"));
     }
