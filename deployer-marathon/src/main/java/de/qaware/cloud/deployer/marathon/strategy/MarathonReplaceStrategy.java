@@ -16,7 +16,6 @@
 package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.strategy.BaseReplaceStrategy;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MA
 
 /**
  * Implements the replace strategy. Meaning that all resources not included in the resources list stay untouched.
- * All included resources are replaced.
+ * All included resources are replaced or created.
  */
 class MarathonReplaceStrategy extends BaseReplaceStrategy implements MarathonStrategy {
 
@@ -41,10 +40,8 @@ class MarathonReplaceStrategy extends BaseReplaceStrategy implements MarathonStr
     public void deploy(List<MarathonResource> resources) throws ResourceException {
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_REPLACING_RESOURCES_STARTED"));
 
-        // Update existing resources (delete and create again) and create new ones
-        for (Resource resource : resources) {
-            super.deploy(resource);
-        }
+        // Replace existing resources and create new ones
+        replace(resources);
 
         LOGGER.info(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_REPLACING_RESOURCES_DONE"));
     }

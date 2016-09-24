@@ -16,7 +16,6 @@
 package de.qaware.cloud.deployer.kubernetes.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.commons.strategy.BaseReplaceStrategy;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
@@ -30,7 +29,7 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 
 /**
  * Implements the replace strategy. Meaning that all resources not included in the resources list stay untouched.
- * All included resources are replaced.
+ * All included resources are replaced or created.
  */
 class KubernetesReplaceStrategy extends BaseReplaceStrategy implements KubernetesStrategy {
 
@@ -47,10 +46,8 @@ class KubernetesReplaceStrategy extends BaseReplaceStrategy implements Kubernete
 
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLACING_RESOURCES_STARTED"));
 
-        // 2. Update existing resources (delete and create again) and create new ones
-        for (Resource resource : resources) {
-            super.deploy(resource);
-        }
+        // 2. Replace existing resources and create new ones
+        replace(resources);
 
         LOGGER.info(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLACING_RESOURCES_DONE"));
     }
