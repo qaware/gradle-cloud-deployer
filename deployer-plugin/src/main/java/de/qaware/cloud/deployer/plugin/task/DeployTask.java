@@ -53,7 +53,7 @@ public class DeployTask extends BaseSingleEnvironmentTask {
         Deployer deployer = environment.getDeployer();
         List<File> files = environment.getFiles();
 
-        // Deploy
+        // Deploy resources
         deployer.deploy(files);
     }
 }
