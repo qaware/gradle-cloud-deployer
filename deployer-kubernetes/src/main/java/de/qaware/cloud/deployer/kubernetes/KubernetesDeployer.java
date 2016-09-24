@@ -111,7 +111,7 @@ public class KubernetesDeployer extends BaseDeployer<KubernetesEnvironmentConfig
     /**
      * A container which contains all necessary resources for this environment.
      */
-    private final class EnvironmentResourceContainer {
+    private static final class EnvironmentResourceContainer {
         /**
          * The namespace resource of the environment.
          */
