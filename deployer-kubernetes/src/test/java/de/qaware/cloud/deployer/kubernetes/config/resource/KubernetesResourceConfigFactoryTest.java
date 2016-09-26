@@ -31,7 +31,7 @@ import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundl
 public class KubernetesResourceConfigFactoryTest extends TestCase {
 
     public void testCreateConfigsWithExistingJsonFile() throws ResourceConfigException, IOException {
-        String testFile = "/pod/pod.json";
+        String testFile = getTestFilePath("pod1.json");
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -53,7 +53,7 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithExistingYamlFile() throws ResourceConfigException, IOException {
-        String testFile = "/service/service.yml";
+        String testFile = getTestFilePath("service.yml");
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -75,8 +75,8 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithMultipleExistingJsonFiles() throws ResourceConfigException, IOException {
-        String testFile1 = "/pod/pod.json";
-        String testFile2 = "/pod/pod2.json";
+        String testFile1 = getTestFilePath("pod1.json");
+        String testFile2 = getTestFilePath("pod2.json");
 
         // Create config
         File file1 = new File(this.getClass().getResource(testFile1).getPath());
@@ -107,7 +107,7 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithMultipleResourcesInOneJsonFile() throws ResourceConfigException, IOException {
-        String testFile = "/pod/pods.json";
+        String testFile = getTestFilePath("pods.json");
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -120,8 +120,8 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
         assertEquals(2, configs.size());
 
         // Load single configs
-        String pod1Filename = "/pod/pod.json";
-        String pod2Filename = "/pod/pod2.json";
+        String pod1Filename = getTestFilePath("pod1.json");
+        String pod2Filename = getTestFilePath("pod2.json");
         File pod1 = new File(this.getClass().getResource(pod1Filename).getPath());
         File pod2 = new File(this.getClass().getResource(pod2Filename).getPath());
 
@@ -143,85 +143,89 @@ public class KubernetesResourceConfigFactoryTest extends TestCase {
 
     public void testCreateConfigsWithExistingAndNonExistingFiles() {
         File nonExistingFile = new File("service-non-existing.yml");
-        File existingFile = new File("/service/service.yml");
+        File existingFile = new File(getTestFilePath("service.yml"));
         assertExceptionOnCreation(nonExistingFile, existingFile, "File 'service-non-existing.yml' does not exist");
     }
 
     public void testCreateConfigsWithExistingAndEmptyFiles() {
-        String emptyFile = "/service/service-empty.yml";
-        String validFile = "/service/service.yml";
-        assertExceptionOnCreation2(emptyFile, validFile, KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_EMPTY_CONFIG", "service-empty.yml"));
+        String emptyFile = getTestFilePath("service-empty.yml");
+        String validFile = getTestFilePath("service.yml");
+        assertExceptionOnCreation(emptyFile, validFile, KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_EMPTY_CONFIG", "service-empty.yml"));
     }
 
     public void testCreateConfigsWithExistingEmptyFiles() {
-        String testFile = "/service/service-empty.yml";
+        String testFile = getTestFilePath("service-empty.yml");
         assertExceptionOnCreation(testFile, KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_EMPTY_CONFIG", "service-empty.yml"));
-        testFile = "/service/service-empty.json";
+        testFile = getTestFilePath("service-empty.json");
         assertExceptionOnCreation(testFile, KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_EMPTY_CONFIG", "service-empty.json"));
     }
 
     public void testCreateConfigsWithNonExistingFile() {
         File testFile = new File("service-non-existing.yml");
-        assertExceptionOnCreation1(testFile, "File 'service-non-existing.yml' does not exist");
+        assertExceptionOnCreation(testFile, "File 'service-non-existing.yml' does not exist");
     }
 
     public void testCreateConfigsWithExistingUnsupportedFiles() {
-        String testFile = "/service/service.xml";
+        String testFile = getTestFilePath("service.xml");
         assertExceptionOnCreation(testFile, KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_CONTENT_TYPE", "service.xml"));
-        testFile = "/service/service";
+        testFile = getTestFilePath("service");
         assertExceptionOnCreation(testFile, KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_UNKNOWN_CONTENT_TYPE", "service"));
     }
 
     public void testCreateConfigsWithMissingResourceVersionFromJson() {
-        String testFile = "/pod/pod-missing-version.json";
+        String testFile = getTestFilePath("pod-missing-version.json");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", "apiVersion"));
     }
 
     public void testCreateConfigsWithMissingResourceTypeFromJson() {
-        String testFile = "/pod/pod-missing-type.json";
+        String testFile = getTestFilePath("pod-missing-type.json");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", "kind"));
     }
 
     public void testCreateConfigsWithMissingResourceIdFromJson() {
-        String testFile = "/pod/pod-missing-id.json";
+        String testFile = getTestFilePath("pod-missing-id.json");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", "name"));
     }
 
     public void testCreateConfigsWithMissingResourceVersionFromYaml() {
-        String testFile = "/service/service-missing-version.yml";
+        String testFile = getTestFilePath("service-missing-version.yml");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", "apiVersion"));
     }
 
     public void testCreateConfigsWithMissingResourceTypeFromYaml() {
-        String testFile = "/service/service-missing-type.yml";
+        String testFile = getTestFilePath("service-missing-type.yml");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", "kind"));
     }
 
     public void testCreateConfigsWithMissingResourceIdFromYaml() {
-        String testFile = "/service/service-missing-id.yml";
+        String testFile = getTestFilePath("service-missing-id.yml");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", "name"));
     }
 
     public void testCreateConfigsWithInvalidJson() {
-        String testFile = "/pod/pod-invalid.json";
+        String testFile = getTestFilePath("pod-invalid.json");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_PARSING"));
     }
 
     public void testCreateConfigsWithInvalidYaml() {
-        String testFile = "/service/service-invalid.yml";
+        String testFile = getTestFilePath("service-invalid.yml");
         assertExceptionOnCreation(testFile, COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_PARSING"));
+    }
+
+    private String getTestFilePath(String filename) {
+        return "/de/qaware/cloud/deployer/kubernetes/config/resource/" + filename;
     }
 
     private void assertExceptionOnCreation(String filename, String exceptionMessage) {
         File file = new File(this.getClass().getResource(filename).getPath());
-        assertExceptionOnCreation1(file, exceptionMessage);
+        assertExceptionOnCreation(file, exceptionMessage);
     }
 
-    private void assertExceptionOnCreation1(File file, String exceptionMessage) {
+    private void assertExceptionOnCreation(File file, String exceptionMessage) {
         assertExceptionOnCreation(file, null, exceptionMessage);
     }
 
-    private void assertExceptionOnCreation2(String filename1, String filename2, String exceptionMessage) {
+    private void assertExceptionOnCreation(String filename1, String filename2, String exceptionMessage) {
         File file1 = new File(this.getClass().getResource(filename1).getPath());
         File file2 = new File(this.getClass().getResource(filename2).getPath());
         assertExceptionOnCreation(file1, file2, exceptionMessage);
