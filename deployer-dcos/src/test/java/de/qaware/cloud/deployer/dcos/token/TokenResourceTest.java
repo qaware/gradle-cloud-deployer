@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static de.qaware.cloud.deployer.dcos.logging.DcosMessageBundle.DCOS_MESSAGE_BUNDLE;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -44,7 +45,7 @@ public class TokenResourceTest {
 
     @BeforeClass
     public static void setUpClass() {
-        wireMockServer = new WireMockServer();
+        wireMockServer = new WireMockServer(options().dynamicPort());
         wireMockServer.start();
     }
 
