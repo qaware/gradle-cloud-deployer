@@ -29,12 +29,15 @@ public class NamespaceResourceConfigFactoryTest extends TestCase {
         // Create config
         KubernetesResourceConfig namespaceResource = NamespaceResourceConfigFactory.create("test");
 
+        // Retrieve expected json from file
+        String namespaceJson = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/config/namespace/namespace.json");
+
         // Check config
         assertEquals("test", namespaceResource.getResourceId());
         assertEquals("Namespace", namespaceResource.getResourceType());
         assertEquals("v1", namespaceResource.getResourceVersion());
         assertEquals(ContentType.JSON, namespaceResource.getContentType());
-        assertEquals(FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/config/namespace/namespace.json"), namespaceResource.getContent());
+        assertEquals(namespaceJson, namespaceResource.getContent());
     }
 
     public void testEmptyNamespace() {
