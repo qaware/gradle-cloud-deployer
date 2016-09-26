@@ -18,11 +18,11 @@ package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -35,7 +35,8 @@ public class DeploymentLabelUtilTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        String deploymentDescription = FileUtil.readFileContent("/deployment/deployment.yml");
+        String deploymentFileName = getTestFilePath("deployment.yml");
+        String deploymentDescription = FileUtil.readFileContent(deploymentFileName);
         resourceConfig = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescription);
     }
 
@@ -43,21 +44,20 @@ public class DeploymentLabelUtilTest extends TestCase {
         // Add new label
         DeploymentLabelUtil.addLabel(resourceConfig, "test", "test");
 
+        // Read marked deployment
+        String markedDeployment = FileUtil.readFileContent(getTestFilePath("deployment-marked.yml"));
+
         // Check result
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        JsonNode nodeTree = mapper.readTree(resourceConfig.getContent());
-        JsonNode specNode = nodeTree.get("spec");
-        JsonNode templateNode = specNode.get("template");
-        JsonNode metadataNode = templateNode.get("metadata");
-        JsonNode labelsNode = metadataNode.get("labels");
-        JsonNode testNode = labelsNode.get("test");
-        String value = testNode.textValue();
-        assertEquals("test", value);
+        JsonNode contentTree = mapper.readTree(resourceConfig.getContent());
+        JsonNode expectedContentTree = mapper.readTree(markedDeployment);
+        assertEquals(expectedContentTree, contentTree);
     }
 
     public void testAddLabelWithAPod() throws ResourceConfigException {
         boolean exceptionThrown = false;
-        KubernetesResourceConfig podConfig = new KubernetesResourceConfig("test", ContentType.YAML, FileUtil.readFileContent("/pod/pod.json"));
+        KubernetesResourceConfig podConfig =
+                new KubernetesResourceConfig("test", ContentType.YAML, FileUtil.readFileContent(getTestFilePath("pod.json")));
         try {
             DeploymentLabelUtil.addLabel(podConfig, "test", "test");
         } catch (ResourceException e) {
@@ -69,7 +69,8 @@ public class DeploymentLabelUtilTest extends TestCase {
 
     public void testAddLabelWithMissingPath() throws ResourceConfigException {
         boolean exceptionThrown = false;
-        KubernetesResourceConfig podConfig = new KubernetesResourceConfig("test", ContentType.YAML, FileUtil.readFileContent("/deployment/deployment-missing-labels.yml"));
+        KubernetesResourceConfig podConfig =
+                new KubernetesResourceConfig("test", ContentType.YAML, FileUtil.readFileContent(getTestFilePath("deployment-missing-labels.yml")));
         try {
             DeploymentLabelUtil.addLabel(podConfig, "test", "test");
         } catch (ResourceException e) {
@@ -77,5 +78,9 @@ public class DeploymentLabelUtilTest extends TestCase {
             assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_DURING_LABEL_MARKING_INVALID_PATH", "test"), e.getMessage());
         }
         assertTrue(exceptionThrown);
+    }
+
+    private String getTestFilePath(String filename) {
+        return "/de/qaware/cloud/deployer/kubernetes/resource/deployment/" + filename;
     }
 }
