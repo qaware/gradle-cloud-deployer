@@ -63,7 +63,7 @@ public class MarathonTestEnvironmentUtil {
 
         // Replace the token.
         TokenResource tokenResource = new TokenResource(environmentConfig);
-        String apiToken = tokenResource.retrieveApiToken(environmentVariables.get(MARATHON_TOKEN_ENV));
+        String apiToken = tokenResource.retrieveAuthenticationToken(environmentVariables.get(MARATHON_TOKEN_ENV));
         environmentConfig.getAuthConfig().setToken(apiToken);
 
         ClientFactory clientFactory = createClientFactory(environmentConfig);
