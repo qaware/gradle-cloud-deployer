@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import junit.framework.TestCase;
@@ -33,7 +34,7 @@ public class NamespaceResourceConfigFactoryTest extends TestCase {
         assertEquals("Namespace", namespaceResource.getResourceType());
         assertEquals("v1", namespaceResource.getResourceVersion());
         assertEquals(ContentType.JSON, namespaceResource.getContentType());
-        assertEquals("{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"name\":\"test\"}}", namespaceResource.getContent());
+        assertEquals(FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/config/namespace/namespace.json"), namespaceResource.getContent());
     }
 
     public void testEmptyNamespace() {
