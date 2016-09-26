@@ -49,7 +49,7 @@ public class OpenIdConnectIdToken implements TokenInitializer {
     public String initialize(EnvironmentConfig environmentConfig) throws EnvironmentConfigException {
         try {
             String authToken = FileUtil.readFileContent(authTokenFile);
-            return new TokenResource(environmentConfig).retrieveApiToken(authToken);
+            return new TokenResource(environmentConfig).retrieveAuthenticationToken(authToken);
         } catch (ResourceConfigException | ResourceException e) {
             throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_DCOS_API_TOKEN"), e);
         }

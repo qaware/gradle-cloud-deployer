@@ -54,7 +54,7 @@ public final class TokenResource {
      * @throws EnvironmentConfigException If the specified OpenId connect id token isn't valid.
      * @throws ResourceException          If a problem with the cloud config exists.
      */
-    public String retrieveApiToken(String authToken) throws EnvironmentConfigException, ResourceException {
+    public String retrieveAuthenticationToken(String authToken) throws EnvironmentConfigException, ResourceException {
         if (authToken != null && !authToken.isEmpty()) {
             try {
                 // Create token description.

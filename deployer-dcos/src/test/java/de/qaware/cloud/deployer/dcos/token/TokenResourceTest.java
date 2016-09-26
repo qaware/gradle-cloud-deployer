@@ -15,60 +15,111 @@
  */
 package de.qaware.cloud.deployer.dcos.token;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.strategy.Strategy;
-import de.qaware.cloud.deployer.dcos.test.DcosTestEnvironmentUtil;
-import junit.framework.TestCase;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static de.qaware.cloud.deployer.dcos.logging.DcosMessageBundle.DCOS_MESSAGE_BUNDLE;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-public class TokenResourceTest extends TestCase {
+public class TokenResourceTest {
+
+    private static final String SERVER_ADDRESS = "http://localhost";
+    private static final String OPEN_ID_TOKEN = "validToken";
+    private static final String AUTHENTICATION_TOKEN = "tokenResponse";
+
+    private static WireMockServer wireMockServer;
 
     private EnvironmentConfig environmentConfig;
 
-    private String authToken;
+    @BeforeClass
+    public static void setUpClass() {
+        wireMockServer = new WireMockServer();
+        wireMockServer.start();
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        wireMockServer.shutdown();
+    }
 
     @Before
-    public void setUp() throws Exception {
-        this.environmentConfig = DcosTestEnvironmentUtil.createEnvironmentConfig(Strategy.REPLACE);
-        this.authToken = DcosTestEnvironmentUtil.getToken();
+    public void setUp() {
+        environmentConfig = createEnvironmentConfig();
     }
 
-    public void testRetrieveApiTokenWithEmptyToken() throws ResourceException {
-        assertException(environmentConfig, "", DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));
+    @Test
+    public void testRetrieveAuthenticationTokenWithEmptyToken() throws ResourceException {
+        assertExceptionOnRetrieveAuthenticationToken(
+                environmentConfig,
+                "",
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN")
+        );
     }
 
-    public void testRetrieveApiTokenWithInvalidToken() throws ResourceException {
-        String invalidToken = authToken.substring(0, authToken.length() - 2);
-        assertException(environmentConfig, invalidToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
+    @Test
+    public void testRetrieveAuthenticationTokenWithInvalidToken() throws ResourceException {
+        String invalidToken = OPEN_ID_TOKEN.substring(0, OPEN_ID_TOKEN.length() - 1);
+        assertExceptionOnRetrieveAuthenticationToken(
+                environmentConfig,
+                invalidToken,
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN")
+        );
     }
 
-    public void testRetrieveApiTokenInvalidAddress() throws ResourceException {
+    @Test
+    public void testRetrieveAuthenticationTokenWithInvalidAddress() throws ResourceException {
         EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getStrategy());
-        assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
+        assertExceptionOnRetrieveAuthenticationToken(
+                newEnvironmentConfig,
+                OPEN_ID_TOKEN,
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION")
+        );
 
         newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getStrategy());
-        assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
+        assertExceptionOnRetrieveAuthenticationToken(
+                newEnvironmentConfig,
+                OPEN_ID_TOKEN,
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN")
+        );
     }
 
-    public void testRetrieveApiToken() throws ResourceException, EnvironmentConfigException {
+    @Test
+    public void testRetrieveAuthenticationToken() throws ResourceException, EnvironmentConfigException {
         TokenResource tokenResource = new TokenResource(environmentConfig);
-        String token = tokenResource.retrieveApiToken(authToken);
-        assertFalse(token.isEmpty());
+        String authenticationToken = tokenResource.retrieveAuthenticationToken(OPEN_ID_TOKEN);
+        assertFalse(authenticationToken.isEmpty());
+        assertEquals(AUTHENTICATION_TOKEN, authenticationToken);
     }
 
-    private void assertException(EnvironmentConfig environmentConfig, String token, String exceptionMessage) throws ResourceException {
+    private void assertExceptionOnRetrieveAuthenticationToken(EnvironmentConfig environmentConfig,
+                                                              String token,
+                                                              String exceptionMessage) throws ResourceException {
         boolean exceptionThrown = false;
         TokenResource tokenResource = new TokenResource(environmentConfig);
         try {
-            tokenResource.retrieveApiToken(token);
+            tokenResource.retrieveAuthenticationToken(token);
         } catch (EnvironmentConfigException e) {
             exceptionThrown = true;
             assertEquals(exceptionMessage, e.getMessage());
         }
         assertTrue(exceptionThrown);
+    }
+
+    private EnvironmentConfig createEnvironmentConfig() {
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", SERVER_ADDRESS + ":" + wireMockServer.port(), Strategy.REPLACE);
+        environmentConfig.setSslConfig(new SSLConfig());
+        environmentConfig.setAuthConfig(new AuthConfig());
+        return environmentConfig;
     }
 }
