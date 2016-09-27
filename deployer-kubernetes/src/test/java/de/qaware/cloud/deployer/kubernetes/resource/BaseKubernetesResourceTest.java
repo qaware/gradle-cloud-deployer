@@ -16,6 +16,7 @@
 package de.qaware.cloud.deployer.kubernetes.resource;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -31,6 +32,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.strategy.Strategy;
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -41,9 +43,7 @@ import java.io.IOException;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public abstract class BaseKubernetesResourceTest {
 
@@ -187,7 +187,7 @@ public abstract class BaseKubernetesResourceTest {
         instanceRule.verify(2, getRequestedFor(instancePattern));
     }
 
-    protected void testDelete(UrlPattern instancePattern) throws ResourceException {
+    protected void testDelete(UrlPattern instancePattern) throws ResourceException, JsonProcessingException {
         String scenarioName = "testDelete";
 
         // Delete
@@ -216,6 +216,10 @@ public abstract class BaseKubernetesResourceTest {
         // Verify
         instanceRule.verify(1, deleteRequestedFor(instancePattern));
         instanceRule.verify(2, getRequestedFor(instancePattern));
+
+        // Check if delete options are specified
+        String jsonDeleteOptions = new ObjectMapper(new JsonFactory()).writeValueAsString(new DeleteOptions(0));
+        instanceRule.verify(deleteRequestedFor(instancePattern).withRequestBody(equalTo(jsonDeleteOptions)));
     }
 
     protected void testUpdate(UrlPattern instancePattern) throws ResourceException, IOException {

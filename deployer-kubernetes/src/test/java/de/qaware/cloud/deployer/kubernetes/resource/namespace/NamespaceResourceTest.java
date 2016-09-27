@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -43,7 +44,7 @@ public class NamespaceResourceTest extends BaseKubernetesResourceTest {
     }
 
     @Test
-    public void testDelete() throws ResourceException {
+    public void testDelete() throws ResourceException, JsonProcessingException {
         testDelete(NAMESPACE_PATTERN);
     }
 

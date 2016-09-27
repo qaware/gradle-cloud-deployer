@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.pod;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
@@ -51,7 +52,7 @@ public class PodResourceTest extends BaseKubernetesResourceTest {
     }
 
     @Test
-    public void testDelete() throws ResourceException {
+    public void testDelete() throws ResourceException, JsonProcessingException {
         testDelete(POD_PATTERN);
     }
 

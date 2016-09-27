@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
@@ -53,7 +54,7 @@ public class ServiceResourceTest extends BaseKubernetesResourceTest {
     }
 
     @Test
-    public void testDelete() throws ResourceException {
+    public void testDelete() throws ResourceException, JsonProcessingException {
         testDelete(SERVICE_PATTERN);
     }
 
