@@ -107,13 +107,13 @@ public class KubernetesResetStrategyTest extends BaseKubernetesStrategyTest {
         verify(namespaceResource, times(1)).exists();
         verify(namespaceResource, times(0)).delete();
 
-        // Create the deployment
+        // Ignore the deployment
         verify(deploymentResource, times(0)).create();
         verify(deploymentResource, times(0)).update();
         verify(deploymentResource, times(0)).exists();
         verify(deploymentResource, times(0)).delete();
 
-        // Create the service
+        // Ignore the service
         verify(serviceResource, times(0)).create();
         verify(serviceResource, times(0)).update();
         verify(serviceResource, times(0)).exists();
@@ -122,7 +122,7 @@ public class KubernetesResetStrategyTest extends BaseKubernetesStrategyTest {
 
     @Test
     public void testDeleteWithExistingResources() throws ResourceException {
-        // Tune resources - namespace exists already
+        // Tune resources
         when(namespaceResource.exists()).thenReturn(true);
         when(deploymentResource.exists()).thenReturn(true);
         when(serviceResource.exists()).thenReturn(true);
@@ -138,13 +138,13 @@ public class KubernetesResetStrategyTest extends BaseKubernetesStrategyTest {
         verify(namespaceResource, times(1)).exists();
         verify(namespaceResource, times(1)).delete();
 
-        // Create the deployment
+        // Ignore the deployment
         verify(deploymentResource, times(0)).create();
         verify(deploymentResource, times(0)).update();
         verify(deploymentResource, times(0)).exists();
         verify(deploymentResource, times(0)).delete();
 
-        // Create the service
+        // Ignore the service
         verify(serviceResource, times(0)).create();
         verify(serviceResource, times(0)).update();
         verify(serviceResource, times(0)).exists();
