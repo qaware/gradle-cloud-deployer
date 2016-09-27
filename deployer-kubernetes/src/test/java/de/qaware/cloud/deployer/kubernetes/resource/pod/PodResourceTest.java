@@ -15,98 +15,48 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.pod;
 
-import de.qaware.cloud.deployer.commons.config.util.FileUtil;
-import de.qaware.cloud.deployer.commons.error.ResourceException;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+import de.qaware.cloud.deployer.commons.error.ResourceException;
+import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import junit.framework.TestCase;
+import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
+import org.junit.Test;
 
-public class PodResourceTest extends TestCase {
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-    private KubernetesClient kubernetesClient;
-    private NamespaceResource namespaceResource;
-    private PodResource podResource;
+public class PodResourceTest extends BaseKubernetesResourceTest {
+
+    private static final String BASE_PATH = "/api/v1/namespaces/" + NAMESPACE;
+    private static final UrlPattern PODS_PATTERN = urlEqualTo(BASE_PATH + "/pods");
+    private static final UrlPattern POD_PATTERN = urlEqualTo(BASE_PATH + "/pods/nginx-mysql");
 
     @Override
-    public void setUp() throws Exception {
-        // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
-        namespaceResource = testEnvironment.getNamespaceResource();
-        kubernetesClient = testEnvironment.getKubernetesClient();
-        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
-
-        // Create the PodResource object
-        ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String podDescription = FileUtil.readFileContent("/pod/pod.json");
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
+        String podDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/pod/pod.json");
         KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.JSON, podDescription);
-        podResource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
+        return new PodResource(NAMESPACE, resourceConfig, clientFactory);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        namespaceResource.delete();
-    }
-
+    @Test
     public void testExists() throws ResourceException {
-
-        // Check that the pod doesn't exist already
-        Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
-        assertNull(pod);
-
-        // Test exists method
-        assertFalse(podResource.exists());
-
-        // Create pod
-        podResource.create();
-
-        // Check that the pod exists
-        pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
-        assertNotNull(pod);
-
-        // Test exists method
-        assertTrue(podResource.exists());
+        testExists(POD_PATTERN);
     }
 
+    @Test
     public void testCreate() throws ResourceException {
-
-        // Check that the pod doesn't exist already
-        Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
-        assertNull(pod);
-
-        // Create pod
-        podResource.create();
-
-        // Check that the pod exists
-        pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
-        assertNotNull(pod);
-
-        // Compare services
-        assertEquals(pod.getMetadata().getName(), podResource.getId());
-        assertEquals(pod.getApiVersion(), podResource.getResourceConfig().getResourceVersion());
-        assertEquals(pod.getKind(), podResource.getResourceConfig().getResourceType());
+        testCreate(PODS_PATTERN, POD_PATTERN);
     }
 
+    @Test
     public void testDelete() throws ResourceException {
+        testDelete(POD_PATTERN);
+    }
 
-        // Create pod
-        podResource.create();
-
-        // Check that the pod exists
-        Pod pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
-        assertNotNull(pod);
-
-        // Delete pod
-        podResource.delete();
-
-        // Check that pod doesn't exist anymore
-        pod = KubernetesClientUtil.retrievePod(kubernetesClient, podResource);
-        assertNull(pod);
+    @Test
+    public void testUpdate() throws ResourceException {
+        testMissingUpdate();
     }
 }
