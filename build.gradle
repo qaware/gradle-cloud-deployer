@@ -12,6 +12,7 @@ buildscript {
     dependencies {
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1-rc2'
         classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1'
+        classpath 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.2.0'
     }
 }
 
@@ -28,6 +29,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'jacoco'
     apply plugin: 'com.github.hierynomus.license'
+    apply plugin: 'org.unbroken-dome.test-sets'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -64,7 +66,7 @@ subprojects {
     jacocoTestReport {
         additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
         sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(sourceSets.main.output)
+        classDirectories = files(sourceSets.main.output)
         reports {
             html.enabled = true
             xml.enabled = true
@@ -87,5 +89,9 @@ subprojects {
 
     artifacts {
         tests testJar
+    }
+
+    testSets {
+        integrationTest { dirName = 'integration-test' }
     }
 }
