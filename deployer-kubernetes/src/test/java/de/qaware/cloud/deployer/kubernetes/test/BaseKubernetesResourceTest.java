@@ -218,6 +218,10 @@ public abstract class BaseKubernetesResourceTest {
         instanceRule.verify(2, getRequestedFor(instancePattern));
 
         // Check if delete options are specified
+        testDeleteOptions(instancePattern);
+    }
+
+    protected void testDeleteOptions(UrlPattern instancePattern) throws JsonProcessingException {
         String jsonDeleteOptions = new ObjectMapper(new JsonFactory()).writeValueAsString(new DeleteOptions(0));
         instanceRule.verify(deleteRequestedFor(instancePattern).withRequestBody(equalTo(jsonDeleteOptions)));
     }

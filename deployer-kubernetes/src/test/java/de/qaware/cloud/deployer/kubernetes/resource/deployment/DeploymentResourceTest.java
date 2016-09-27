@@ -15,6 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
@@ -61,7 +62,7 @@ public class DeploymentResourceTest extends BaseKubernetesResourceTest {
     }
 
     @Test
-    public void testDelete() throws ResourceException {
+    public void testDelete() throws ResourceException, JsonProcessingException {
         String scenarioName = "testDelete";
 
         // Scale pods down
@@ -112,6 +113,9 @@ public class DeploymentResourceTest extends BaseKubernetesResourceTest {
         instanceRule.verify(1, deleteRequestedFor(DEPLOYMENT_PATTERN));
         instanceRule.verify(1, deleteRequestedFor(REPLICA_SETS_PATTERN));
         instanceRule.verify(3, getRequestedFor(DEPLOYMENT_PATTERN));
+
+        // Check if delete options are specified
+        testDeleteOptions(DEPLOYMENT_PATTERN);
     }
 
     @Test
