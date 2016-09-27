@@ -19,11 +19,9 @@ import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import org.junit.After;
+import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
 import org.junit.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -37,7 +35,7 @@ public class NamespaceResourceTest extends BaseKubernetesResourceTest {
     private static final UrlPattern NAMESPACE_PATTERN = urlEqualTo("/api/v1/namespaces/" + NAMESPACE);
 
     @Override
-    public BaseResource createResource(ClientFactory clientFactory) throws ResourceException, ResourceConfigException {
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
         KubernetesResourceConfig resourceConfig = NamespaceResourceConfigFactory.create(NAMESPACE);
         return new NamespaceResource(resourceConfig, clientFactory);
     }

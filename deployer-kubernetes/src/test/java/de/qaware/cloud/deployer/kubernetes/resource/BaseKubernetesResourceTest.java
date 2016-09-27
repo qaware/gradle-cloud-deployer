@@ -56,18 +56,22 @@ public abstract class BaseKubernetesResourceTest {
 
     protected BaseResource resource;
 
-    public abstract BaseResource createResource(ClientFactory clientFactory) throws ResourceException, ResourceConfigException;
+    protected EnvironmentConfig environmentConfig;
+
+    protected ClientFactory clientFactory;
+
+    public abstract BaseResource createResource() throws ResourceException, ResourceConfigException;
 
     @Before
     public void setup() throws ResourceException, ResourceConfigException {
         // Create test environment
-        EnvironmentConfig environmentConfig = new EnvironmentConfig(NAMESPACE, SERVER_ADDRESS + ":" + instanceRule.port(), Strategy.REPLACE);
+        environmentConfig = new EnvironmentConfig(NAMESPACE, SERVER_ADDRESS + ":" + instanceRule.port(), Strategy.REPLACE);
         environmentConfig.setAuthConfig(new AuthConfig());
         environmentConfig.setSslConfig(new SSLConfig());
-        ClientFactory clientFactory = new ClientFactory(environmentConfig);
+        clientFactory = new ClientFactory(environmentConfig);
 
         // Create resource
-        resource = createResource(clientFactory);
+        resource = createResource();
     }
 
     @After
@@ -213,8 +217,6 @@ public abstract class BaseKubernetesResourceTest {
     }
 
     protected void testUpdate(UrlPattern instancePattern) throws ResourceException, IOException {
-        String scenarioName = "testUpdate";
-
         // Prepare body
         JsonNode body;
         ContentType contentType = resource.getResourceConfig().getContentType();
@@ -230,8 +232,6 @@ public abstract class BaseKubernetesResourceTest {
 
         // Update deployment
         instanceRule.stubFor(patch(instancePattern)
-                .inScenario(scenarioName)
-                .whenScenarioStateIs(STARTED)
                 .withRequestBody(equalTo(jsonContent))
                 .withHeader("Content-Type", equalTo("application/merge-patch+json; charset=utf-8"))
                 .willReturn(aResponse().withStatus(200)));

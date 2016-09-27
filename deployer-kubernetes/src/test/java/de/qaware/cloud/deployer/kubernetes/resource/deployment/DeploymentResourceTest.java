@@ -21,7 +21,6 @@ import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class DeploymentResourceTest extends BaseKubernetesResourceTest {
     private static final UrlPattern REPLICA_SETS_PATTERN = urlEqualTo(BASE_PATH + "/replicasets?labelSelector=deployment-id%3Dzwitscher-eureka");
 
     @Override
-    public BaseResource createResource(ClientFactory clientFactory) throws ResourceException, ResourceConfigException {
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
         String deploymentDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/deployment/deployment.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV1);
         return new DeploymentResource("test", resourceConfigV1, clientFactory);
