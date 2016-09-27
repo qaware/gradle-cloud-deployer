@@ -22,7 +22,7 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
+import de.qaware.cloud.deployer.kubernetes.test.BaseKubernetesResourceTest;
 import org.junit.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
