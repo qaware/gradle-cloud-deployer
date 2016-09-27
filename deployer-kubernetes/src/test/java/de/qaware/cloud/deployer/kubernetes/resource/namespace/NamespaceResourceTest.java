@@ -15,86 +15,57 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.namespace;
 
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
-import io.fabric8.kubernetes.api.model.Namespace;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import junit.framework.TestCase;
+import de.qaware.cloud.deployer.commons.resource.BaseResource;
+import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
+import de.qaware.cloud.deployer.kubernetes.config.namespace.NamespaceResourceConfigFactory;
+import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
+import org.junit.After;
+import org.junit.Test;
 
-public class NamespaceResourceTest extends TestCase {
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-    private NamespaceResource namespaceResource;
-    private KubernetesClient kubernetesClient;
+public class NamespaceResourceTest extends BaseKubernetesResourceTest {
+
+    private static final UrlPattern NAMESPACES_PATTERN = urlEqualTo("/api/v1/namespaces");
+    private static final UrlPattern NAMESPACE_PATTERN = urlEqualTo("/api/v1/namespaces/" + NAMESPACE);
 
     @Override
-    public void setUp() throws Exception {
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
-        namespaceResource = testEnvironment.getNamespaceResource();
-        kubernetesClient = testEnvironment.getKubernetesClient();
+    public BaseResource createResource(ClientFactory clientFactory) throws ResourceException, ResourceConfigException {
+        KubernetesResourceConfig resourceConfig = NamespaceResourceConfigFactory.create(NAMESPACE);
+        return new NamespaceResource(resourceConfig, clientFactory);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        if (namespaceResource.exists()) {
-            namespaceResource.delete();
-        }
-    }
-
+    @Test
     public void testExists() throws ResourceException {
-
-        // Check that the namespace doesn't exist already
-        Namespace namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
-        assertNull(namespace);
-
-        // Test exists method
-        assertFalse(namespaceResource.exists());
-
-        // Create namespace
-        namespaceResource.create();
-
-        // Check that the namespace exists
-        namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
-        assertNotNull(namespace);
-
-        // Test exists method
-        assertTrue(namespaceResource.exists());
+        testExists(NAMESPACE_PATTERN);
     }
 
+    @Test
     public void testDelete() throws ResourceException {
-
-        // Create namespace
-        namespaceResource.create();
-
-        // Check that the namespace exists
-        Namespace namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
-        assertNotNull(namespace);
-
-        // Delete namespace
-        namespaceResource.delete();
-
-        // Check that namespace doesn't exist anymore
-        namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
-        assertNull(namespace);
+        testDelete(NAMESPACE_PATTERN);
     }
 
+    @Test
     public void testCreate() throws ResourceException {
+        testCreate(NAMESPACES_PATTERN, NAMESPACE_PATTERN);
+    }
 
-        // Check that the namespace doesn't exist already
-        Namespace namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
-        assertNull(namespace);
-
-        // Create namespace
-        namespaceResource.create();
-
-        // Check that the namespace exists
-        namespace = KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource);
-        assertNotNull(namespace);
-
-        // Compare namespaces
-        assertEquals(namespace.getMetadata().getName(), namespaceResource.getId());
-        assertEquals(namespace.getApiVersion(), namespaceResource.getResourceConfig().getResourceVersion());
-        assertEquals(namespace.getKind(), namespaceResource.getResourceConfig().getResourceType());
+    @Test
+    public void testUpdate() {
+        boolean exceptionThrown = false;
+        try {
+            resource.update();
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_RESOURCE_SUPPORTS_NO_UPDATES", resource.toString()), e.getMessage());
+        }
+        assertTrue(exceptionThrown);
     }
 }
