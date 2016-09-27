@@ -15,126 +15,95 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.replication.controller;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
-import de.qaware.cloud.deployer.kubernetes.test.PodDeletionBlocker;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.ReplicationController;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import junit.framework.TestCase;
+import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
+import de.qaware.cloud.deployer.kubernetes.test.BaseKubernetesResourceTest;
+import org.junit.Test;
 
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public class ReplicationControllerResourceTest extends TestCase {
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
-    private KubernetesClient kubernetesClient;
-    private NamespaceResource namespaceResource;
-    private ReplicationControllerResource replicationControllerResourceV1;
+public class ReplicationControllerResourceTest extends BaseKubernetesResourceTest {
+
+    private static final String BASE_PATH = "/api/v1/namespaces/" + NAMESPACE;
+    private static final UrlPattern REPLICATION_CONTROLLERS_PATTERN = urlEqualTo(BASE_PATH + "/replicationcontrollers");
+    private static final UrlPattern REPLICATION_CONTROLLER_PATTERN = urlEqualTo(BASE_PATH + "/replicationcontrollers/nginx");
+    private static final UrlPattern SCALE_PATTERN = urlEqualTo(BASE_PATH + "/replicationcontrollers/nginx/scale");
 
     @Override
-    public void setUp() throws Exception {
-        // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
-        namespaceResource = testEnvironment.getNamespaceResource();
-        kubernetesClient = testEnvironment.getKubernetesClient();
-        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
-
-        // Create the replication controller resource v1 object
-        ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String controllerDescriptionV1 = FileUtil.readFileContent("/replication/controller/replication-controller-v1.yml");
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
+        String controllerDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/replication/controller/replication-controller.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, controllerDescriptionV1);
-        replicationControllerResourceV1 = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
+        return new ReplicationControllerResource(NAMESPACE, resourceConfigV1, clientFactory);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        namespaceResource.delete();
-    }
-
+    @Test
     public void testExists() throws ResourceException, InterruptedException {
-
-        // Check that the controller doesn't exist already
-        ReplicationController controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNull(controller);
-
-        // Test exists method
-        assertFalse(replicationControllerResourceV1.exists());
-
-        // Create controller
-        replicationControllerResourceV1.create();
-
-        // Check that the controller exists
-        controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNotNull(controller);
-
-        // Test exists method
-        assertTrue(replicationControllerResourceV1.exists());
+        testExists(REPLICATION_CONTROLLER_PATTERN);
     }
 
+    @Test
     public void testCreate() throws ResourceException, InterruptedException {
-
-        // Check that the controller doesn't exist already
-        ReplicationController controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNull(controller);
-
-        // Create controller
-        replicationControllerResourceV1.create();
-
-        // Check that the controller exists
-        controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNotNull(controller);
-
-        // Check if the pods were created
-        assertEquals(3, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResourceV1).getItems().size());
-
-        // Compare services
-        assertEquals(controller.getMetadata().getName(), replicationControllerResourceV1.getId());
-        assertEquals(controller.getApiVersion(), replicationControllerResourceV1.getResourceConfig().getResourceVersion());
-        assertEquals(controller.getKind(), replicationControllerResourceV1.getResourceConfig().getResourceType());
+        testCreate(REPLICATION_CONTROLLERS_PATTERN, REPLICATION_CONTROLLER_PATTERN);
     }
 
-    public void testDelete() throws ResourceException, InterruptedException, TimeoutException {
+    @Test
+    public void testDelete() throws ResourceException, InterruptedException, TimeoutException, JsonProcessingException {
+        String scenarioName = "testDelete";
 
-        // Create controller
-        replicationControllerResourceV1.create();
+        // Scale pods down
+        instanceRule.stubFor(put(SCALE_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("scaledDown"));
 
-        // Check that the controller exists
-        ReplicationController controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNotNull(controller);
+        // Delete replication controller
+        instanceRule.stubFor(delete(REPLICATION_CONTROLLER_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("scaledDown")
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("replicationControllerHalfDeleted"));
 
-        // Check if the pods were created
-        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResourceV1).getItems();
-        assertEquals(3, pods.size());
+        // Simulate deleting
+        instanceRule.stubFor(get(REPLICATION_CONTROLLER_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("replicationControllerHalfDeleted")
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("replicationControllerDeleted"));
 
-        // Create event blockers
-        Pod pod0 = pods.get(0);
-        PodDeletionBlocker deleteBlocker0 = new PodDeletionBlocker(kubernetesClient, pod0);
-        Pod pod1 = pods.get(1);
-        PodDeletionBlocker deleteBlocker1 = new PodDeletionBlocker(kubernetesClient, pod1);
-        Pod pod2 = pods.get(2);
-        PodDeletionBlocker deleteBlocker2 = new PodDeletionBlocker(kubernetesClient, pod2);
+        // Deleted replicationController
+        instanceRule.stubFor(get(REPLICATION_CONTROLLER_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("replicationControllerDeleted")
+                .willReturn(aResponse().withStatus(404)));
 
-        // Delete controller
-        replicationControllerResourceV1.delete();
+        // Test
+        resource.delete();
 
-        // Block until deletion
-        deleteBlocker0.block();
-        deleteBlocker1.block();
-        deleteBlocker2.block();
+        // Verify calls
+        instanceRule.verify(1, putRequestedFor(SCALE_PATTERN));
+        instanceRule.verify(1, deleteRequestedFor(REPLICATION_CONTROLLER_PATTERN));
+        instanceRule.verify(2, getRequestedFor(REPLICATION_CONTROLLER_PATTERN));
 
-        // Check that all pods were deleted
-        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, replicationControllerResourceV1).getItems().size());
+        // Check if delete options are specified
+        String jsonDeleteOptions = new ObjectMapper(new JsonFactory()).writeValueAsString(new DeleteOptions(0));
+        instanceRule.verify(deleteRequestedFor(REPLICATION_CONTROLLER_PATTERN).withRequestBody(equalTo(jsonDeleteOptions)));
+    }
 
-        // Check that controller doesn't exist anymore
-        controller = KubernetesClientUtil.retrieveReplicationController(kubernetesClient, replicationControllerResourceV1);
-        assertNull(controller);
+    @Test
+    public void testUpdate() {
+        testMissingUpdate();
     }
 }
