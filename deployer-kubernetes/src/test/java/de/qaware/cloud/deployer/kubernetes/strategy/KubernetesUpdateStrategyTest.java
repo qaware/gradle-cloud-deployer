@@ -130,6 +130,93 @@ public class KubernetesUpdateStrategyTest extends BaseKubernetesStrategyTest {
         verify(serviceResource, times(0)).delete();
     }
 
+    @Test
+    public void testDeleteWithExistingResources() throws ResourceException {
+        // Tune resources - namespace and deployment exist already
+        when(deploymentResource.exists()).thenReturn(true);
+        when(serviceResource.exists()).thenReturn(true);
+        when(namespaceResource.exists()).thenReturn(true);
+
+        // Delete
+        KubernetesUpdateStrategy updateStrategy = new KubernetesUpdateStrategy();
+        updateStrategy.delete(namespaceResource, resources);
+
+        // Verify
+        // Ignore the namespace
+        verify(namespaceResource, times(0)).create();
+        verify(namespaceResource, times(0)).update();
+        verify(namespaceResource, times(0)).exists();
+        verify(namespaceResource, times(0)).delete();
+
+        // Delete the deployment
+        verify(deploymentResource, times(0)).create();
+        verify(deploymentResource, times(0)).update();
+        verify(deploymentResource, times(1)).exists();
+        verify(deploymentResource, times(1)).delete();
+
+        // Delete the service
+        verify(serviceResource, times(0)).create();
+        verify(serviceResource, times(0)).update();
+        verify(serviceResource, times(1)).exists();
+        verify(serviceResource, times(1)).delete();
+    }
+
+    @Test
+    public void testDeleteWithExistingAndNotExistingResources() throws ResourceException {
+        // Tune resources - namespace and deployment exist already
+        when(serviceResource.exists()).thenReturn(true);
+        when(namespaceResource.exists()).thenReturn(true);
+
+        // Delete
+        KubernetesUpdateStrategy updateStrategy = new KubernetesUpdateStrategy();
+        updateStrategy.delete(namespaceResource, resources);
+
+        // Verify
+        // Ignore the namespace
+        verify(namespaceResource, times(0)).create();
+        verify(namespaceResource, times(0)).update();
+        verify(namespaceResource, times(0)).exists();
+        verify(namespaceResource, times(0)).delete();
+
+        // Ignore the deployment
+        verify(deploymentResource, times(0)).create();
+        verify(deploymentResource, times(0)).update();
+        verify(deploymentResource, times(1)).exists();
+        verify(deploymentResource, times(0)).delete();
+
+        // Delete the service
+        verify(serviceResource, times(0)).create();
+        verify(serviceResource, times(0)).update();
+        verify(serviceResource, times(1)).exists();
+        verify(serviceResource, times(1)).delete();
+    }
+
+    @Test
+    public void testDeleteWithNotExistingResources() throws ResourceException {
+        // Delete
+        KubernetesUpdateStrategy updateStrategy = new KubernetesUpdateStrategy();
+        updateStrategy.delete(namespaceResource, resources);
+
+        // Verify
+        // Ignore the namespace
+        verify(namespaceResource, times(0)).create();
+        verify(namespaceResource, times(0)).update();
+        verify(namespaceResource, times(0)).exists();
+        verify(namespaceResource, times(0)).delete();
+
+        // Ignore the deployment
+        verify(deploymentResource, times(0)).create();
+        verify(deploymentResource, times(0)).update();
+        verify(deploymentResource, times(1)).exists();
+        verify(deploymentResource, times(0)).delete();
+
+        // Delete the service
+        verify(serviceResource, times(0)).create();
+        verify(serviceResource, times(0)).update();
+        verify(serviceResource, times(1)).exists();
+        verify(serviceResource, times(0)).delete();
+    }
+
     private void assertNotSupported(KubernetesResource resource) {
         boolean exceptionThrown = false;
 
