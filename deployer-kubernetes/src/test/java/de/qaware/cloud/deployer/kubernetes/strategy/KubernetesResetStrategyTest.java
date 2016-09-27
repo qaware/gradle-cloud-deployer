@@ -121,9 +121,11 @@ public class KubernetesResetStrategyTest extends BaseKubernetesStrategyTest {
     }
 
     @Test
-    public void testDeleteWithExistingNamespace() throws ResourceException {
+    public void testDeleteWithExistingResources() throws ResourceException {
         // Tune resources - namespace exists already
         when(namespaceResource.exists()).thenReturn(true);
+        when(deploymentResource.exists()).thenReturn(true);
+        when(serviceResource.exists()).thenReturn(true);
 
         // Delete
         KubernetesResetStrategy strategy = new KubernetesResetStrategy();
