@@ -15,29 +15,35 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.ping;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
-import junit.framework.TestCase;
+import de.qaware.cloud.deployer.commons.resource.BaseResource;
+import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
+import org.junit.Test;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class KubernetesPingResourceTest extends TestCase {
+public class KubernetesPingResourceTest extends BaseKubernetesResourceTest {
 
-    private EnvironmentConfig environmentConfig;
+    private static final UrlPattern PING_PATTERN = urlEqualTo("/api/v1/namespaces");
+    private KubernetesPingResource pingResource;
 
     @Override
-    public void setUp() throws Exception {
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
-        environmentConfig = testEnvironment.getEnvironmentConfig();
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
+        pingResource = new KubernetesPingResource(environmentConfig);
+        return null;
     }
 
-    public void testPingWithoutCredentials() throws ResourceException {
+    @Test
+    public void testFailingPing() throws ResourceException {
+        instanceRule.stubFor(get(PING_PATTERN)
+                .willReturn(aResponse().withStatus(401)));
+
         boolean exceptionThrown = false;
-        environmentConfig.setAuthConfig(new AuthConfig());
-        KubernetesPingResource pingResource = new KubernetesPingResource(environmentConfig);
         try {
             pingResource.ping();
         } catch (ResourceException e) {
@@ -45,10 +51,19 @@ public class KubernetesPingResourceTest extends TestCase {
             assertEquals(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_PING_FAILED", environmentConfig.getId(), 401), e.getMessage());
         }
         assertTrue(exceptionThrown);
+
+        // Verify calls
+        instanceRule.verify(1, getRequestedFor(PING_PATTERN));
     }
 
+    @Test
     public void testPingWithCredentials() throws ResourceException {
-        KubernetesPingResource pingResource = new KubernetesPingResource(environmentConfig);
+        instanceRule.stubFor(get(PING_PATTERN)
+                .willReturn(aResponse().withStatus(200)));
+
         pingResource.ping();
+
+        // Verify calls
+        instanceRule.verify(1, getRequestedFor(PING_PATTERN));
     }
 }
