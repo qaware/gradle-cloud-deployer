@@ -19,53 +19,31 @@ import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
-import de.qaware.cloud.deployer.kubernetes.resource.deployment.DeploymentResource;
-import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import de.qaware.cloud.deployer.kubernetes.resource.pod.PodResource;
 import de.qaware.cloud.deployer.kubernetes.resource.replication.controller.ReplicationControllerResource;
-import de.qaware.cloud.deployer.kubernetes.resource.service.ServiceResource;
-import junit.framework.TestCase;
-import org.junit.Before;
-
-import java.util.ArrayList;
-import java.util.List;
+import de.qaware.cloud.deployer.kubernetes.test.BaseKubernetesStrategyTest;
+import org.junit.Test;
 
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class KubernetesUpdateStrategyTest extends TestCase {
+public class KubernetesUpdateStrategyTest extends BaseKubernetesStrategyTest {
 
-    // Namespace resource
-    private NamespaceResource namespaceResource;
-
-    // Support updates
-    private DeploymentResource deploymentResource;
-    private ServiceResource serviceResource;
-
-    // All resources which support updates
-    private List<KubernetesResource> resources;
-
-    @Before
-    public void setUp() throws Exception {
-        namespaceResource = mock(NamespaceResource.class);
-        deploymentResource = mock(DeploymentResource.class);
-        serviceResource = mock(ServiceResource.class);
-
-        resources = new ArrayList<>();
-        resources.add(deploymentResource);
-        resources.add(serviceResource);
-    }
-
+    @Test
     public void testDeployWithPodResources() {
         PodResource podResource = new PodResource("test", mock(KubernetesResourceConfig.class), mock(ClientFactory.class));
         assertNotSupported(podResource);
     }
 
+    @Test
     public void testDeployWithReplicationControllerResource() {
         ReplicationControllerResource replicationControllerResource = new ReplicationControllerResource("test", mock(KubernetesResourceConfig.class), mock(ClientFactory.class));
         assertNotSupported(replicationControllerResource);
     }
 
+    @Test
     public void testDeployWithSupportedNotExistingResources() throws ResourceException {
         // Update
         KubernetesUpdateStrategy updateStrategy = new KubernetesUpdateStrategy();
@@ -91,6 +69,7 @@ public class KubernetesUpdateStrategyTest extends TestCase {
         verify(serviceResource, times(0)).delete();
     }
 
+    @Test
     public void testDeployWithSupportedExistingResources() throws ResourceException {
         // Tune resources - all exist already
         when(namespaceResource.exists()).thenReturn(true);
@@ -121,6 +100,7 @@ public class KubernetesUpdateStrategyTest extends TestCase {
         verify(serviceResource, times(0)).delete();
     }
 
+    @Test
     public void testDeployWithSupportedExistingAndNotExistingResources() throws ResourceException {
         // Tune resources - namespace and deployment exist already
         when(namespaceResource.exists()).thenReturn(true);
