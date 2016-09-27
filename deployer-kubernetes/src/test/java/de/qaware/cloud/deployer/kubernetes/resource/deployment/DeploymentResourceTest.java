@@ -15,240 +15,249 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.deployment;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
+import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
-import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesClientUtil;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
-import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;
-import de.qaware.cloud.deployer.kubernetes.test.PodDeletionBlocker;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.api.model.PodSpec;
-import io.fabric8.kubernetes.api.model.extensions.Deployment;
-import io.fabric8.kubernetes.api.model.extensions.ReplicaSet;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import junit.framework.TestCase;
+import org.junit.*;
 
-import java.util.List;
+import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class DeploymentResourceTest extends TestCase {
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-    private static final String DEPLOYMENT_MARKER_LABEL = "deployment-id";
+public class DeploymentResourceTest {
 
-    private KubernetesClient kubernetesClient;
-    private NamespaceResource namespaceResource;
+    private static final String SERVER_ADDRESS = "http://localhost";
+    private static final String NAMESPACE = "test-deployment";
+    private static final UrlPattern DEPLOYMENTS_PATTERN = urlEqualTo("/apis/extensions/v1beta1/namespaces/test/deployments");
+    private static final UrlPattern DEPLOYMENT_PATTERN = urlEqualTo("/apis/extensions/v1beta1/namespaces/test/deployments/zwitscher-eureka");
+    private static final UrlPattern SCALE_PATTERN = urlEqualTo("/apis/extensions/v1beta1/namespaces/test/deployments/zwitscher-eureka/scale");
+    private static final UrlPattern REPLICA_SETS_PATTERN = urlEqualTo("/apis/extensions/v1beta1/namespaces/test/replicasets?labelSelector=deployment-id%3Dzwitscher-eureka");
+
+    @ClassRule
+    public static WireMockClassRule wireMockRule = new WireMockClassRule(WireMockConfiguration.options().dynamicPort());
+
+    @Rule
+    public WireMockClassRule instanceRule = wireMockRule;
+
     private DeploymentResource deploymentResourceV1;
-    private DeploymentResource deploymentResourceV2;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         // Create test environment
-        KubernetesTestEnvironment testEnvironment = KubernetesTestEnvironmentUtil.createTestEnvironment();
-        namespaceResource = testEnvironment.getNamespaceResource();
-        kubernetesClient = testEnvironment.getKubernetesClient();
-        KubernetesTestEnvironmentUtil.createTestNamespace(namespaceResource);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig(NAMESPACE, SERVER_ADDRESS + ":" + instanceRule.port(), Strategy.REPLACE);
+        environmentConfig.setAuthConfig(new AuthConfig());
+        environmentConfig.setSslConfig(new SSLConfig());
+        ClientFactory clientFactory = new ClientFactory(environmentConfig);
 
         // Create the deployment resource v1 object
-        ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String deploymentDescriptionV1 = FileUtil.readFileContent("/deployment/deployment-v1.yml");
+        String deploymentDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/deployment/deployment.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV1);
-        deploymentResourceV1 = new DeploymentResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
-
-        // Create the deployment resource v2 object
-        String deploymentDescriptionV2 = FileUtil.readFileContent("/deployment/deployment-v2.yml");
-        KubernetesResourceConfig resourceConfigV2 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV2);
-        deploymentResourceV2 = new DeploymentResource(namespaceResource.getNamespace(), resourceConfigV2, clientFactory);
+        deploymentResourceV1 = new DeploymentResource("test", resourceConfigV1, clientFactory);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        namespaceResource.delete();
+    @After
+    public void reset() {
+        instanceRule.resetMappings();
+        instanceRule.resetScenarios();
     }
 
+    @Test
     public void testExists() throws ResourceException {
+        String scenarioName = "testExists";
 
-        // Check that the deployment doesn't exist already
-        Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNull(deployment);
+        // Doesn't exist
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse().withStatus(404))
+                .willSetStateTo("existsTrue"));
 
-        // Test exists method
+        // Check exists
         assertFalse(deploymentResourceV1.exists());
 
-        // Create deployment
-        deploymentResourceV1.create();
+        // Exists
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("existsTrue")
+                .willReturn(aResponse().withStatus(200)));
 
-        // Check that the deployment exists
-        deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNotNull(deployment);
-
-        // Test exists method
+        // Check exists
         assertTrue(deploymentResourceV1.exists());
+
+        // Verify calls
+        instanceRule.verify(2, getRequestedFor(DEPLOYMENT_PATTERN));
     }
 
+    @Test
     public void testCreate() throws ResourceException {
+        String scenarioName = "testCreate";
 
-        // Check that the deployment doesn't exist already
-        Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNull(deployment);
+        // Create
+        instanceRule.stubFor(post(DEPLOYMENTS_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(STARTED)
+                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent()))
+                .willReturn(aResponse().withStatus(201))
+                .willSetStateTo("deploymentHalfCreated"));
+
+        // Simulate creating
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("deploymentHalfCreated")
+                .willReturn(aResponse().withStatus(404))
+                .willSetStateTo("deploymentCreated"));
+
+        // Created
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("deploymentCreated")
+                .willReturn(aResponse().withStatus(200)));
 
         // Create deployment
         deploymentResourceV1.create();
 
-        // Check that the deployment exists
-        deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNotNull(deployment);
+        // Verify body
+        instanceRule.verify(postRequestedFor(DEPLOYMENTS_PATTERN)
+                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent())));
 
-        // Check if the pods were created
-        assertEquals(3, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems().size());
-
-        // Check if the replica set was created
-        List<ReplicaSet> replicaSets = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(1, replicaSets.size());
-        assertEquals(deploymentResourceV1.getId(), replicaSets.get(0).getMetadata().getLabels().get(DEPLOYMENT_MARKER_LABEL));
-
-        // Compare deployments
-        assertEquals(deployment.getMetadata().getName(), deploymentResourceV1.getId());
-        assertEquals(deployment.getApiVersion(), deploymentResourceV1.getResourceConfig().getResourceVersion());
-        assertEquals(deployment.getKind(), deploymentResourceV1.getResourceConfig().getResourceType());
+        // Verify calls
+        instanceRule.verify(1, postRequestedFor(DEPLOYMENTS_PATTERN));
+        instanceRule.verify(2, getRequestedFor(DEPLOYMENT_PATTERN));
     }
 
-    public void testDelete() throws ResourceException, InterruptedException, TimeoutException {
+    @Test
+    public void testCreateRetry() throws ResourceException {
+        String scenarioName = "testCreateRetry";
+
+        // Simulate busy cloud
+        instanceRule.stubFor(post(DEPLOYMENTS_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse().withStatus(409))
+                .willSetStateTo("cloudNotBusy"));
+
+        // Create
+        instanceRule.stubFor(post(DEPLOYMENTS_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("cloudNotBusy")
+                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent()))
+                .willReturn(aResponse().withStatus(201))
+                .willSetStateTo("deploymentHalfCreated"));
+
+        // Simulate creating
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("deploymentHalfCreated")
+                .willReturn(aResponse().withStatus(404))
+                .willSetStateTo("deploymentCreated"));
+
+        // Created
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("deploymentCreated")
+                .willReturn(aResponse().withStatus(200)));
 
         // Create deployment
         deploymentResourceV1.create();
 
-        // Check that the deployment exists
-        Deployment deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNotNull(deployment);
+        // Verify body
+        instanceRule.verify(postRequestedFor(DEPLOYMENTS_PATTERN)
+                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent())));
 
-        // Check if the pods were created
-        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(3, pods.size());
+        // Verify calls
+        instanceRule.verify(2, postRequestedFor(DEPLOYMENTS_PATTERN));
+        instanceRule.verify(2, getRequestedFor(DEPLOYMENT_PATTERN));
+    }
 
-        // Check if the replica set was created
-        assertEquals(1, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems().size());
+    @Test
+    public void testDelete() throws ResourceException, InterruptedException, TimeoutException {
+        String scenarioName = "testDelete";
 
-        // Create event blocker
-        Pod pod0 = pods.get(0);
-        Pod pod1 = pods.get(1);
-        Pod pod2 = pods.get(2);
-        PodDeletionBlocker deleteBlocker0 = new PodDeletionBlocker(kubernetesClient, pod0);
-        PodDeletionBlocker deleteBlocker1 = new PodDeletionBlocker(kubernetesClient, pod1);
-        PodDeletionBlocker deleteBlocker2 = new PodDeletionBlocker(kubernetesClient, pod2);
+        // Scale pods down
+        instanceRule.stubFor(put(SCALE_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("scaledDown"));
 
         // Delete deployment
+        instanceRule.stubFor(delete(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("scaledDown")
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("deploymentHalfDeleted"));
+
+        // Simulate deleting
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("deploymentHalfDeleted")
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("deploymentDeleted"));
+
+        // Deleted deployment
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("deploymentDeleted")
+                .willReturn(aResponse().withStatus(404))
+                .willSetStateTo("replicaSetDeletion"));
+
+        // Delete replica set
+        instanceRule.stubFor(delete(REPLICA_SETS_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("replicaSetDeletion")
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("replicaSetDeleted"));
+
+        // Everything deleted
+        instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("replicaSetDeleted")
+                .willReturn(aResponse().withStatus(404)));
+
         deploymentResourceV1.delete();
 
-        // Block until deletion
-        deleteBlocker0.block();
-        deleteBlocker1.block();
-        deleteBlocker2.block();
-
-        // Check that all pods were deleted
-        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems().size());
-
-        // Check that the replica set was deleted
-        assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems().size());
-
-        // Check that deployment doesn't exist anymore
-        deployment = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNull(deployment);
+        // Verify calls
+        instanceRule.verify(1, putRequestedFor(SCALE_PATTERN));
+        instanceRule.verify(1, deleteRequestedFor(DEPLOYMENT_PATTERN));
+        instanceRule.verify(1, deleteRequestedFor(REPLICA_SETS_PATTERN));
+        instanceRule.verify(3, getRequestedFor(DEPLOYMENT_PATTERN));
     }
 
-    public void testUpdate() throws ResourceException, TimeoutException, InterruptedException {
+    @Test
+    public void testUpdate() throws ResourceException, TimeoutException, InterruptedException, IOException {
+        String scenarioName = "testUpdate";
+        JsonNode yamlBody = new ObjectMapper(new YAMLFactory()).readTree(deploymentResourceV1.getResourceConfig().getContent());
+        String jsonBody = new ObjectMapper(new JsonFactory()).writeValueAsString(yamlBody);
 
-        // Check that the deployment doesn't exist already
-        Deployment deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNull(deploymentV1);
+        // Update deployment
+        instanceRule.stubFor(patch(DEPLOYMENT_PATTERN)
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(STARTED)
+                .withRequestBody(equalTo(jsonBody))
+                .withHeader("Content-Type", equalTo("application/merge-patch+json; charset=utf-8"))
+                .willReturn(aResponse().withStatus(200))
+                .willSetStateTo("scaledDown"));
 
-        // Create deployment v1 - already checked above in testCreate()
-        deploymentResourceV1.create();
-
-        // Retrieve deployment v1
-        deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNotNull(deploymentV1);
-
-        // Register for pod deletion
-        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(3, pods.size());
-        PodDeletionBlocker deleteBlocker0 = new PodDeletionBlocker(kubernetesClient, pods.get(0));
-        PodDeletionBlocker deleteBlocker1 = new PodDeletionBlocker(kubernetesClient, pods.get(1));
-        PodDeletionBlocker deleteBlocker2 = new PodDeletionBlocker(kubernetesClient, pods.get(2));
-
-        // Update the deployment using v2
-        deploymentResourceV2.update();
-
-        // Wait until the old pods were deleted
-        deleteBlocker0.block();
-        deleteBlocker1.block();
-        deleteBlocker2.block();
-
-        // Check that the deployment still exists
-        Deployment deploymentV2 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNotNull(deploymentV2);
-
-        // Compare deployment v1 and v2
-        assertFalse(deploymentV1.getMetadata().getResourceVersion().equals(deploymentV2.getMetadata().getResourceVersion()));
-
-        // Check that two replica sets exist
-        List<ReplicaSet> replicaSets = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(2, replicaSets.size());
-
-        // Check if the pods were created
-        pods = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(3, pods.size());
-
-        // Check if the pods were updated
-        for (Pod pod : pods) {
-            PodSpec podSpec = pod.getSpec();
-            assertEquals(1, podSpec.getContainers().size());
-            assertEquals("nginx:1.9.1", podSpec.getContainers().get(0).getImage());
-        }
-    }
-
-    public void testEmptyUpdate() throws ResourceException {
-        // Check that the deployment doesn't exist already
-        Deployment deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNull(deploymentV1);
-
-        // Create deployment v1 - already checked above in testCreate()
-        deploymentResourceV1.create();
-
-        // Retrieve deployment v1
-        deploymentV1 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-
-        // Retrieve replica set v1
-        List<ReplicaSet> replicaSetsV1 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
-
-        // Retrieve pods v1
-        List<Pod> podsV1 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
-
-        // Update with the same deployment - no changes!
         deploymentResourceV1.update();
 
-        // Retrieve deployment v1
-        Deployment deploymentV2 = KubernetesClientUtil.retrieveDeployment(kubernetesClient, deploymentResourceV1);
-        assertNotNull(deploymentV2);
-
-        // Check that everything is still the same
-        // Check deployments
-        assertEquals(deploymentV1.getMetadata().getUid(), deploymentV2.getMetadata().getUid());
-        assertEquals(deploymentV1.getMetadata().getCreationTimestamp(), deploymentV2.getMetadata().getCreationTimestamp());
-
-        // Check replica sets
-        List<ReplicaSet> replicaSetsV2 = KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, deploymentResourceV1).getItems();
-        ReplicaSet replicaSetV1 = replicaSetsV1.get(0);
-        ReplicaSet replicaSetV2 = replicaSetsV2.get(0);
-        assertEquals(replicaSetV1.getMetadata().getName(), replicaSetV2.getMetadata().getName());
-
-        // Check pods
-        List<Pod> podsV2 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResourceV1).getItems();
-        assertEquals(podsV1.get(0).getMetadata().getName(), podsV2.get(0).getMetadata().getName());
-        assertEquals(podsV1.get(1).getMetadata().getName(), podsV2.get(1).getMetadata().getName());
-        assertEquals(podsV1.get(2).getMetadata().getName(), podsV2.get(2).getMetadata().getName());
+        // Verify calls
+        instanceRule.verify(1, patchRequestedFor(DEPLOYMENT_PATTERN));
     }
 }
