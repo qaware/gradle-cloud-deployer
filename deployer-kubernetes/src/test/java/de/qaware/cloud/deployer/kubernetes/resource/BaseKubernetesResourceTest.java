@@ -40,6 +40,8 @@ import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -240,5 +242,16 @@ public abstract class BaseKubernetesResourceTest {
 
         // Verify calls
         instanceRule.verify(1, patchRequestedFor(instancePattern));
+    }
+
+    protected void testMissingUpdate() {
+        boolean exceptionThrown = false;
+        try {
+            resource.update();
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_RESOURCE_SUPPORTS_NO_UPDATES", resource.toString()), e.getMessage());
+        }
+        assertTrue(exceptionThrown);
     }
 }

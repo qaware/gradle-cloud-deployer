@@ -25,9 +25,6 @@ import de.qaware.cloud.deployer.kubernetes.resource.BaseKubernetesResourceTest;
 import org.junit.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class NamespaceResourceTest extends BaseKubernetesResourceTest {
 
@@ -57,13 +54,6 @@ public class NamespaceResourceTest extends BaseKubernetesResourceTest {
 
     @Test
     public void testUpdate() {
-        boolean exceptionThrown = false;
-        try {
-            resource.update();
-        } catch (ResourceException e) {
-            exceptionThrown = true;
-            assertEquals(KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_ERROR_RESOURCE_SUPPORTS_NO_UPDATES", resource.toString()), e.getMessage());
-        }
-        assertTrue(exceptionThrown);
+        testMissingUpdate();
     }
 }

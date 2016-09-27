@@ -43,7 +43,7 @@ public class DeploymentResourceTest extends BaseKubernetesResourceTest {
     public BaseResource createResource() throws ResourceException, ResourceConfigException {
         String deploymentDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/deployment/deployment.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV1);
-        return new DeploymentResource("test", resourceConfigV1, clientFactory);
+        return new DeploymentResource(NAMESPACE, resourceConfigV1, clientFactory);
     }
 
     @Test
