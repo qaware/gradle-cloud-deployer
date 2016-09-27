@@ -56,7 +56,7 @@ public class DeploymentResourceTest {
     @Rule
     public WireMockClassRule instanceRule = wireMockRule;
 
-    private DeploymentResource deploymentResourceV1;
+    private DeploymentResource deploymentResource;
 
     @Before
     public void setUp() throws Exception {
@@ -66,10 +66,10 @@ public class DeploymentResourceTest {
         environmentConfig.setSslConfig(new SSLConfig());
         ClientFactory clientFactory = new ClientFactory(environmentConfig);
 
-        // Create the deployment resource v1 object
+        // Create the deployment resource
         String deploymentDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/deployment/deployment.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV1);
-        deploymentResourceV1 = new DeploymentResource("test", resourceConfigV1, clientFactory);
+        deploymentResource = new DeploymentResource("test", resourceConfigV1, clientFactory);
     }
 
     @After
@@ -90,7 +90,7 @@ public class DeploymentResourceTest {
                 .willSetStateTo("existsTrue"));
 
         // Check exists
-        assertFalse(deploymentResourceV1.exists());
+        assertFalse(deploymentResource.exists());
 
         // Exists
         instanceRule.stubFor(get(DEPLOYMENT_PATTERN)
@@ -99,7 +99,7 @@ public class DeploymentResourceTest {
                 .willReturn(aResponse().withStatus(200)));
 
         // Check exists
-        assertTrue(deploymentResourceV1.exists());
+        assertTrue(deploymentResource.exists());
 
         // Verify calls
         instanceRule.verify(2, getRequestedFor(DEPLOYMENT_PATTERN));
@@ -113,7 +113,7 @@ public class DeploymentResourceTest {
         instanceRule.stubFor(post(DEPLOYMENTS_PATTERN)
                 .inScenario(scenarioName)
                 .whenScenarioStateIs(STARTED)
-                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent()))
+                .withRequestBody(equalTo(deploymentResource.getResourceConfig().getContent()))
                 .willReturn(aResponse().withStatus(201))
                 .willSetStateTo("deploymentHalfCreated"));
 
@@ -131,11 +131,11 @@ public class DeploymentResourceTest {
                 .willReturn(aResponse().withStatus(200)));
 
         // Create deployment
-        deploymentResourceV1.create();
+        deploymentResource.create();
 
         // Verify body
         instanceRule.verify(postRequestedFor(DEPLOYMENTS_PATTERN)
-                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent())));
+                .withRequestBody(equalTo(deploymentResource.getResourceConfig().getContent())));
 
         // Verify calls
         instanceRule.verify(1, postRequestedFor(DEPLOYMENTS_PATTERN));
@@ -157,7 +157,7 @@ public class DeploymentResourceTest {
         instanceRule.stubFor(post(DEPLOYMENTS_PATTERN)
                 .inScenario(scenarioName)
                 .whenScenarioStateIs("cloudNotBusy")
-                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent()))
+                .withRequestBody(equalTo(deploymentResource.getResourceConfig().getContent()))
                 .willReturn(aResponse().withStatus(201))
                 .willSetStateTo("deploymentHalfCreated"));
 
@@ -175,11 +175,11 @@ public class DeploymentResourceTest {
                 .willReturn(aResponse().withStatus(200)));
 
         // Create deployment
-        deploymentResourceV1.create();
+        deploymentResource.create();
 
         // Verify body
         instanceRule.verify(postRequestedFor(DEPLOYMENTS_PATTERN)
-                .withRequestBody(equalTo(deploymentResourceV1.getResourceConfig().getContent())));
+                .withRequestBody(equalTo(deploymentResource.getResourceConfig().getContent())));
 
         // Verify calls
         instanceRule.verify(2, postRequestedFor(DEPLOYMENTS_PATTERN));
@@ -231,7 +231,7 @@ public class DeploymentResourceTest {
                 .whenScenarioStateIs("replicaSetDeleted")
                 .willReturn(aResponse().withStatus(404)));
 
-        deploymentResourceV1.delete();
+        deploymentResource.delete();
 
         // Verify calls
         instanceRule.verify(1, putRequestedFor(SCALE_PATTERN));
@@ -243,7 +243,7 @@ public class DeploymentResourceTest {
     @Test
     public void testUpdate() throws ResourceException, TimeoutException, InterruptedException, IOException {
         String scenarioName = "testUpdate";
-        JsonNode yamlBody = new ObjectMapper(new YAMLFactory()).readTree(deploymentResourceV1.getResourceConfig().getContent());
+        JsonNode yamlBody = new ObjectMapper(new YAMLFactory()).readTree(deploymentResource.getResourceConfig().getContent());
         String jsonBody = new ObjectMapper(new JsonFactory()).writeValueAsString(yamlBody);
 
         // Update deployment
@@ -255,7 +255,7 @@ public class DeploymentResourceTest {
                 .willReturn(aResponse().withStatus(200))
                 .willSetStateTo("scaledDown"));
 
-        deploymentResourceV1.update();
+        deploymentResource.update();
 
         // Verify calls
         instanceRule.verify(1, patchRequestedFor(DEPLOYMENT_PATTERN));
