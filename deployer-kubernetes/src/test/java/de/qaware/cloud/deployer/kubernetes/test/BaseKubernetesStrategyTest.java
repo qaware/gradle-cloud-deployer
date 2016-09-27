@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class BaseKubernetesStrategyTest {
+public abstract class BaseKubernetesStrategyTest {
 
     // Resources
     protected NamespaceResource namespaceResource;
