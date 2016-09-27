@@ -26,7 +26,6 @@ import de.qaware.cloud.deployer.kubernetes.test.BaseKubernetesResourceTest;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
@@ -62,7 +61,7 @@ public class DeploymentResourceTest extends BaseKubernetesResourceTest {
     }
 
     @Test
-    public void testDelete() throws ResourceException, InterruptedException, TimeoutException {
+    public void testDelete() throws ResourceException {
         String scenarioName = "testDelete";
 
         // Scale pods down
@@ -116,7 +115,7 @@ public class DeploymentResourceTest extends BaseKubernetesResourceTest {
     }
 
     @Test
-    public void testUpdate() throws ResourceException, TimeoutException, InterruptedException, IOException {
+    public void testUpdate() throws ResourceException, IOException {
         testUpdate(DEPLOYMENT_PATTERN);
     }
 }
