@@ -19,3 +19,6 @@ env.properties
 
 # Allow gradle wrapper jar
 !gradle-wrapper.jar
+
+# Ignore wiremock directory
+wiremock/
