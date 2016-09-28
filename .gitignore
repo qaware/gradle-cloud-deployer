@@ -22,3 +22,6 @@ env.properties
 
 # Ignore wiremock directory
 wiremock/
+
+# Ignore scripts directroy
+scripts/
