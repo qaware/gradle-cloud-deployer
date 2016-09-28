@@ -20,8 +20,8 @@ import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
 import de.qaware.cloud.deployer.commons.strategy.Strategy;
+import de.qaware.cloud.deployer.commons.test.TestEnvironmentUtil;
 import de.qaware.cloud.deployer.dcos.token.TokenResource;
 import mesosphere.marathon.client.Marathon;
 
