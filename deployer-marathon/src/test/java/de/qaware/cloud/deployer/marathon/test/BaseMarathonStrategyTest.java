@@ -25,7 +25,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class BaseMarathonStrategyTest {
+public abstract class BaseMarathonStrategyTest {
 
     protected AppResource appResource;
     protected GroupResource groupResource;
