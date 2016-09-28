@@ -54,12 +54,12 @@ public class DeploymentResourceIntegrationTest extends TestCase {
 
         // Create the deployment resource v1 object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String deploymentDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resources/deployment/deployment-v1.yml");
+        String deploymentDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/deployment/deployment-v1.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV1);
         deploymentResourceV1 = new DeploymentResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
 
         // Create the deployment resource v2 object
-        String deploymentDescriptionV2 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resources/deployment/deployment-v2.yml");
+        String deploymentDescriptionV2 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/deployment/deployment-v2.yml");
         KubernetesResourceConfig resourceConfigV2 = new KubernetesResourceConfig("test", ContentType.YAML, deploymentDescriptionV2);
         deploymentResourceV2 = new DeploymentResource(namespaceResource.getNamespace(), resourceConfigV2, clientFactory);
     }

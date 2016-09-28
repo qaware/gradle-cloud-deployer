@@ -44,7 +44,7 @@ public class PodResourceIntegrationTest extends TestCase {
 
         // Create the PodResource object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String podDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resources/pod/pod.json");
+        String podDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resource/pod/pod.json");
         KubernetesResourceConfig resourceConfig = new KubernetesResourceConfig("test", ContentType.JSON, podDescription);
         podResource = new PodResource(namespaceResource.getNamespace(), resourceConfig, clientFactory);
     }
