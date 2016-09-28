@@ -16,54 +16,29 @@
 package de.qaware.cloud.deployer.kubernetes.resource.ping;
 
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.BaseResource;
-import de.qaware.cloud.deployer.kubernetes.test.BaseKubernetesResourceTest;
+import de.qaware.cloud.deployer.commons.resource.BasePingResource;
+import de.qaware.cloud.deployer.commons.test.BasePingResourceTest;
 import org.junit.Test;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-public class KubernetesPingResourceTest extends BaseKubernetesResourceTest {
+public class KubernetesPingResourceTest extends BasePingResourceTest {
 
     private static final UrlPattern PING_PATTERN = urlEqualTo("/api/v1/namespaces");
-    private KubernetesPingResource pingResource;
 
     @Override
-    public BaseResource createResource() throws ResourceException, ResourceConfigException {
-        pingResource = new KubernetesPingResource(environmentConfig);
-        return null;
+    public BasePingResource createPingResource() throws ResourceException {
+        return new KubernetesPingResource(environmentConfig);
     }
 
     @Test
     public void testFailingPing() throws ResourceException {
-        instanceRule.stubFor(get(PING_PATTERN)
-                .willReturn(aResponse().withStatus(401)));
-
-        boolean exceptionThrown = false;
-        try {
-            pingResource.ping();
-        } catch (ResourceException e) {
-            exceptionThrown = true;
-            assertEquals(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_PING_FAILED", environmentConfig.getId(), 401), e.getMessage());
-        }
-        assertTrue(exceptionThrown);
-
-        // Verify calls
-        instanceRule.verify(1, getRequestedFor(PING_PATTERN));
+        testFailingPing(PING_PATTERN);
     }
 
     @Test
-    public void testPingWithCredentials() throws ResourceException {
-        instanceRule.stubFor(get(PING_PATTERN)
-                .willReturn(aResponse().withStatus(200)));
-
-        pingResource.ping();
-
-        // Verify calls
-        instanceRule.verify(1, getRequestedFor(PING_PATTERN));
+    public void testPing() throws ResourceException {
+        testPing(PING_PATTERN);
     }
 }

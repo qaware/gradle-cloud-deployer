@@ -15,40 +15,30 @@
  */
 package de.qaware.cloud.deployer.marathon.resource.ping;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironment;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironmentUtil;
-import junit.framework.TestCase;
+import de.qaware.cloud.deployer.commons.resource.BasePingResource;
+import de.qaware.cloud.deployer.commons.test.BasePingResourceTest;
+import org.junit.Test;
 
-import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-public class MarathonPingResourceTest extends TestCase {
+public class MarathonPingResourceTest extends BasePingResourceTest {
 
-    private EnvironmentConfig environmentConfig;
+    private static final UrlPattern PING_PATTERN = urlEqualTo("/service/marathon/ping");
 
     @Override
-    public void setUp() throws Exception {
-        MarathonTestEnvironment testEnvironment = MarathonTestEnvironmentUtil.createTestEnvironment();
-        environmentConfig = testEnvironment.getEnvironmentConfig();
+    public BasePingResource createPingResource() throws ResourceException {
+        return new MarathonPingResource(environmentConfig);
     }
 
-    public void testPingWithoutCredentials() throws ResourceException {
-        boolean exceptionThrown = false;
-        environmentConfig.setAuthConfig(new AuthConfig());
-        MarathonPingResource pingResource = new MarathonPingResource(environmentConfig);
-        try {
-            pingResource.ping();
-        } catch (ResourceException e) {
-            exceptionThrown = true;
-            assertEquals(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_PING_FAILED", environmentConfig.getId(), 401), e.getMessage());
-        }
-        assertTrue(exceptionThrown);
+    @Test
+    public void testFailingPing() throws ResourceException {
+        testFailingPing(PING_PATTERN);
     }
 
-    public void testPingWithCredentials() throws ResourceException {
-        MarathonPingResource pingResource = new MarathonPingResource(environmentConfig);
-        pingResource.ping();
+    @Test
+    public void testPing() throws ResourceException {
+        testPing(PING_PATTERN);
     }
 }
