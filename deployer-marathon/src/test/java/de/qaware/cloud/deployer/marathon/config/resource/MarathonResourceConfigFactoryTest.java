@@ -29,7 +29,7 @@ import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MA
 public class MarathonResourceConfigFactoryTest extends TestCase {
 
     public void testCreateConfigsWithExistingJsonFile() throws ResourceConfigException {
-        String testFile = "/resource/app/app.json";
+        String testFile = "/de/qaware/cloud/deployer/marathon/config/resource/app.json";
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -49,7 +49,7 @@ public class MarathonResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithExistingYamlFile() {
-        String testFile = "/resource/app/app.yml";
+        String testFile = "/de/qaware/cloud/deployer/marathon/config/resource/app.yml";
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -69,7 +69,7 @@ public class MarathonResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithEmptyFile() {
-        String testFile = "/resource/app/empty-app.json";
+        String testFile = "/de/qaware/cloud/deployer/marathon/config/resource/empty-app.json";
 
         // Create config
         File file = new File(this.getClass().getResource(testFile).getPath());
@@ -109,8 +109,8 @@ public class MarathonResourceConfigFactoryTest extends TestCase {
     }
 
     public void testCreateConfigsWithMultipleJsonFiles() throws ResourceConfigException {
-        String testFile1 = "/resource/app/app.json";
-        String testFile2 = "/resource/group/group.json";
+        String testFile1 = "/de/qaware/cloud/deployer/marathon/config/resource/app.json";
+        String testFile2 = "/de/qaware/cloud/deployer/marathon/config/resource/group.json";
 
         // Create config
         File file1 = new File(this.getClass().getResource(testFile1).getPath());
