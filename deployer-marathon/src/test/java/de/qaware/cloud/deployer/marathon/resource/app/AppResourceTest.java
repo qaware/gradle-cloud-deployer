@@ -15,116 +15,55 @@
  */
 package de.qaware.cloud.deployer.marathon.resource.app;
 
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironment;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironmentUtil;
-import junit.framework.TestCase;
-import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.App;
-import mesosphere.marathon.client.utils.MarathonException;
+import de.qaware.cloud.deployer.marathon.test.BaseMarathonResourceTest;
+import org.junit.Test;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.IOException;
 
-public class AppResourceTest extends TestCase {
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-    private static AtomicInteger testCounter = new AtomicInteger(0);
+public class AppResourceTest extends BaseMarathonResourceTest {
 
-    private AppResource appResource;
-    private Marathon marathonClient;
+    private static final String APPS_PATH = "/service/marathon/v2/apps";
+    private static final UrlPattern APPS_PATTERN = urlEqualTo(APPS_PATH);
+    private static final UrlPattern APP_PATTERN = urlEqualTo(APPS_PATH + "/zwitscher-eureka");
 
     @Override
-    public void setUp() throws Exception {
-        MarathonTestEnvironment testEnvironment = MarathonTestEnvironmentUtil.createTestEnvironment();
-        marathonClient = testEnvironment.getMarathonClient();
-
-        ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String appDescription = FileUtil.readFileContent("/resource/app/app.json");
-        appDescription = appDescription.replace("zwitscher-eureka", "zwitscher-eureka-app-" + testCounter.getAndIncrement());
-
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
+        String appDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/app/app.json");
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, appDescription);
-        appResource = new AppResource(resourceConfig, clientFactory);
-
-        removeApp();
+        return new AppResource(resourceConfig, clientFactory);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        removeApp();
+    @Test
+    public void testExists() throws ResourceException {
+        testExists(APP_PATTERN);
     }
 
-    public void testExists() throws ResourceException, MarathonException {
-
-        // Check that the app doesn't exist already
-        assertNotFound();
-
-        // Test exists method
-        assertFalse(appResource.exists());
-
-        // Create app
-        appResource.create();
-
-        // Check that the app exists
-        assertExists();
-
-        // Test exists method
-        assertTrue(appResource.exists());
+    @Test
+    public void testCreate() throws ResourceException {
+        testCreate(APPS_PATTERN, APP_PATTERN);
     }
 
-    public void testCreate() throws ResourceException, InterruptedException, MarathonException {
-
-        // Check that the app doesn't exist already
-        assertNotFound();
-
-        // Create app
-        appResource.create();
-
-        // Check that the app exists
-        App app = assertExists();
-
-        // Compare app ids
-        assertEquals(app.getId(), "/" + appResource.getId());
+    @Test
+    public void testCreateRetry() throws ResourceException {
+        testCreateRetry(APPS_PATTERN, APP_PATTERN);
     }
 
-    public void testDelete() throws ResourceException, MarathonException {
-
-        // Create app
-        appResource.create();
-
-        // Check that the app exists
-        assertExists();
-
-        // Delete app
-        appResource.delete();
-
-        // Check that app doesn't exist anymore
-        assertNotFound();
+    @Test
+    public void testDelete() throws ResourceException {
+        testDelete(APP_PATTERN);
     }
 
-    private App assertExists() throws MarathonException {
-        App app = marathonClient.getApp(appResource.getId()).getApp();
-        assertNotNull(app);
-        return app;
-    }
-
-    private void assertNotFound() {
-        boolean exceptionThrown = false;
-        try {
-            marathonClient.getApp(appResource.getId()).getApp();
-        } catch (MarathonException e) {
-            exceptionThrown = true;
-            assertTrue(e.getMessage().contains("404"));
-        }
-        assertTrue(exceptionThrown);
-    }
-
-    private void removeApp() {
-        try {
-            marathonClient.deleteApp(appResource.getId());
-        } catch (MarathonException e) {
-        }
+    @Test
+    public void testUpdate() throws ResourceException, IOException {
+        testUpdate(APP_PATTERN);
     }
 }
