@@ -15,115 +15,55 @@
  */
 package de.qaware.cloud.deployer.marathon.resource.group;
 
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
+import de.qaware.cloud.deployer.commons.resource.BaseResource;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironment;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironmentUtil;
-import junit.framework.TestCase;
-import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.Group;
-import mesosphere.marathon.client.utils.MarathonException;
+import de.qaware.cloud.deployer.marathon.test.BaseMarathonResourceTest;
+import org.junit.Test;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.IOException;
 
-public class GroupResourceTest extends TestCase {
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-    private static AtomicInteger testCounter = new AtomicInteger(0);
+public class GroupResourceTest extends BaseMarathonResourceTest {
 
-    private GroupResource groupResource;
-    private Marathon marathonClient;
+    private static final String GROUPS_PATH = "/service/marathon/v2/groups";
+    private static final UrlPattern GROUPS_PATTERN = urlEqualTo(GROUPS_PATH);
+    private static final UrlPattern GROUP_PATTERN = urlEqualTo(GROUPS_PATH + "/group-test");
 
     @Override
-    public void setUp() throws Exception {
-        MarathonTestEnvironment testEnvironment = MarathonTestEnvironmentUtil.createTestEnvironment();
-        marathonClient = testEnvironment.getMarathonClient();
-
-        ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String groupDescription = FileUtil.readFileContent("/resource/group/group.json");
-        groupDescription = groupDescription.replace("group-test", "group-test-" + testCounter.getAndIncrement());
-
+    public BaseResource createResource() throws ResourceException, ResourceConfigException {
+        String groupDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/group/group.json");
         MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, groupDescription);
-        groupResource = new GroupResource(resourceConfig, clientFactory);
-
-        removeGroup();
+        return new GroupResource(resourceConfig, clientFactory);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        removeGroup();
+    @Test
+    public void testExists() throws ResourceException {
+        testExists(GROUP_PATTERN);
     }
 
-    public void testExists() throws ResourceException, MarathonException {
-
-        // Check that the group doesn't exist already
-        assertNotFound();
-
-        // Test exists method
-        assertFalse(groupResource.exists());
-
-        // Create group
-        groupResource.create();
-
-        // Check that the group exists
-        assertExists();
-
-        // Test exists method
-        assertTrue(groupResource.exists());
+    @Test
+    public void testCreate() throws ResourceException {
+        testCreate(GROUPS_PATTERN, GROUP_PATTERN);
     }
 
-    public void testCreate() throws ResourceException, InterruptedException, MarathonException {
-
-        // Check that the group doesn't exist already
-        assertNotFound();
-
-        // Create group
-        groupResource.create();
-
-        // Check that the group exists
-        Group group = assertExists();
-
-        // Compare group ids
-        assertEquals(group.getId(), "/" + groupResource.getId());
+    @Test
+    public void testCreateRetry() throws ResourceException {
+        testCreateRetry(GROUPS_PATTERN, GROUP_PATTERN);
     }
 
-    public void testDelete() throws ResourceException, MarathonException, InterruptedException {
-
-        // Create group
-        groupResource.create();
-
-        // Check that the group exists
-        assertExists();
-
-        // Delete group
-        groupResource.delete();
-
-        // Check that group doesn't exist anymore
-        assertNotFound();
+    @Test
+    public void testDelete() throws ResourceException {
+        testDelete(GROUP_PATTERN);
     }
 
-    private Group assertExists() throws MarathonException {
-        Group group = marathonClient.getGroup(groupResource.getId());
-        assertNotNull(group);
-        return group;
-    }
-
-    private void assertNotFound() {
-        boolean exceptionThrown = false;
-        try {
-            marathonClient.getGroup(groupResource.getId());
-        } catch (MarathonException e) {
-            exceptionThrown = true;
-            assertTrue(e.getMessage().contains("404"));
-        }
-        assertTrue(exceptionThrown);
-    }
-
-    private void removeGroup() throws ResourceException {
-        if (groupResource.exists()) {
-            groupResource.delete();
-        }
+    @Test
+    public void testUpdate() throws ResourceException, IOException {
+        testUpdate(GROUP_PATTERN);
     }
 }
