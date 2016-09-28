@@ -49,7 +49,7 @@ public class ReplicationControllerResourceIntegrationTest extends TestCase {
 
         // Create the replication controller resource v1 object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String controllerDescriptionV1 = FileUtil.readFileContent("/replication/controller/replication-controller-v1.yml");
+        String controllerDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resources/replication/controller/replication-controller.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, controllerDescriptionV1);
         replicationControllerResourceV1 = new ReplicationControllerResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
     }

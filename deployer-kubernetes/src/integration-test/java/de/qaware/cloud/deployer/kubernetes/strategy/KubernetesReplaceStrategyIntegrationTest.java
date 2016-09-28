@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-public class KubernetesReplaceStrategyTest extends TestCase {
+public class KubernetesReplaceStrategyIntegrationTest extends TestCase {
 
     private NamespaceResource namespaceResource;
     private KubernetesReplaceStrategy replaceStrategy;
@@ -65,13 +65,13 @@ public class KubernetesReplaceStrategyTest extends TestCase {
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/strategy/replace-strategy-v1.yml").getPath()));
+        filesV1.add(new File(this.getClass().getResource("/de/qaware/cloud/deployer/kubernetes/strategy/replace-strategy-v1.yml").getPath()));
         List<KubernetesResourceConfig> configsV1 = resourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/strategy/replace-strategy-v2.yml").getPath()));
+        filesV2.add(new File(this.getClass().getResource("/de/qaware/cloud/deployer/kubernetes/strategy/replace-strategy-v2.yml").getPath()));
         List<KubernetesResourceConfig> configsV2 = resourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
     }

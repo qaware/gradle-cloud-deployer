@@ -48,12 +48,12 @@ public class ServiceResourceIntegrationTest extends TestCase {
 
         // Create the service resource v1 object
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String serviceDescriptionV1 = FileUtil.readFileContent("/service/service-v1.yml");
+        String serviceDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resources/service/service-v1.yml");
         KubernetesResourceConfig resourceConfigV1 = new KubernetesResourceConfig("test", ContentType.YAML, serviceDescriptionV1);
         serviceResourceV1 = new ServiceResource(namespaceResource.getNamespace(), resourceConfigV1, clientFactory);
 
         // Create the service resource v2 object
-        String serviceDescriptionV2 = FileUtil.readFileContent("/service/service-v2.yml");
+        String serviceDescriptionV2 = FileUtil.readFileContent("/de/qaware/cloud/deployer/kubernetes/resources/service/service-v2.yml");
         KubernetesResourceConfig resourceConfigV2 = new KubernetesResourceConfig("test", ContentType.YAML, serviceDescriptionV2);
         serviceResourceV2 = new ServiceResource(namespaceResource.getNamespace(), resourceConfigV2, clientFactory);
     }

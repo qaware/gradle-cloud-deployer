@@ -7,5 +7,6 @@ dependencies {
     compile project(':deployer-commons')
 
     testCompile project (path: ':deployer-commons', configuration: 'tests')
-    testCompile 'io.fabric8:kubernetes-client:1.4.4'
+
+    integrationTestCompile 'io.fabric8:kubernetes-client:1.4.4'
 }

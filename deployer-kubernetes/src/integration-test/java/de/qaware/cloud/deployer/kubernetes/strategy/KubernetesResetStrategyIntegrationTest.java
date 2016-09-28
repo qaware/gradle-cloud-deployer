@@ -40,7 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KubernetesResetStrategyTest extends TestCase {
+public class KubernetesResetStrategyIntegrationTest extends TestCase {
 
     private NamespaceResource namespaceResource;
     private KubernetesResetStrategy resetStrategy;
@@ -67,19 +67,19 @@ public class KubernetesResetStrategyTest extends TestCase {
 
         // Create the resources for v1
         List<File> filesV1 = new ArrayList<>();
-        filesV1.add(new File(this.getClass().getResource("/strategy/reset-strategy-v1.yml").getPath()));
+        filesV1.add(new File(this.getClass().getResource("/de/qaware/cloud/deployer/kubernetes/strategy/reset-strategy-v1.yml").getPath()));
         List<KubernetesResourceConfig> configsV1 = resourceConfigFactory.createConfigs(filesV1);
         resourcesV1 = factory.createResources(configsV1);
 
         // Create the resources for v2
         List<File> filesV2 = new ArrayList<>();
-        filesV2.add(new File(this.getClass().getResource("/strategy/reset-strategy-v2.yml").getPath()));
+        filesV2.add(new File(this.getClass().getResource("/de/qaware/cloud/deployer/kubernetes/strategy/reset-strategy-v2.yml").getPath()));
         List<KubernetesResourceConfig> configsV2 = resourceConfigFactory.createConfigs(filesV2);
         resourcesV2 = factory.createResources(configsV2);
 
         // Create the resources for v3
         List<File> filesV3 = new ArrayList<>();
-        filesV3.add(new File(this.getClass().getResource("/strategy/reset-strategy-v3.yml").getPath()));
+        filesV3.add(new File(this.getClass().getResource("/de/qaware/cloud/deployer/kubernetes/strategy/reset-strategy-v3.yml").getPath()));
         List<KubernetesResourceConfig> configsV3 = resourceConfigFactory.createConfigs(filesV3);
         resourcesV3 = factory.createResources(configsV3);
     }
