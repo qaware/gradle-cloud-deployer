@@ -50,7 +50,7 @@ public class KubernetesReplaceStrategyTest extends BaseKubernetesStrategyTest {
     }
 
     @Test
-    public void testDeployWithExistingNamespace() throws ResourceException {
+    public void testDeployWithExistingNamespaceAndNotExistingResources() throws ResourceException {
         // Tune resources - namespace exists already
         when(namespaceResource.exists()).thenReturn(true);
 
@@ -109,7 +109,7 @@ public class KubernetesReplaceStrategyTest extends BaseKubernetesStrategyTest {
     }
 
     @Test
-    public void testDeleteWithNotExistingNamespace() throws ResourceException {
+    public void testDeleteWithNotExistingResources() throws ResourceException {
         // Delete
         KubernetesReplaceStrategy strategy = new KubernetesReplaceStrategy();
         strategy.delete(namespaceResource, resources);
