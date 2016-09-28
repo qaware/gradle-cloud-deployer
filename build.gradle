@@ -78,10 +78,6 @@ subprojects {
         ignoreFailures = true
     }
 
-    tasks.withType(Test) {
-        reports.html.destination = file("${reporting.baseDir}/${name}")
-    }
-
     task testJar(type: Jar, dependsOn: testClasses) {
         baseName = "test-${project.archivesBaseName}"
         from sourceSets.test.output
@@ -97,12 +93,5 @@ subprojects {
 
     testSets {
         integrationTest { dirName = 'integration-test' }
-    }
-
-    sonarqube {
-        properties {
-            property "sonar.jacoco.reportPath", "${reporting.baseDir}/jacoco/integrationTest.exec"
-            property "sonar.jacoco.itReportPath", "${reporting.baseDir}/jacoco/test.exec"
-        }
     }
 }
