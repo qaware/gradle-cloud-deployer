@@ -20,93 +20,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
-import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.BaseResource;
-import de.qaware.cloud.deployer.commons.resource.ClientFactory;
-import de.qaware.cloud.deployer.commons.strategy.Strategy;
+import de.qaware.cloud.deployer.commons.test.BaseResourceTest;
 import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOptions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public abstract class BaseKubernetesResourceTest {
+public abstract class BaseKubernetesResourceTest extends BaseResourceTest {
 
     protected static final String NAMESPACE = "test";
-    private static final String SERVER_ADDRESS = "http://localhost";
-
-    @ClassRule
-    public static WireMockClassRule wireMockRule = new WireMockClassRule(WireMockConfiguration.options().dynamicPort());
-
-    @Rule
-    public WireMockClassRule instanceRule = wireMockRule;
-
-    protected BaseResource resource;
-
-    protected EnvironmentConfig environmentConfig;
-
-    protected ClientFactory clientFactory;
-
-    public abstract BaseResource createResource() throws ResourceException, ResourceConfigException;
-
-    @Before
-    public void setup() throws ResourceException, ResourceConfigException {
-        // Create test environment
-        environmentConfig = new EnvironmentConfig(NAMESPACE, SERVER_ADDRESS + ":" + instanceRule.port(), Strategy.REPLACE);
-        environmentConfig.setAuthConfig(new AuthConfig());
-        environmentConfig.setSslConfig(new SSLConfig());
-        clientFactory = new ClientFactory(environmentConfig);
-
-        // Create resource
-        resource = createResource();
-    }
-
-    @After
-    public void reset() {
-        instanceRule.resetMappings();
-        instanceRule.resetScenarios();
-    }
-
-    protected void testExists(UrlPattern instancePattern) throws ResourceException {
-        String scenarioName = "testExists";
-
-        // Doesn't exist
-        instanceRule.stubFor(get(instancePattern)
-                .inScenario(scenarioName)
-                .whenScenarioStateIs(STARTED)
-                .willReturn(aResponse().withStatus(404))
-                .willSetStateTo("existsTrue"));
-
-        // Check exists
-        assertFalse(resource.exists());
-
-        // Exists
-        instanceRule.stubFor(get(instancePattern)
-                .inScenario(scenarioName)
-                .whenScenarioStateIs("existsTrue")
-                .willReturn(aResponse().withStatus(200)));
-
-        // Check exists
-        assertTrue(resource.exists());
-
-        // Verify calls
-        instanceRule.verify(2, getRequestedFor(instancePattern));
-    }
 
     protected void testCreate(UrlPattern creationPattern, UrlPattern instancePattern) throws ResourceException {
         String scenarioName = "testCreate";
