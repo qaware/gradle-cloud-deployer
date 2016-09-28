@@ -28,8 +28,6 @@ import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;
 import de.qaware.cloud.deployer.marathon.resource.app.AppResource;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import de.qaware.cloud.deployer.marathon.resource.group.GroupResource;
-import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironmentUtil;
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -37,22 +35,18 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MarathonResourceFactoryTest {
 
-    private EnvironmentConfig environmentConfig;
-
     @ClassRule
     public static WireMockClassRule wireMockRule = new WireMockClassRule(WireMockConfiguration.options().dynamicPort());
-
     @Rule
     public WireMockClassRule instanceRule = wireMockRule;
+    private EnvironmentConfig environmentConfig;
 
     @Before
     public void setUp() throws ResourceConfigException, ResourceException, EnvironmentConfigException, IOException {
