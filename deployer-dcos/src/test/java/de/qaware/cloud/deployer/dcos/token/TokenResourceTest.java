@@ -15,48 +15,44 @@
  */
 package de.qaware.cloud.deployer.dcos.token;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.strategy.Strategy;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static de.qaware.cloud.deployer.dcos.logging.DcosMessageBundle.DCOS_MESSAGE_BUNDLE;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class TokenResourceTest {
 
     private static final String SERVER_ADDRESS = "http://localhost";
     private static final String OPEN_ID_TOKEN = "validToken";
     private static final String AUTHENTICATION_TOKEN = "tokenResponse";
+    private static final UrlPattern TOKEN_PATTERN = urlEqualTo("/acs/api/v1/auth/login");
 
-    private static WireMockServer wireMockServer;
+    @ClassRule
+    public static WireMockClassRule wireMockRule = new WireMockClassRule(WireMockConfiguration.options().dynamicPort());
+
+    @Rule
+    public WireMockClassRule instanceRule = wireMockRule;
 
     private EnvironmentConfig environmentConfig;
-
-    @BeforeClass
-    public static void setUpClass() {
-        wireMockServer = new WireMockServer(options().dynamicPort());
-        wireMockServer.start();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        wireMockServer.shutdown();
-    }
 
     @Before
     public void setUp() {
         environmentConfig = createEnvironmentConfig();
+    }
+
+    @After
+    public void reset() {
+        instanceRule.resetMappings();
     }
 
     @Test
@@ -70,12 +66,17 @@ public class TokenResourceTest {
 
     @Test
     public void testRetrieveAuthenticationTokenWithInvalidToken() throws ResourceException {
-        String invalidToken = OPEN_ID_TOKEN.substring(0, OPEN_ID_TOKEN.length() - 1);
+        instanceRule.stubFor(post(TOKEN_PATTERN)
+                .willReturn(aResponse().withStatus(401)));
+
         assertExceptionOnRetrieveAuthenticationToken(
                 environmentConfig,
-                invalidToken,
+                OPEN_ID_TOKEN,
                 DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN")
         );
+
+        verify(1, postRequestedFor(TOKEN_PATTERN));
+        verify(postRequestedFor(TOKEN_PATTERN).withRequestBody(equalTo("{\"token\":\"" + OPEN_ID_TOKEN + "\"}")));
     }
 
     @Test
@@ -97,10 +98,19 @@ public class TokenResourceTest {
 
     @Test
     public void testRetrieveAuthenticationToken() throws ResourceException, EnvironmentConfigException {
+        instanceRule.stubFor(post(urlEqualTo("/acs/api/v1/auth/login"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("{\"token\":\"tokenResponse\"}"))
+        );
+
         TokenResource tokenResource = new TokenResource(environmentConfig);
         String authenticationToken = tokenResource.retrieveAuthenticationToken(OPEN_ID_TOKEN);
         assertFalse(authenticationToken.isEmpty());
         assertEquals(AUTHENTICATION_TOKEN, authenticationToken);
+
+        verify(1, postRequestedFor(TOKEN_PATTERN));
+        verify(postRequestedFor(TOKEN_PATTERN).withRequestBody(equalTo("{\"token\":\"" + OPEN_ID_TOKEN + "\"}")));
     }
 
     private void assertExceptionOnRetrieveAuthenticationToken(EnvironmentConfig environmentConfig,
@@ -118,7 +128,7 @@ public class TokenResourceTest {
     }
 
     private EnvironmentConfig createEnvironmentConfig() {
-        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", SERVER_ADDRESS + ":" + wireMockServer.port(), Strategy.REPLACE);
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", SERVER_ADDRESS + ":" + instanceRule.port(), Strategy.REPLACE);
         environmentConfig.setSslConfig(new SSLConfig());
         environmentConfig.setAuthConfig(new AuthConfig());
         return environmentConfig;
