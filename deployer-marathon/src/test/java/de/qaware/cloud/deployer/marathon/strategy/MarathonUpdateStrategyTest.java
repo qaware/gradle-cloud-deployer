@@ -16,34 +16,14 @@
 package de.qaware.cloud.deployer.marathon.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.marathon.resource.app.AppResource;
-import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
-import de.qaware.cloud.deployer.marathon.resource.group.GroupResource;
-import junit.framework.TestCase;
-import org.junit.Before;
-
-import java.util.ArrayList;
-import java.util.List;
+import de.qaware.cloud.deployer.marathon.test.BaseMarathonStrategyTest;
+import org.junit.Test;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
-public class MarathonUpdateStrategyTest extends TestCase {
+public class MarathonUpdateStrategyTest extends BaseMarathonStrategyTest {
 
-    private AppResource appResource;
-    private GroupResource groupResource;
-    private List<MarathonResource> resources;
-
-    @Before
-    public void setUp() throws Exception {
-        appResource = mock(AppResource.class);
-        groupResource = mock(GroupResource.class);
-
-        resources = new ArrayList<>();
-        resources.add(appResource);
-        resources.add(groupResource);
-    }
-
+    @Test
     public void testDeployWithNotExistingResources() throws ResourceException {
         // Update
         MarathonUpdateStrategy updateStrategy = new MarathonUpdateStrategy();
@@ -62,6 +42,7 @@ public class MarathonUpdateStrategyTest extends TestCase {
         verify(groupResource, times(0)).delete();
     }
 
+    @Test
     public void testDeployWithExistingResources() throws ResourceException {
         // Tune resources - all exist already
         when(appResource.exists()).thenReturn(true);
@@ -84,6 +65,7 @@ public class MarathonUpdateStrategyTest extends TestCase {
         verify(groupResource, times(0)).delete();
     }
 
+    @Test
     public void testDeployWithExistingAndNotExistingResources() throws ResourceException {
         // Tune resources - app exists already
         when(appResource.exists()).thenReturn(true);
@@ -103,5 +85,49 @@ public class MarathonUpdateStrategyTest extends TestCase {
         verify(groupResource, times(0)).update();
         verify(groupResource, times(1)).exists();
         verify(groupResource, times(0)).delete();
+    }
+
+    @Test
+    public void testDeleteWithNotExistingResources() throws ResourceException {
+        // Delete
+        MarathonUpdateStrategy strategy = new MarathonUpdateStrategy();
+        strategy.delete(resources);
+
+        // Verify
+        // Ignore the app
+        verify(appResource, times(0)).create();
+        verify(appResource, times(0)).update();
+        verify(appResource, times(1)).exists();
+        verify(appResource, times(0)).delete();
+
+        // Ignore the group
+        verify(groupResource, times(0)).create();
+        verify(groupResource, times(0)).update();
+        verify(groupResource, times(1)).exists();
+        verify(groupResource, times(0)).delete();
+    }
+
+    @Test
+    public void testDeleteWithExistingResources() throws ResourceException {
+        // Tune resources
+        when(appResource.exists()).thenReturn(true);
+        when(groupResource.exists()).thenReturn(true);
+
+        // Delete
+        MarathonUpdateStrategy strategy = new MarathonUpdateStrategy();
+        strategy.delete(resources);
+
+        // Verify
+        // Delete the app
+        verify(appResource, times(0)).create();
+        verify(appResource, times(0)).update();
+        verify(appResource, times(1)).exists();
+        verify(appResource, times(1)).delete();
+
+        // Delete the group
+        verify(groupResource, times(0)).create();
+        verify(groupResource, times(0)).update();
+        verify(groupResource, times(1)).exists();
+        verify(groupResource, times(1)).delete();
     }
 }
