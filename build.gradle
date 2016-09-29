@@ -18,6 +18,12 @@ buildscript {
 
 apply plugin: 'org.sonarqube'
 
+sonarqube {
+    properties {
+        property "sonar.java.coveragePlugin", "jacoco"
+    }
+}
+
 allprojects {
     group = 'de.qaware.cloud.deployer'
     version = '1.0.0'
@@ -97,9 +103,8 @@ subprojects {
 
     sonarqube {
         properties {
-            property "sonar.jacoco.itReportPath", "${reporting.baseDir}/jacoco/integrationTest.exec"
-            property "sonar.jacoco.reportPath", "${reporting.baseDir}/jacoco/test.exec"
-            property "sonar.java.coveragePlugin", "jacoco"
+            property "sonar.jacoco.itReportPath", "${buildDir}/jacoco/integrationTest.exec"
+            property "sonar.jacoco.reportPath", "${buildDir}/jacoco/test.exec"
         }
     }
 }
