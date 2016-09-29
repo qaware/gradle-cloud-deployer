@@ -37,16 +37,16 @@ public class TokenResourceIntegrationTest extends TestCase {
         this.authToken = DcosTestEnvironmentUtil.getToken();
     }
 
-    public void testRetrieveApiTokenWithEmptyToken() throws ResourceException {
+    public void testRetrieveAuthenticationTokenWithEmptyToken() throws ResourceException {
         assertException(environmentConfig, "", DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));
     }
 
-    public void testRetrieveApiTokenWithInvalidToken() throws ResourceException {
+    public void testRetrieveAuthenticationTokenWithInvalidToken() throws ResourceException {
         String invalidToken = authToken.substring(0, authToken.length() - 2);
         assertException(environmentConfig, invalidToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
     }
 
-    public void testRetrieveApiTokenInvalidAddress() throws ResourceException {
+    public void testRetrieveAuthenticationTokenInvalidAddress() throws ResourceException {
         EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getStrategy());
         assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
 
@@ -54,7 +54,7 @@ public class TokenResourceIntegrationTest extends TestCase {
         assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
     }
 
-    public void testRetrieveApiToken() throws ResourceException, EnvironmentConfigException {
+    public void testRetrieveAuthenticationToken() throws ResourceException, EnvironmentConfigException {
         TokenResource tokenResource = new TokenResource(environmentConfig);
         String token = tokenResource.retrieveAuthenticationToken(authToken);
         assertFalse(token.isEmpty());
