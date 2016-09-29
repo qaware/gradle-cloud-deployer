@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.namespace;
 
-import de.qaware.cloud.deployer.commons.config.resource.ContentTreeUtil;
+import de.qaware.cloud.deployer.commons.config.util.ContentTreeUtil;
 import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.kubernetes.config.resource.KubernetesResourceConfig;
