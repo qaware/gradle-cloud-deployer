@@ -74,7 +74,7 @@ subprojects {
         }
     }
 
-    test {
+    tasks.withType(Test) {
         ignoreFailures = true
     }
 
@@ -93,5 +93,12 @@ subprojects {
 
     testSets {
         integrationTest { dirName = 'integration-test' }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.jacoco.itReportPath", "${reporting.baseDir}/jacoco/integrationTest.exec"
+            property "sonar.jacoco.reportPath", "${reporting.baseDir}/jacoco/test.exec"
+        }
     }
 }
