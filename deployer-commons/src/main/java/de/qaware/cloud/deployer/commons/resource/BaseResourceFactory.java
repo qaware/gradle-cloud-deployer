@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.commons.resource;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.config.resource.BaseResourceConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import org.slf4j.Logger;

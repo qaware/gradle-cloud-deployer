@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon.strategy;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.Resource;
 import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfig;

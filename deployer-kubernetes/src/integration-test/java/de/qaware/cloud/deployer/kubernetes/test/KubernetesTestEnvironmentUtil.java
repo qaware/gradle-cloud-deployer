@@ -15,9 +15,9 @@
  */
 package de.qaware.cloud.deployer.kubernetes.test;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.SSLConfig;
+import de.qaware.cloud.deployer.commons.config.environment.AuthConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.SSLConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;

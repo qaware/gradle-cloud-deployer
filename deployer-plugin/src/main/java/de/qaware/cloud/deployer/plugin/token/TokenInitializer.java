@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.plugin.token;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 
 /**

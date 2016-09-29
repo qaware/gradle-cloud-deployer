@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.ping;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.resource.BasePingResource;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;

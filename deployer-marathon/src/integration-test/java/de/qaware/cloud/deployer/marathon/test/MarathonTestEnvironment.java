@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.marathon.test;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.resource.ClientFactory;
 import de.qaware.cloud.deployer.commons.test.TestEnvironment;
 import mesosphere.marathon.client.Marathon;

@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.plugin.environment;
 
 import de.qaware.cloud.deployer.commons.Deployer;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.kubernetes.KubernetesDeployer;
 import de.qaware.cloud.deployer.kubernetes.config.cloud.KubernetesEnvironmentConfig;

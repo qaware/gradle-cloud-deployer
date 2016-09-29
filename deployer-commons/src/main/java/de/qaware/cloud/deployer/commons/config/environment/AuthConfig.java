@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.qaware.cloud.deployer.commons.config.cloud;
+package de.qaware.cloud.deployer.commons.config.environment;
 
 /**
  * Represents the authorization configuration for a cloud.

@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.kubernetes.config.cloud;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.strategy.Strategy;
 
 /**

@@ -15,7 +15,7 @@
  */
 package de.qaware.cloud.deployer.commons;
 
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 
 /**
  * The base implementation of a deployer.

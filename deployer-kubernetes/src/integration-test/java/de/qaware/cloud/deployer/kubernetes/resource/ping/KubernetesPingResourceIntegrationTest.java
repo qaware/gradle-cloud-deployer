@@ -15,8 +15,8 @@
  */
 package de.qaware.cloud.deployer.kubernetes.resource.ping;
 
-import de.qaware.cloud.deployer.commons.config.cloud.AuthConfig;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.AuthConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironment;
 import de.qaware.cloud.deployer.kubernetes.test.KubernetesTestEnvironmentUtil;

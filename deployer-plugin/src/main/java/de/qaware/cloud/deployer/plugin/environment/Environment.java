@@ -16,7 +16,7 @@
 package de.qaware.cloud.deployer.plugin.environment;
 
 import de.qaware.cloud.deployer.commons.Deployer;
-import de.qaware.cloud.deployer.commons.config.cloud.EnvironmentConfig;
+import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
 
 import java.io.File;
 import java.util.List;
