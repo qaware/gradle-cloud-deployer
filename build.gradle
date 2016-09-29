@@ -99,6 +99,7 @@ subprojects {
         properties {
             property "sonar.jacoco.itReportPath", "${reporting.baseDir}/jacoco/integrationTest.exec"
             property "sonar.jacoco.reportPath", "${reporting.baseDir}/jacoco/test.exec"
+            property "sonar.java.coveragePlugin", "jacoco"
         }
     }
 }
