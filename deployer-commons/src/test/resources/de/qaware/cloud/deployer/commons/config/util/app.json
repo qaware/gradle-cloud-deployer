@@ -1,0 +1,6 @@
+{
+  "id": "zwitscher-eureka",
+  "container": {
+    "type": "DOCKER"
+  }
+}

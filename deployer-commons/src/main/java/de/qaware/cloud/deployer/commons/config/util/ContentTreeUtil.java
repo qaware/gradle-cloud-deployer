@@ -45,16 +45,17 @@ public final class ContentTreeUtil {
      * @param contentType The type of the content (json, yaml, ...)
      * @param content     The content.
      * @return The object tree.
-     * @throws ResourceConfigException If the content type isn't supported.
+     * @throws ResourceConfigException If the content type isn't supported or an error during parsing occurs.
      */
     public static JsonNode createObjectTree(ContentType contentType, String content) throws ResourceConfigException {
+        if (content == null || content.isEmpty()) {
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_EMPTY_CONTENT"));
+        }
         try {
             ObjectMapper objectMapper = retrieveObjectMapper(contentType);
             return objectMapper.readTree(content);
-        } catch (JsonProcessingException ex) {
-            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_PARSING"), ex);
         } catch (IOException ex) {
-            throw new ResourceConfigException(ex.getMessage(), ex);
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_PARSING"), ex);
         }
     }
 
@@ -84,7 +85,12 @@ public final class ContentTreeUtil {
      */
     public static String readStringValue(JsonNode contentObjectTree, String key) throws ResourceConfigException {
         if (contentObjectTree.hasNonNull(key)) {
-            return contentObjectTree.get(key).textValue();
+            JsonNode jsonNode = contentObjectTree.get(key);
+            if (jsonNode.isTextual()) {
+                return jsonNode.textValue();
+            } else {
+                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_STRING_VALUE", key));
+            }
         } else {
             throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_READING_NODE_VALUE", key));
         }
@@ -97,7 +103,12 @@ public final class ContentTreeUtil {
      * @param fieldName         The name of the field.
      * @param value             The value of the field.
      */
-    public static void addField(JsonNode contentObjectTree, String fieldName, String value) {
+    public static void addField(JsonNode contentObjectTree, String fieldName, String value) throws ResourceConfigException {
+        if (contentObjectTree == null) {
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_EMPTY_CONTENT"));
+        } else if(fieldName == null || fieldName.isEmpty() || value == null || value.isEmpty()) {
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_FIELD_ADDING"));
+        }
         ObjectNode objectNode = (ObjectNode) contentObjectTree;
         objectNode.put(fieldName, value);
     }
