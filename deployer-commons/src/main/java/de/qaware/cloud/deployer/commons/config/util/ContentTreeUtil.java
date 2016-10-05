@@ -102,6 +102,7 @@ public final class ContentTreeUtil {
      * @param contentObjectTree The object tree which will contain the new field.
      * @param fieldName         The name of the field.
      * @param value             The value of the field.
+     * @throws ResourceConfigException If the object tree or the field name or the value is null/empty.
      */
     public static void addField(JsonNode contentObjectTree, String fieldName, String value) throws ResourceConfigException {
         if (contentObjectTree == null) {
