@@ -20,7 +20,10 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
+
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 
 /**
  * Offers functionality to read the content of a file into a string.
@@ -38,7 +41,12 @@ public final class FileUtil {
      * @throws ResourceConfigException If a problem with the file occurs.
      */
     public static String readFileContent(String filename) throws ResourceConfigException {
-        return readFileContent(new File(FileUtil.class.getResource(filename).getPath()));
+        URL filepath = FileUtil.class.getResource(filename);
+        if (filepath == null) {
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_MISSING_FILE", filename));
+        }
+        File file = new File(filepath.getPath());
+        return readFileContent(file);
     }
 
     /**
