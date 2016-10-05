@@ -23,6 +23,8 @@ import org.junit.Test;
 import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ContentTreeUtilTest {
 
@@ -142,6 +144,20 @@ public class ContentTreeUtilTest {
         JsonNode objectTree = getJsonTree();
         String objectTreeAsString = ContentTreeUtil.writeAsString(ContentType.JSON, objectTree);
         assertEquals(correctString, objectTreeAsString);
+    }
+
+    @Test
+    public void testWriteAsStringWithInvalidObject() throws ResourceConfigException {
+        Object object = mock(Object.class);
+        String message = COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_DURING_CONTENT_WRITING");
+        boolean exceptionThrown = false;
+        try {
+            ContentTreeUtil.writeAsString(ContentType.JSON, object);
+        } catch (ResourceConfigException e) {
+            exceptionThrown = true;
+            assertEquals(message, e.getMessage());
+        }
+        assertTrue(exceptionThrown);
     }
 
     private void testJsonNode(JsonNode objectTree) {
