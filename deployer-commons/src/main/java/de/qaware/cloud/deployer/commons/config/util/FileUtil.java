@@ -61,6 +61,11 @@ public final class FileUtil {
      */
     public static String readFileContent(File file) throws ResourceConfigException {
         try {
+            if (file == null) {
+                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_INVALID_FILENAME"));
+            } else if (!file.exists()) {
+                throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_MISSING_FILE", file.getName()));
+            }
             return FileUtils.readFileToString(file, Charset.defaultCharset()).trim();
         } catch (IOException e) {
             throw new ResourceConfigException(e.getMessage(), e);
