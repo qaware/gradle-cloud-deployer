@@ -15,7 +15,6 @@
  */
 package de.qaware.cloud.deployer.commons.logging;
 
-import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 /**
@@ -57,6 +56,6 @@ public class DeployerMessageBundle {
      */
     public String getMessage(String id, Object... values) {
         String message = getMessage(id);
-        return MessageFormat.format(message, values);
+        return String.format(message, values);
     }
 }
