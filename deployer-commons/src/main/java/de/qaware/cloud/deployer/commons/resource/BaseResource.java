@@ -43,7 +43,7 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
      * The timeout defines the maximum duration of a backend operation in seconds. If it takes longer to execute the
      * operation a error will be thrown.
      */
-    private static final int TIMEOUT = 300;
+    private static final double TIMEOUT = 300;
 
     /**
      * The time in seconds between two requests to check if the backend operation finished.

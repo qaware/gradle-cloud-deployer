@@ -18,8 +18,8 @@ package de.qaware.cloud.deployer.commons.resource;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 
 /**
- * Blocks for specified amount of time and throws an exception if the maximum duration is exceeded. It's intended to
- * be called in a loop.
+ * Blocks for specified amount of time and throws an exception if the maximum duration is exceeded. It's block method is
+ * intended to be called in a loop.
  */
 class Blocker {
 
@@ -35,8 +35,8 @@ class Blocker {
      * @param blockTime     The time in seconds this blocker blocks when the block function is called.
      * @param errorMessage The error message which will be used in the exception if the maximum duration is exceeded.
      */
-    Blocker(int timeout, double blockTime, String errorMessage) {
-        this.timeout = timeout * 1000;
+    Blocker(double timeout, double blockTime, String errorMessage) {
+        this.timeout = (int) timeout * 1000;
         this.blockTime = (int) (blockTime * 1000);
         this.errorMessage = errorMessage;
     }
