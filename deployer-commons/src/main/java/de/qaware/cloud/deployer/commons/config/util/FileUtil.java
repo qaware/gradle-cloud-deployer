@@ -41,6 +41,9 @@ public final class FileUtil {
      * @throws ResourceConfigException If a problem with the file occurs.
      */
     public static String readFileContent(String filename) throws ResourceConfigException {
+        if (filename == null || filename.isEmpty()) {
+            throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_INVALID_FILENAME"));
+        }
         URL filepath = FileUtil.class.getResource(filename);
         if (filepath == null) {
             throw new ResourceConfigException(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_MISSING_FILE", filename));
