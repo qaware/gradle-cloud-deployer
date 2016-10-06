@@ -272,12 +272,12 @@ public class ClientFactory {
      */
     private InputStream createCertInputStream(String certData) {
         ByteString decoded = ByteString.decodeBase64(certData);
-        byte[] bytes1;
+        byte[] bytes;
         if (decoded != null) {
-            bytes1 = decoded.toByteArray();
+            bytes = decoded.toByteArray();
         } else {
-            bytes1 = certData.getBytes();
+            bytes = certData.getBytes();
         }
-        return new ByteArrayInputStream(bytes1);
+        return new ByteArrayInputStream(bytes);
     }
 }
