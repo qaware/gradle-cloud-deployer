@@ -16,33 +16,15 @@
 package de.qaware.cloud.deployer.commons.strategy;
 
 import de.qaware.cloud.deployer.commons.error.ResourceException;
-import de.qaware.cloud.deployer.commons.resource.Resource;
-import org.junit.Before;
+import de.qaware.cloud.deployer.commons.test.BaseStrategyTest;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 /**
  * @author sjahreis
  */
-public class BaseDeletionStrategyTest {
-
-    private List<Resource> resources;
-    private Resource resource1;
-    private Resource resource2;
-
-    @Before
-    public void setup() {
-        resource1 = mock(Resource.class);
-        resource2 = mock(Resource.class);
-
-        resources = new ArrayList<>();
-        resources.add(resource1);
-        resources.add(resource2);
-    }
+public class BaseDeletionStrategyTest extends BaseStrategyTest {
 
     @Test
     public void testDeleteExistingResources() throws ResourceException {
