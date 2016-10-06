@@ -126,7 +126,7 @@ public class ClientFactory {
      * Adds ssl configuration as specified in the config to the builder, if existing.
      *
      * @param environmentConfig The config which specifies how to configure ssl.
-     * @param builder     The builder which will be configured.
+     * @param builder           The builder which will be configured.
      * @throws ResourceException If an error during trust manager creation occurs.
      */
     private void addSSLConfig(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) throws ResourceException {
@@ -150,7 +150,7 @@ public class ClientFactory {
      * Adds a credentials header using the credentials in the config to the builder, if existing.
      *
      * @param environmentConfig The config which specifies the credentials.
-     * @param builder     The builder which will be configured.
+     * @param builder           The builder which will be configured.
      */
     private void addCredentials(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) {
         AuthConfig authConfig = environmentConfig.getAuthConfig();
@@ -176,7 +176,7 @@ public class ClientFactory {
      * Adds a token header using the token specified in the config to the builder, if existing.
      *
      * @param environmentConfig The config which specifies the token.
-     * @param builder     The builder which will be configured.
+     * @param builder           The builder which will be configured.
      */
     private void addToken(EnvironmentConfig environmentConfig, OkHttpClient.Builder builder) {
         AuthConfig authConfig = environmentConfig.getAuthConfig();
