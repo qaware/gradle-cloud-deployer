@@ -41,7 +41,10 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author sjahreis
@@ -155,6 +158,39 @@ public class ClientFactoryTest {
         clientFactoryTestService.test().execute();
 
         wireMockRule.verify(1, getRequestedFor(TEST_PATTERN));
+    }
+
+    @Test(expected = ResourceException.class)
+    public void testClientFactoryWithTrustOneInvalidSSLConfig() throws ResourceException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", HTTPS_BASE_URL + ":" + wireMockRule.httpsPort(), Strategy.REPLACE);
+        environmentConfig.setSslConfig(new SSLConfig(getKey().substring(0, 10)));
+        new ClientFactory(environmentConfig);
+    }
+
+    @Test
+    public void testClientFactoryWithEmptyBaseUrl() {
+        boolean exceptionThrown = false;
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", "", Strategy.REPLACE);
+        try {
+            new ClientFactory(environmentConfig);
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_NO_URL_SPECIFIED"), e.getMessage());
+        }
+        assertTrue(exceptionThrown);
+    }
+
+    @Test
+    public void testClientFactoryWithNullBaseUrl() {
+        boolean exceptionThrown = false;
+        EnvironmentConfig environmentConfig = new EnvironmentConfig("test", null, Strategy.REPLACE);
+        try {
+            new ClientFactory(environmentConfig);
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_ERROR_NO_URL_SPECIFIED"), e.getMessage());
+        }
+        assertTrue(exceptionThrown);
     }
 
     private String getKey() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
