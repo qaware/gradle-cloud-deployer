@@ -109,10 +109,10 @@ public abstract class BaseResource<ConfigType extends BaseResourceConfig> implem
     }
 
     /**
-     * Executes a call and interprets the answer.
+     * Executes a call and interprets the answer. It returns when the answer signals success.
      *
      * @param call The call which will be executed.
-     * @throws ResourceException If the response contains a unhandled status code.
+     * @throws ResourceException If the response contains a unhandled or negative status code.
      */
     protected void executeCall(Call<ResponseBody> call) throws ResourceException {
         try {
