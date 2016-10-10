@@ -69,6 +69,8 @@ public class SSLExtension {
      * Sets a custom certificate which will be trust from the specified file.
      *
      * @param certificateFile The file which contains the certificate.
+     * @throws ResourceConfigException    If an error during file reading occurs.
+     * @throws EnvironmentConfigException If the file is empty.
      */
     public void setCertificate(File certificateFile) throws ResourceConfigException, EnvironmentConfigException {
         String fileContent = FileUtil.readFileContent(certificateFile);
