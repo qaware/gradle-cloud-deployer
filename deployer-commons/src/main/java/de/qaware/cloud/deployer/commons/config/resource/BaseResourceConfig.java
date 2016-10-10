@@ -15,6 +15,8 @@
  */
 package de.qaware.cloud.deployer.commons.config.resource;
 
+import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+
 /**
  * Represents a basic resource config which contains common fields independent of the target cloud system.
  */
@@ -109,6 +111,6 @@ public abstract class BaseResourceConfig {
 
     @Override
     public String toString() {
-        return "Config: " + getResourceId() + " (File: " + filename + ")";
+        return COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_CONFIG", getResourceId(), getFilename());
     }
 }

@@ -23,6 +23,8 @@ import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOpt
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Represents a kubernetes namespace. It offers methods for deletion and creation.
  */
@@ -64,6 +66,6 @@ public class NamespaceResource extends KubernetesResource {
 
     @Override
     public String toString() {
-        return "Namespace: " + getNamespace();
+        return KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_NAMESPACE", getNamespace());
     }
 }

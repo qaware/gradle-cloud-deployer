@@ -23,6 +23,8 @@ import de.qaware.cloud.deployer.kubernetes.resource.api.delete.options.DeleteOpt
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Represents a kubernetes pod. It offers methods for deletion and creation.
  */
@@ -65,6 +67,6 @@ public class PodResource extends KubernetesResource {
 
     @Override
     public String toString() {
-        return "Pod: " + getNamespace() + "/" + getId();
+        return KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_POD", getNamespace(), getId());
     }
 }

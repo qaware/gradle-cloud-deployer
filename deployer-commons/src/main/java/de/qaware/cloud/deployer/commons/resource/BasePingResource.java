@@ -69,6 +69,6 @@ public abstract class BasePingResource {
 
     @Override
     public String toString() {
-        return "Ping: " + environmentId;
+        return COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_PING", environmentId);
     }
 }

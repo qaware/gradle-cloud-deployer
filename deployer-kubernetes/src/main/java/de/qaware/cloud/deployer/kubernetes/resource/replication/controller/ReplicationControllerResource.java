@@ -24,6 +24,8 @@ import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Represents a kubernetes replication controller. It offers methods for deletion and creation.
  */
@@ -82,6 +84,6 @@ public class ReplicationControllerResource extends KubernetesResource {
 
     @Override
     public String toString() {
-        return "ReplicationController: " + getNamespace() + "/" + getId();
+        return KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_REPLICATION_CONTROLLER", getNamespace(), getId());
     }
 }

@@ -24,6 +24,8 @@ import de.qaware.cloud.deployer.kubernetes.resource.api.scale.Scale;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+import static de.qaware.cloud.deployer.kubernetes.logging.KubernetesMessageBundle.KUBERNETES_MESSAGE_BUNDLE;
+
 /**
  * Represents a kubernetes deployment. It offers methods for deletion and creation.
  */
@@ -109,7 +111,7 @@ public class DeploymentResource extends KubernetesResource {
 
     @Override
     public String toString() {
-        return "Deployment: " + getNamespace() + "/" + getId();
+        return KUBERNETES_MESSAGE_BUNDLE.getMessage("DEPLOYER_KUBERNETES_MESSAGE_DEPLOYMENT", getNamespace(), getId());
     }
 
     /**

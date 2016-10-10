@@ -22,6 +22,8 @@ import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
+
 /**
  * Represents a marathon group and offers methods for deletion and creation.
  */
@@ -69,6 +71,6 @@ public class GroupResource extends MarathonResource {
 
     @Override
     public String toString() {
-        return "Group: " + getId();
+        return MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_MESSAGE_GROUP", getId());
     }
 }
