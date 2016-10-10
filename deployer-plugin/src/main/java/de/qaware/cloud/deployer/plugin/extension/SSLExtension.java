@@ -15,6 +15,14 @@
  */
 package de.qaware.cloud.deployer.plugin.extension;
 
+import de.qaware.cloud.deployer.commons.config.util.FileUtil;
+import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
+import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
+
+import java.io.File;
+
+import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
+
 /**
  * Contains the ssl configuration for a environment.
  */
@@ -58,11 +66,16 @@ public class SSLExtension {
     }
 
     /**
-     * Sets a custom certificate to trust.
+     * Sets a custom certificate which will be trust from the specified file.
      *
-     * @param certificate The certificate.
+     * @param certificateFile The file which contains the certificate.
      */
-    public void setCertificate(String certificate) {
-        this.certificate = certificate;
+    public void setCertificate(File certificateFile) throws ResourceConfigException, EnvironmentConfigException {
+        String fileContent = FileUtil.readFileContent(certificateFile);
+        if (!fileContent.isEmpty()) {
+            this.certificate = fileContent;
+        } else {
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_CERTIFICATE_FROM_FILE", certificateFile.getName()));
+        }
     }
 }
