@@ -46,7 +46,15 @@ final class DeployerFactory {
      * @throws EnvironmentConfigException If an error during deployer creation occurs.
      */
     static Deployer create(EnvironmentExtension extension, EnvironmentConfig environmentConfig) throws EnvironmentConfigException {
+        if (extension == null || environmentConfig == null) {
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_EXTENSION_OR_CONFIG_NULL"));
+        }
+
         DeployerType deployerType = extension.getDeployerType();
+        if (deployerType == null) {
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_DEPLOYER_TYPE_NULL"));
+        }
+
         Deployer deployer;
         switch (deployerType) {
             case KUBERNETES:
@@ -56,9 +64,11 @@ final class DeployerFactory {
                     throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_INVALID_KUBERNETES_CONFIG"));
                 }
                 break;
-            default:
+            case MARATHON:
                 deployer = new MarathonDeployer(environmentConfig);
                 break;
+            default:
+                throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_INVALID_DEPLOYER_TYPE", deployerType));
         }
         return deployer;
     }
