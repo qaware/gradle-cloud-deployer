@@ -17,8 +17,8 @@ package de.qaware.cloud.deployer.plugin.extension;
 
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.plugin.token.DcosAuthTokenInitializer;
-import de.qaware.cloud.deployer.plugin.token.OpenIdConnectIdToken;
 import de.qaware.cloud.deployer.plugin.token.DefaultTokenInitializer;
+import de.qaware.cloud.deployer.plugin.token.OpenIdConnectIdTokenInitializer;
 import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class AuthExtension {
      * @throws ResourceConfigException If the token can't be initialized.
      */
     public TokenInitializer openId(File tokenFile) throws ResourceConfigException {
-        return new OpenIdConnectIdToken(tokenFile);
+        return new OpenIdConnectIdTokenInitializer(tokenFile);
     }
 
     /**

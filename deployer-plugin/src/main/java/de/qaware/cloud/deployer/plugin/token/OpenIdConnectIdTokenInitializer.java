@@ -29,7 +29,7 @@ import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN
 /**
  * Initializes a dcos authentication token using a OpenId Connect Id token from the specified file.
  */
-public class OpenIdConnectIdToken implements TokenInitializer {
+public class OpenIdConnectIdTokenInitializer implements TokenInitializer {
 
     /**
      * The file which contains the dcos auth token.
@@ -41,7 +41,7 @@ public class OpenIdConnectIdToken implements TokenInitializer {
      *
      * @param tokenFile The file which contains the OpenId Connect Id token.
      */
-    public OpenIdConnectIdToken(File tokenFile) {
+    public OpenIdConnectIdTokenInitializer(File tokenFile) {
         this.authTokenFile = tokenFile;
     }
 
