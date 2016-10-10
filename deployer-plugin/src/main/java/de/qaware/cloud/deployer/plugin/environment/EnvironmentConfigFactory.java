@@ -52,6 +52,10 @@ final class EnvironmentConfigFactory {
      * @throws EnvironmentConfigException If necessary parameters are missing.
      */
     static EnvironmentConfig create(EnvironmentExtension extension) throws EnvironmentConfigException {
+        if (extension == null) {
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_EXTENSION_OR_CONFIG_NULL"));
+        }
+
         // Initialize the config object
         EnvironmentConfig environmentConfig = initializeConfig(extension);
 
