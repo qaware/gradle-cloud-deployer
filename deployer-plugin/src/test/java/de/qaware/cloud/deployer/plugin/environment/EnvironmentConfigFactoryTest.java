@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
-import static org.gradle.internal.impldep.org.junit.Assert.assertEquals;
-import static org.gradle.internal.impldep.org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -59,7 +59,7 @@ public class EnvironmentConfigFactoryTest {
 
         sslExtension = mock(SSLExtension.class);
         authExtension = mock(AuthExtension.class);
-        tokenInitializer =  mock(TokenInitializer.class);
+        tokenInitializer = mock(TokenInitializer.class);
 
         environmentExtension = mock(EnvironmentExtension.class);
         when(environmentExtension.getDeployerType()).thenReturn(DeployerType.MARATHON);

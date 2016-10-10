@@ -28,8 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
-import static org.gradle.internal.impldep.org.junit.Assert.assertEquals;
-import static org.gradle.internal.impldep.org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
