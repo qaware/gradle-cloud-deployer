@@ -1,7 +1,3 @@
-version "$version"
-
-apply plugin: 'de.qaware.cloud.deployer.plugin'
-
 buildscript {
     repositories {
         mavenLocal()
@@ -9,19 +5,50 @@ buildscript {
     }
     dependencies {
         classpath 'de.qaware.cloud.deployer:deployer-plugin:1.0.0'
+        classpath 'de.qaware.cloud.deployer:deployer-commons:1.0.0'
+        classpath 'de.qaware.cloud.deployer:deployer-dcos:1.0.0'
+        classpath 'de.qaware.cloud.deployer:deployer-marathon:1.0.0'
+        classpath 'de.qaware.cloud.deployer:deployer-kubernetes:1.0.0'
     }
 }
 
+plugins {
+    id 'de.qaware.seu.as.code.credentials' version '2.4.0'
+}
+
+version "$version"
+
+apply plugin: 'de.qaware.cloud.deployer.plugin'
+
 deployer {
-
-    baseUrl = ""
-    username = ""
-    password = ""
-
-    trustAll = true
-    certificate = ""
-
-    namespace = "test"
-
-    files = [file("$projectDir/k8s-zwitscher-edge.yml")]
+    kubernetes {
+        id = "zwitscher-kubernetes"
+        baseUrl = "https://your-ip.com"
+        namespace = "zwitscher"
+        strategy = "RESET"
+        auth {
+            username = project.credentials['kubernetes'].username
+            password = project.credentials['kubernetes'].password
+        }
+        ssl {
+            trustAll = true
+        }
+        files = [file("$projectDir/kubernetes/kubernetes-zwitscher.yml")]
+    }
+    marathon {
+        id = "zwitscher-marathon"
+        baseUrl = "http://your-ip.com"
+        strategy = "REPLACE"
+        auth {
+            token = openId(file("$projectDir/marathon/dcos-auth-token"))
+        }
+        files = [
+                file("$projectDir/marathon/marathon-zwitscher-eureka.json"),
+                file("$projectDir/marathon/marathon-zwitscher-config.json"),
+                file("$projectDir/marathon/marathon-zwitscher-board.json"),
+                file("$projectDir/marathon/marathon-zwitscher-edge.json"),
+                file("$projectDir/marathon/marathon-zwitscher-monitor.json"),
+                file("$projectDir/marathon/marathon-zwitscher-service.json")
+        ]
+    }
 }
