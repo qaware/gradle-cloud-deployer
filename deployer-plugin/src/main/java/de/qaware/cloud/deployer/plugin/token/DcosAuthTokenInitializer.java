@@ -32,7 +32,7 @@ public class DcosAuthTokenInitializer implements TokenInitializer {
     /**
      * The user's home directory.
      */
-    private static final String USER_HOME = System.getProperty("user.home");
+    private final String USER_HOME = System.getProperty("user.home");
 
     /**
      * The path of the dcos config file relative to the user's home directory.
@@ -46,11 +46,16 @@ public class DcosAuthTokenInitializer implements TokenInitializer {
 
     @Override
     public String initialize(EnvironmentConfig environmentConfig) throws EnvironmentConfigException {
-        try (FileInputStream inputStream = new FileInputStream(USER_HOME + DCOS_CONFIG_FILE)) {
+        String tokenFile = USER_HOME + DCOS_CONFIG_FILE;
+        try (FileInputStream inputStream = new FileInputStream(tokenFile)) {
             // Load the token
             Properties properties = new Properties();
             properties.load(inputStream);
             String token = properties.getProperty(DCOS_TOKEN_PROPERTY);
+
+            if (token == null || token.length() < 3) {
+                throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", tokenFile));
+            }
 
             // Remove "-characters and assign
             return token.substring(1, token.length() - 1);
