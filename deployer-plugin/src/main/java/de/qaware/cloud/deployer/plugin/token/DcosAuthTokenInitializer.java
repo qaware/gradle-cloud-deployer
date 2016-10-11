@@ -32,7 +32,7 @@ public class DcosAuthTokenInitializer implements TokenInitializer {
     /**
      * The user's home directory.
      */
-    private final String USER_HOME = System.getProperty("user.home");
+    private final String userHome = System.getProperty("user.home");
 
     /**
      * The path of the dcos config file relative to the user's home directory.
@@ -46,7 +46,7 @@ public class DcosAuthTokenInitializer implements TokenInitializer {
 
     @Override
     public String initialize(EnvironmentConfig environmentConfig) throws EnvironmentConfigException {
-        String tokenFile = USER_HOME + DCOS_CONFIG_FILE;
+        String tokenFile = userHome + DCOS_CONFIG_FILE;
         try (FileInputStream inputStream = new FileInputStream(tokenFile)) {
             // Load the token
             Properties properties = new Properties();
