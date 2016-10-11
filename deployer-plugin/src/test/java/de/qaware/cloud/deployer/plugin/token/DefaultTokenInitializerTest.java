@@ -23,7 +23,6 @@ import java.io.File;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -47,7 +46,7 @@ public class DefaultTokenInitializerTest {
         File tokenFile = new File(TOKEN_DIR + "token-not-existing.txt");
         DefaultTokenInitializer defaultTokenInitializer = new DefaultTokenInitializer(tokenFile);
         String message = PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", tokenFile.getPath());
-        assertExceptionOnInitialize(defaultTokenInitializer, mock(EnvironmentConfig.class), message);
+        TokenInitializerTestHelper.assertExceptionOnInitialize(defaultTokenInitializer, mock(EnvironmentConfig.class), message);
     }
 
     @Test
@@ -55,17 +54,6 @@ public class DefaultTokenInitializerTest {
         File tokenFile = new File(TOKEN_DIR + "token-empty.txt");
         DefaultTokenInitializer defaultTokenInitializer = new DefaultTokenInitializer(tokenFile);
         String message = PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", tokenFile.getPath());
-        assertExceptionOnInitialize(defaultTokenInitializer, mock(EnvironmentConfig.class), message);
-    }
-
-    private void assertExceptionOnInitialize(TokenInitializer tokenInitializer, EnvironmentConfig environmentConfig, String message) {
-        boolean exceptionThrown = false;
-        try {
-            tokenInitializer.initialize(environmentConfig);
-        } catch (EnvironmentConfigException e) {
-            exceptionThrown = true;
-            assertEquals(message, e.getMessage());
-        }
-        assertTrue(exceptionThrown);
+        TokenInitializerTestHelper.assertExceptionOnInitialize(defaultTokenInitializer, mock(EnvironmentConfig.class), message);
     }
 }
