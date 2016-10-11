@@ -18,6 +18,10 @@ buildscript {
 
 apply plugin: 'org.sonarqube'
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14' //version required
+}
+
 sonarqube {
     properties {
         property "sonar.java.coveragePlugin", "jacoco"
