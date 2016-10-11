@@ -50,7 +50,7 @@ public class DcosAuthTokenInitializer implements TokenInitializer {
             // Load the token
             Properties properties = new Properties();
             properties.load(inputStream);
-            String token = (String) properties.get(DCOS_TOKEN_PROPERTY);
+            String token = properties.getProperty(DCOS_TOKEN_PROPERTY);
 
             // Remove "-characters and assign
             return token.substring(1, token.length() - 1);
