@@ -209,4 +209,45 @@ public class KubernetesReplaceStrategyIntegrationTest extends TestCase {
         ReplicaSet replicaSet2 = replicaSets2.get(0);
         CheckUtil.checkReplicaSet(deploymentResource2, replicaSet2, version2);
     }
+
+    public void testDelete() throws ResourceException, TimeoutException, InterruptedException {
+        // Retrieve initial number of pods, services and
+        assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveDeployments(kubernetesClient, namespaceResource).getItems().size());
+
+        // Deploy v1
+        replaceStrategy.deploy(namespaceResource, resourcesV1);
+
+        // Check if everything was deployed correctly
+        assertEquals(2, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(3, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(2, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(2, KubernetesClientUtil.retrieveDeployments(kubernetesClient, namespaceResource).getItems().size());
+
+        // Create pod deletion blocker
+        List<Pod> pods = KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems();
+        assertEquals(3, pods.size());
+        Pod podA = pods.get(0);
+        Pod podB = pods.get(1);
+        Pod podC = pods.get(1);
+        PodDeletionBlocker podDeletionBlockerA = new PodDeletionBlocker(kubernetesClient, podA);
+        PodDeletionBlocker podDeletionBlockerB = new PodDeletionBlocker(kubernetesClient, podB);
+        PodDeletionBlocker podDeletionBlockerC = new PodDeletionBlocker(kubernetesClient, podC);
+
+        // Delete v1 via strategy
+        replaceStrategy.delete(namespaceResource, resourcesV1);
+
+        // Wait until the pods were removed
+        podDeletionBlockerA.block();
+        podDeletionBlockerB.block();
+        podDeletionBlockerC.block();
+
+        // Check if everything was deleted correctly
+        assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveDeployments(kubernetesClient, namespaceResource).getItems().size());
+    }
 }
