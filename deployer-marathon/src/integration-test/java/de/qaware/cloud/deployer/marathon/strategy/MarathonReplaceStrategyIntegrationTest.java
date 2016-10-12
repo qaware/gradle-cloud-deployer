@@ -164,6 +164,25 @@ public class MarathonReplaceStrategyIntegrationTest extends TestCase {
         assertEquals(3, group.getApps().size());
     }
 
+    public void testDelete() throws ResourceException {
+        int appsV1 = 5;
+
+        // How many apps were there before?
+        int originalSize = marathonClient.getApps().getApps().size();
+
+        // Deploy the resources
+        replaceStrategy.deploy(resourcesSingle);
+
+        // Check that the resources were deployed
+        assertEquals(originalSize + appsV1, marathonClient.getApps().getApps().size());
+
+        // Delete the resources via strategy
+        replaceStrategy.delete(resourcesSingle);
+
+        // Check that the resources were deleted
+        assertEquals(originalSize, marathonClient.getApps().getApps().size());
+    }
+
     private void deleteAll() {
         List<Resource> allResources = new ArrayList<>();
         allResources.addAll(resourcesSingle);
