@@ -21,14 +21,23 @@ import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.plugin.environment.Environment;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
+
+import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 
 /**
  * Represents a task which deploys one specified environment.
  */
 public class DeployTask extends BaseSingleEnvironmentTask {
+
+    /**
+     * The logger of this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeployTask.class);
 
     /**
      * Deploys the environment with the specified id.
@@ -48,6 +57,8 @@ public class DeployTask extends BaseSingleEnvironmentTask {
         List<File> files = environment.getFiles();
 
         // Deploy resources
+        LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DEPLOYING_ENVIRONMENT_STARTED", environment.getId()));
         deployer.deploy(files);
+        LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DEPLOYING_ENVIRONMENT_DONE", environment.getId()));
     }
 }
