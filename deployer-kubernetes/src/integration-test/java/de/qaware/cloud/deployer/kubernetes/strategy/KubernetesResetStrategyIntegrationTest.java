@@ -86,7 +86,9 @@ public class KubernetesResetStrategyIntegrationTest extends TestCase {
 
     @Override
     public void tearDown() throws Exception {
-        namespaceResource.delete();
+        if (namespaceResource.exists()) {
+            namespaceResource.delete();
+        }
     }
 
     public void testSingleDeployment() throws ResourceException {
@@ -127,7 +129,6 @@ public class KubernetesResetStrategyIntegrationTest extends TestCase {
     public void testMultipleDeployments() throws ResourceException {
         // Deploy v1 - already tested above
         resetStrategy.deploy(namespaceResource, resourcesV1);
-
 
         // Deploy v2
         resetStrategy.deploy(namespaceResource, resourcesV2);
@@ -188,5 +189,32 @@ public class KubernetesResetStrategyIntegrationTest extends TestCase {
         assertEquals(1, replicaSetList3.getItems().size());
         ReplicaSet replicaSet3 = replicaSetList3.getItems().get(0);
         CheckUtil.checkReplicaSet(deploymentResource3, replicaSet3, version);
+    }
+
+    public void testDelete() throws ResourceException {
+        // Check that nothing exists
+        assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveDeployments(kubernetesClient, namespaceResource).getItems().size());
+
+        // Deploy v1
+        resetStrategy.deploy(namespaceResource, resourcesV1);
+
+        // Check that everything exists
+        assertEquals(2, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(1, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(1, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(1, KubernetesClientUtil.retrieveDeployments(kubernetesClient, namespaceResource).getItems().size());
+
+        // Delete via strategy
+        resetStrategy.delete(namespaceResource, resourcesV1);
+
+        // Check that everything was deleted
+        assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
+        assertEquals(0, KubernetesClientUtil.retrieveDeployments(kubernetesClient, namespaceResource).getItems().size());
+        assertNull(KubernetesClientUtil.retrieveNamespace(kubernetesClient, namespaceResource));
     }
 }
