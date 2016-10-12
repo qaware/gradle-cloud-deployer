@@ -122,7 +122,7 @@ public class AppResourceIntegrationTest extends TestCase {
         // Update the app
         appResourceV2.update();
 
-        // Retrieve the new app and check if everything was updated correctly
+        // Retrieve the updated app and check if everything was updated correctly
         App appV2 = marathonClient.getApp(appResourceV1.getId()).getApp();
         assertEquals(new Integer(2), appV2.getInstances());
     }
