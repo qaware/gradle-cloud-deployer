@@ -15,7 +15,6 @@
  */
 package de.qaware.cloud.deployer.plugin.task;
 
-import de.qaware.cloud.deployer.commons.Deployer;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceConfigException;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
@@ -24,11 +23,9 @@ import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.List;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
-import static de.qaware.cloud.deployer.plugin.task.ExtendedExceptionMessageUtil.createExtendedMessage;
 
 /**
  * Represents a task which deploys all environments.
@@ -58,17 +55,7 @@ public class DeployAllTask extends BaseAllEnvironmentsTask {
         // Deploy every environment
         LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DEPLOYING_ENVIRONMENTS_STARTED"));
         for (Environment environment : environments) {
-            Deployer deployer = environment.getDeployer();
-            List<File> files = environment.getFiles();
-            LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DEPLOYING_ENVIRONMENT_STARTED", environment.getId()));
-            try {
-                deployer.deploy(files);
-            } catch (ResourceConfigException e) {
-                throw new ResourceConfigException(createExtendedMessage(environment, e.getMessage()), e);
-            } catch (ResourceException e) {
-                throw new ResourceException(createExtendedMessage(environment, e.getMessage()), e);
-            }
-            LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DEPLOYING_ENVIRONMENT_DONE", environment.getId()));
+            deploy(environment);
         }
         LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DEPLOYING_ENVIRONMENTS_DONE"));
     }
