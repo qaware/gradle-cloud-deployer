@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.List;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.plugin.task.ExtendedExceptionMessageUtil.createExtendedMessage;
 
 /**
  * A task which deletes all environments in the config.
@@ -60,7 +61,13 @@ public class DeleteAllTask extends BaseAllEnvironmentsTask {
             Deployer deployer = environment.getDeployer();
             List<File> files = environment.getFiles();
             LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DELETING_ENVIRONMENT_STARTED", environment.getId()));
-            deployer.delete(files);
+            try {
+                deployer.delete(files);
+            } catch (ResourceConfigException e) {
+                throw new ResourceConfigException(createExtendedMessage(environment, e.getMessage()), e);
+            } catch (ResourceException e) {
+                throw new ResourceException(createExtendedMessage(environment, e.getMessage()), e);
+            }
             LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DELETING_ENVIRONMENT_DONE", environment.getId()));
         }
         LOGGER.info(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_DELETING_ENVIRONMENTS_DONE"));
