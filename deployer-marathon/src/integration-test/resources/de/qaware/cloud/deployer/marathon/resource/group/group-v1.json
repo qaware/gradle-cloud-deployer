@@ -1,5 +1,5 @@
 {
-  "id": "group-test",
+  "id": "/group-test",
   "apps": [
     {
       "id": "service-common",

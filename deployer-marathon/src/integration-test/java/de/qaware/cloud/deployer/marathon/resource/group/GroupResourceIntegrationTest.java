@@ -24,6 +24,7 @@ import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironment;
 import de.qaware.cloud.deployer.marathon.test.MarathonTestEnvironmentUtil;
 import junit.framework.TestCase;
 import mesosphere.marathon.client.Marathon;
+import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.Group;
 import mesosphere.marathon.client.utils.MarathonException;
 
@@ -33,7 +34,8 @@ public class GroupResourceIntegrationTest extends TestCase {
 
     private static AtomicInteger testCounter = new AtomicInteger(0);
 
-    private GroupResource groupResource;
+    private GroupResource groupResourceV1;
+    private GroupResource groupResourceV2;
     private Marathon marathonClient;
 
     @Override
@@ -42,11 +44,17 @@ public class GroupResourceIntegrationTest extends TestCase {
         marathonClient = testEnvironment.getMarathonClient();
 
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String groupDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/group/group.json");
-        groupDescription = groupDescription.replace("group-test", "group-test-" + testCounter.getAndIncrement());
+        int idSuffix = testCounter.getAndIncrement();
+        String groupDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/group/group-v1.json");
+        groupDescriptionV1 = groupDescriptionV1.replace("group-test", "group-test-" + idSuffix);
+        String groupDescriptionV2 = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/group/group-v2.json");
+        groupDescriptionV2 = groupDescriptionV2.replace("group-test", "group-test-" + idSuffix);
 
-        MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, groupDescription);
-        groupResource = new GroupResource(resourceConfig, clientFactory);
+        MarathonResourceConfig resourceConfigV1 = new MarathonResourceConfig("test", ContentType.JSON, groupDescriptionV1);
+        groupResourceV1 = new GroupResource(resourceConfigV1, clientFactory);
+
+        MarathonResourceConfig resourceConfigV2 = new MarathonResourceConfig("test", ContentType.JSON, groupDescriptionV2);
+        groupResourceV2 = new GroupResource(resourceConfigV2, clientFactory);
 
         removeGroup();
     }
@@ -62,16 +70,16 @@ public class GroupResourceIntegrationTest extends TestCase {
         assertNotFound();
 
         // Test exists method
-        assertFalse(groupResource.exists());
+        assertFalse(groupResourceV1.exists());
 
         // Create group
-        groupResource.create();
+        groupResourceV1.create();
 
         // Check that the group exists
         assertExists();
 
         // Test exists method
-        assertTrue(groupResource.exists());
+        assertTrue(groupResourceV1.exists());
     }
 
     public void testCreate() throws ResourceException, InterruptedException, MarathonException {
@@ -80,32 +88,62 @@ public class GroupResourceIntegrationTest extends TestCase {
         assertNotFound();
 
         // Create group
-        groupResource.create();
+        groupResourceV1.create();
 
         // Check that the group exists
         Group group = assertExists();
 
         // Compare group ids
-        assertEquals(group.getId(), "/" + groupResource.getId());
+        assertEquals(group.getId(), "/" + groupResourceV1.getId());
     }
 
     public void testDelete() throws ResourceException, MarathonException, InterruptedException {
 
         // Create group
-        groupResource.create();
+        groupResourceV1.create();
 
         // Check that the group exists
         assertExists();
 
         // Delete group
-        groupResource.delete();
+        groupResourceV1.delete();
 
         // Check that group doesn't exist anymore
         assertNotFound();
     }
 
+    public void testUpdate() throws MarathonException, ResourceException {
+
+        // Create group
+        groupResourceV1.create();
+
+        // Check that the group exists
+        assertExists();
+
+        // Update the group
+        groupResourceV2.update();
+
+        // Check that the group was updated correctly
+        Group group = marathonClient.getGroup(groupResourceV1.getId());
+
+        // Check app
+        assertEquals(1, group.getApps().size());
+        App app = group.getApps().toArray(new App[1])[0];
+        assertEquals(new Integer(1), app.getInstances());
+        assertEquals(1, group.getGroups().size());
+
+        // Check subgroup
+        Group subGroup = group.getGroups().toArray(new Group[1])[0];
+        assertEquals(2, subGroup.getApps().size());
+        App[] subGroupApps = subGroup.getApps().toArray(new App[2]);
+        App subGroupApp1 = subGroupApps[0];
+        assertEquals(new Integer(1), subGroupApp1.getInstances());
+        App subGroupApp2 = subGroupApps[0];
+        assertEquals(new Integer(1), subGroupApp2.getInstances());
+    }
+
     private Group assertExists() throws MarathonException {
-        Group group = marathonClient.getGroup(groupResource.getId());
+        Group group = marathonClient.getGroup(groupResourceV1.getId());
         assertNotNull(group);
         return group;
     }
@@ -113,7 +151,7 @@ public class GroupResourceIntegrationTest extends TestCase {
     private void assertNotFound() {
         boolean exceptionThrown = false;
         try {
-            marathonClient.getGroup(groupResource.getId());
+            marathonClient.getGroup(groupResourceV1.getId());
         } catch (MarathonException e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("404"));
@@ -122,8 +160,8 @@ public class GroupResourceIntegrationTest extends TestCase {
     }
 
     private void removeGroup() throws ResourceException {
-        if (groupResource.exists()) {
-            groupResource.delete();
+        if (groupResourceV1.exists()) {
+            groupResourceV1.delete();
         }
     }
 }
