@@ -33,7 +33,8 @@ public class AppResourceIntegrationTest extends TestCase {
 
     private static AtomicInteger testCounter = new AtomicInteger(0);
 
-    private AppResource appResource;
+    private AppResource appResourceV1;
+    private AppResource appResourceV2;
     private Marathon marathonClient;
 
     @Override
@@ -42,11 +43,17 @@ public class AppResourceIntegrationTest extends TestCase {
         marathonClient = testEnvironment.getMarathonClient();
 
         ClientFactory clientFactory = testEnvironment.getClientFactory();
-        String appDescription = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/app/app.json");
-        appDescription = appDescription.replace("zwitscher-eureka", "zwitscher-eureka-app-" + testCounter.getAndIncrement());
+        int idSuffix = testCounter.getAndIncrement();
+        String appDescriptionV1 = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/app/app-v1.json");
+        appDescriptionV1 = appDescriptionV1.replace("zwitscher-eureka", "zwitscher-eureka-app-" + idSuffix);
+        String appDescriptionV2 = FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/app/app-v2.json");
+        appDescriptionV2 = appDescriptionV2.replace("zwitscher-eureka", "zwitscher-eureka-app-" + idSuffix);
 
-        MarathonResourceConfig resourceConfig = new MarathonResourceConfig("test", ContentType.JSON, appDescription);
-        appResource = new AppResource(resourceConfig, clientFactory);
+        MarathonResourceConfig resourceConfigV1 = new MarathonResourceConfig("test", ContentType.JSON, appDescriptionV1);
+        appResourceV1 = new AppResource(resourceConfigV1, clientFactory);
+
+        MarathonResourceConfig resourceConfigV2 = new MarathonResourceConfig("test", ContentType.JSON, appDescriptionV2);
+        appResourceV2 = new AppResource(resourceConfigV2, clientFactory);
 
         removeApp();
     }
@@ -62,16 +69,16 @@ public class AppResourceIntegrationTest extends TestCase {
         assertNotFound();
 
         // Test exists method
-        assertFalse(appResource.exists());
+        assertFalse(appResourceV1.exists());
 
         // Create app
-        appResource.create();
+        appResourceV1.create();
 
         // Check that the app exists
         assertExists();
 
         // Test exists method
-        assertTrue(appResource.exists());
+        assertTrue(appResourceV1.exists());
     }
 
     public void testCreate() throws ResourceException, InterruptedException, MarathonException {
@@ -80,32 +87,48 @@ public class AppResourceIntegrationTest extends TestCase {
         assertNotFound();
 
         // Create app
-        appResource.create();
+        appResourceV1.create();
 
         // Check that the app exists
         App app = assertExists();
 
         // Compare app ids
-        assertEquals(app.getId(), "/" + appResource.getId());
+        assertEquals(app.getId(), "/" + appResourceV1.getId());
     }
 
     public void testDelete() throws ResourceException, MarathonException {
 
         // Create app
-        appResource.create();
+        appResourceV1.create();
 
         // Check that the app exists
         assertExists();
 
         // Delete app
-        appResource.delete();
+        appResourceV1.delete();
 
         // Check that app doesn't exist anymore
         assertNotFound();
     }
 
+    public void testUpdate() throws ResourceException, MarathonException {
+
+        // Create the app - already tested above
+        appResourceV1.create();
+
+        // Check that the app exists
+        assertExists();
+
+        // Update the app
+        appResourceV2.update();
+
+        // Retrieve the new app and check if everything was updated correctly
+        App appV2 = marathonClient.getApp(appResourceV1.getId()).getApp();
+        assertEquals(new Integer(2), appV2.getInstances());
+    }
+
     private App assertExists() throws MarathonException {
-        App app = marathonClient.getApp(appResource.getId()).getApp();
+        App app = marathonClient.getApp(appResourceV1.getId()).getApp();
         assertNotNull(app);
         return app;
     }
@@ -113,7 +136,7 @@ public class AppResourceIntegrationTest extends TestCase {
     private void assertNotFound() {
         boolean exceptionThrown = false;
         try {
-            marathonClient.getApp(appResource.getId()).getApp();
+            marathonClient.getApp(appResourceV1.getId()).getApp();
         } catch (MarathonException e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("404"));
@@ -123,7 +146,7 @@ public class AppResourceIntegrationTest extends TestCase {
 
     private void removeApp() {
         try {
-            marathonClient.deleteApp(appResource.getId());
+            marathonClient.deleteApp(appResourceV1.getId());
         } catch (MarathonException e) {
         }
     }
