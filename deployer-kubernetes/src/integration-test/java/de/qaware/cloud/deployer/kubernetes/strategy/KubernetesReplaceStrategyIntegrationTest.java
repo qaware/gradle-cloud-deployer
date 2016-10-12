@@ -211,7 +211,7 @@ public class KubernetesReplaceStrategyIntegrationTest extends TestCase {
     }
 
     public void testDelete() throws ResourceException, TimeoutException, InterruptedException {
-        // Retrieve initial number of pods, services and
+        // Check that nothing exists
         assertEquals(0, KubernetesClientUtil.retrieveServices(kubernetesClient, namespaceResource).getItems().size());
         assertEquals(0, KubernetesClientUtil.retrievePods(kubernetesClient, namespaceResource).getItems().size());
         assertEquals(0, KubernetesClientUtil.retrieveReplicaSets(kubernetesClient, namespaceResource).getItems().size());
