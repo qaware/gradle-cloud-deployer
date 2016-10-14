@@ -14,8 +14,6 @@ allprojects {
     group = "de.qaware.cloud.deployer"
     version = "1.0.0"
 
-    apply plugin: "jacoco"
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -30,6 +28,7 @@ subprojects {
     apply plugin: "java"
     apply plugin: "maven"
     apply plugin: "idea"
+    apply plugin: "jacoco"
     apply plugin: "com.github.hierynomus.license"
     apply plugin: "org.unbroken-dome.test-sets"
 
