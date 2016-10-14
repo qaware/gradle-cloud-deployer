@@ -1,79 +1,61 @@
-description = 'Gradle plugin to deploy applications to Kubernetes and DC/OS Marathon'
+plugins {
+    id "org.sonarqube" version "2.1-rc2"
+    id "com.github.hierynomus.license" version "0.13.1"
+    id "org.unbroken-dome.test-sets" version "1.2.0"
+    id "com.github.kt3k.coveralls" version "2.6.3"
+}
 
-buildscript {
+apply plugin: "org.sonarqube"
+
+// --- Meta ---
+description = "Gradle plugin to deploy applications to Kubernetes and DC/OS Marathon"
+
+// --- (Sub-)Project config ---
+allprojects {
+    group = "de.qaware.cloud.deployer"
+    version = "1.0.0"
+
+    apply plugin: "jacoco"
+    apply plugin: "com.github.kt3k.coveralls"
+
     repositories {
         mavenLocal()
         mavenCentral()
         jcenter()
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url "https://plugins.gradle.org/m2/"
         }
     }
-    dependencies {
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.1-rc2'
-        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1'
-        classpath 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.2.0'
-        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
-    }
-}
-
-apply plugin: 'org.sonarqube'
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.1'
-}
-
-sonarqube {
-    properties {
-        property "sonar.java.coveragePlugin", "jacoco"
-    }
-}
-
-allprojects {
-    group = 'de.qaware.cloud.deployer'
-    version = '1.0.0'
-
-    apply plugin: 'jacoco'
-    apply plugin: "com.github.kt3k.coveralls"
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'idea'
-    apply plugin: 'com.github.hierynomus.license'
-    apply plugin: 'org.unbroken-dome.test-sets'
+    apply plugin: "java"
+    apply plugin: "maven"
+    apply plugin: "idea"
+    apply plugin: "com.github.hierynomus.license"
+    apply plugin: "org.unbroken-dome.test-sets"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
+    dependencies {
+        compile "commons-io:commons-io:2.5"
+        compile "org.apache.commons:commons-lang3:3.4"
+        compile "org.slf4j:slf4j-api:1.7.21"
+
+        testCompile "junit:junit:4.11"
+        testCompile "org.mockito:mockito-core:1.10.19"
+        testCompile "org.slf4j:slf4j-simple:1.7.21"
+        testCompile "com.github.tomakehurst:wiremock:2.1.12"
     }
 
     license {
         skipExistingHeaders = true
-        header rootProject.file('LICENSE_HEADER')
+        header rootProject.file("LICENSE_HEADER")
         includes(["**/*.java"])
         mapping {
-            java = 'SLASHSTAR_STYLE'
+            java = "SLASHSTAR_STYLE"
         }
-    }
-
-    dependencies {
-        compile 'commons-io:commons-io:2.5'
-        compile 'org.apache.commons:commons-lang3:3.4'
-        compile 'org.slf4j:slf4j-api:1.7.21'
-
-        testCompile 'junit:junit:4.11'
-        testCompile 'org.mockito:mockito-core:1.10.19'
-        testCompile 'org.slf4j:slf4j-simple:1.7.21'
-        testCompile 'com.github.tomakehurst:wiremock:2.1.12'
     }
 
     jacocoTestReport {
@@ -101,7 +83,7 @@ subprojects {
     }
 
     testSets {
-        integrationTest { dirName = 'integration-test' }
+        integrationTest { dirName = "integration-test" }
     }
 
     sonarqube {
@@ -112,19 +94,40 @@ subprojects {
     }
 }
 
-task jacocoRootReport(type: JacocoReport, group: 'Coverage') {
-    description = 'Generates aggregate Jacoco coverage report from all subprojects'
+// --- Tasks ---
+task wrapper(type: Wrapper) {
+    gradleVersion = "3.1"
+}
+
+task jacocoRootReport(type: JacocoReport, group: "Coverage") {
     dependsOn(subprojects.test)
     additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories = files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.jacocoTestReport.executionData)
     reports {
         html.enabled = true
         xml.enabled = true
+        csv.enabled = false
+    }
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
+}
+
+// --- Plugin config ---
+sonarqube {
+    properties {
+        property "sonar.java.coveragePlugin", "jacoco"
     }
 }
 
 coveralls {
     sourceDirs = subprojects.sourceSets.main.allSource.srcDirs.flatten()
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+}
+
+tasks.coveralls {
+    dependsOn jacocoRootReport
+    onlyIf { System.env."CI" && !JavaVersion.current().isJava9Compatible() }
 }
