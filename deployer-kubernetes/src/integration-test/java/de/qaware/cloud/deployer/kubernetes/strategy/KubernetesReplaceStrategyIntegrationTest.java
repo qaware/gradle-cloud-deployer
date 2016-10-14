@@ -231,7 +231,7 @@ public class KubernetesReplaceStrategyIntegrationTest extends TestCase {
         assertEquals(3, pods.size());
         Pod podA = pods.get(0);
         Pod podB = pods.get(1);
-        Pod podC = pods.get(1);
+        Pod podC = pods.get(2);
         PodDeletionBlocker podDeletionBlockerA = new PodDeletionBlocker(kubernetesClient, podA);
         PodDeletionBlocker podDeletionBlockerB = new PodDeletionBlocker(kubernetesClient, podB);
         PodDeletionBlocker podDeletionBlockerC = new PodDeletionBlocker(kubernetesClient, podC);
