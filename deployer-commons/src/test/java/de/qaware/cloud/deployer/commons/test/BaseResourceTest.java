@@ -17,6 +17,7 @@ package de.qaware.cloud.deployer.commons.test;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import de.qaware.cloud.deployer.commons.config.environment.AuthConfig;
 import de.qaware.cloud.deployer.commons.config.environment.EnvironmentConfig;
@@ -43,11 +44,8 @@ public abstract class BaseResourceTest {
     private static final String ENVIRONMENT_ID = "test-env";
     private static final String SERVER_ADDRESS = "http://localhost";
 
-    @ClassRule
-    public static WireMockClassRule wireMockRule = new WireMockClassRule(WireMockConfiguration.options().dynamicPort());
-
     @Rule
-    public WireMockClassRule instanceRule = wireMockRule;
+    public WireMockRule instanceRule = new WireMockRule(WireMockConfiguration.options().dynamicPort());
 
     protected BaseResource resource;
 
