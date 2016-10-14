@@ -94,7 +94,7 @@ public class GroupResourceIntegrationTest extends TestCase {
         Group group = assertExists();
 
         // Compare group ids
-        assertEquals(group.getId(), "/" + groupResourceV1.getId());
+        assertEquals(group.getId(), groupResourceV1.getId());
     }
 
     public void testDelete() throws ResourceException, MarathonException, InterruptedException {
