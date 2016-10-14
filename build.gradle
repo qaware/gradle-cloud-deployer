@@ -128,10 +128,3 @@ coveralls {
     sourceDirs = subprojects.sourceSets.main.allSource.srcDirs.flatten()
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
 }
-
-tasks.coveralls {
-    group = 'Coverage'
-    description = 'Upload aggregate Jacoco coverage report to Coveralls'
-
-    dependsOn jacocoRootReport
-}
