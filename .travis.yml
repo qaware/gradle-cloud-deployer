@@ -7,4 +7,4 @@ before_install:
 
 script: ./gradlew build --continue jacocoTestReport
 
-after_success: ./gradlew jacocoRootReport coveralls
+after_script: ./gradlew jacocoRootReport coveralls
