@@ -145,21 +145,14 @@ public class KubernetesReplaceStrategyIntegrationTest extends TestCase {
         KubernetesResource deploymentResource0 = resourcesV1.get(1);
         List<Pod> pods0 = KubernetesClientUtil.retrievePods(kubernetesClient, deploymentResource0).getItems();
         assertEquals(3, pods0.size());
-        Pod pod0a = pods0.get(0);
-        Pod pod0b = pods0.get(1);
-        Pod pod0c = pods0.get(1);
-        PodDeletionBlocker podDeletionBlocker0a = new PodDeletionBlocker(kubernetesClient, pod0a);
-        PodDeletionBlocker podDeletionBlocker0b = new PodDeletionBlocker(kubernetesClient, pod0b);
-        PodDeletionBlocker podDeletionBlocker0c = new PodDeletionBlocker(kubernetesClient, pod0c);
+        MultiPodDeletionBlocker blocker = new MultiPodDeletionBlocker(kubernetesClient, pods0);
 
         // Deploy v2
         replaceStrategy.deploy(namespaceResource, resourcesV2);
         String version2 = "v2";
 
-        // Wait until the pods are deleted
-        podDeletionBlocker0a.block();
-        podDeletionBlocker0b.block();
-        podDeletionBlocker0c.block();
+        // Wait until one of the pods is deleted
+        blocker.block();
 
         // Check that everything was deployed correctly
         KubernetesResource serviceResource1 = resourcesV1.get(2);
