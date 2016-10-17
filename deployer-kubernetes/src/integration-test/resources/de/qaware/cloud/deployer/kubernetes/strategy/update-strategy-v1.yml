@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zwitscher-eureka
+  labels:
+    version: v1
+    zwitscher: eureka
+spec:
+  # use NodePort here to be able to access the port on each node
+  type: NodePort
+  ports:
+  - port: 8761
+  selector:
+    zwitscher: eureka
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zwitscher-eureka
+spec:
+  replicas: 2
+  minReadySeconds: 30
+  template:
+    metadata:
+      labels:
+        version: v1
+        zwitscher: eureka
+    spec:
+      containers:
+      - name: zwitscher-eureka
+        image: "qaware-oss-docker-registry.bintray.io/zwitscher/zwitscher-eureka:1.0.1"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 8761
+        livenessProbe:
+          httpGet:
+            path: /admin/health
+            port: 8761
+          initialDelaySeconds: 60
+          timeoutSeconds: 30
+        env:
+        - name: JAVA_OPTS
+          value: -Xmx128m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zwitscher-config
+  labels:
+    version: v1
+    zwitscher: config
+spec:
+  # use NodePort here to be able to access the port on each node
+  type: NodePort
+  ports:
+  - port: 8888
+  selector:
+    zwitscher: config
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zwitscher-service
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  template:
+    metadata:
+      labels:
+        version: v1
+        zwitscher: service
+    spec:
+      containers:
+      - name: zwitscher-service
+        image: "qaware-oss-docker-registry.bintray.io/zwitscher/zwitscher-service:1.0.1"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /admin/health
+            port: 8080
+          initialDelaySeconds: 90
+          timeoutSeconds: 30
+        env:
+        - name: EUREKA_HOST
+          value: zwitscher-eureka
+        - name: JAVA_OPTS
+          value: -Xmx128m

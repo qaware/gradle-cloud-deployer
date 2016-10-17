@@ -19,17 +19,19 @@ import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.Watcher;
 
-public class PodDeletionBlocker extends BasePodDeletionBlocker {
+import java.util.List;
 
-    private final Pod pod;
+public class MultiPodDeletionBlocker extends BasePodDeletionBlocker {
 
-    public PodDeletionBlocker(KubernetesClient kubernetesClient, Pod pod) {
+    private final List<Pod> pods;
+
+    public MultiPodDeletionBlocker(KubernetesClient kubernetesClient, List<Pod> pods) {
         super(kubernetesClient);
-        this.pod = pod;
+        this.pods = pods;
     }
 
     @Override
     public boolean continueBlocking(Watcher.Action eventAction, Pod eventPod) {
-        return !(podEquals(pod, eventPod) && eventAction.name().equals("DELETED"));
+        return !(pods.stream().anyMatch(pod -> podEquals(pod, eventPod) && eventAction.name().equals("DELETED")));
     }
 }
