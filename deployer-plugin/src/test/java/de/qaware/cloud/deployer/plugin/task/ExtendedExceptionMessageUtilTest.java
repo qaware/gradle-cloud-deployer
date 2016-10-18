@@ -33,8 +33,20 @@ public class ExtendedExceptionMessageUtilTest {
     public void testCreateExtendedMessage() {
         Environment environment = mock(Environment.class);
         when(environment.getId()).thenReturn("test-env");
+
         String originalMessage = "hello";
         String expectedMessage = originalMessage + " " + PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_SINGLE_ENVIRONMENT", environment.getId());
+        String extendedMessage = createExtendedMessage(environment, originalMessage);
+        assertEquals(expectedMessage, extendedMessage);
+    }
+
+    @Test
+    public void testCreateExtendedMessageMultiline() {
+        Environment environment = mock(Environment.class);
+        when(environment.getId()).thenReturn("test-env");
+
+        String originalMessage = "hello\nhello";
+        String expectedMessage = originalMessage + "\n" + PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_SINGLE_ENVIRONMENT", environment.getId());
         String extendedMessage = createExtendedMessage(environment, originalMessage);
         assertEquals(expectedMessage, extendedMessage);
     }

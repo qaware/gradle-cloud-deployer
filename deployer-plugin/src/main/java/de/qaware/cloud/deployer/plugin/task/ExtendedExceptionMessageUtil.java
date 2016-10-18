@@ -39,6 +39,14 @@ final class ExtendedExceptionMessageUtil {
      * @return The new exception message.
      */
     static String createExtendedMessage(Environment environment, String message) {
-        return message + " " + PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_SINGLE_ENVIRONMENT", environment.getId());
+        if (isMultiLine(message)) {
+            return message + "\n" + PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_SINGLE_ENVIRONMENT", environment.getId());
+        } else {
+            return message + " " + PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_SINGLE_ENVIRONMENT", environment.getId());
+        }
+    }
+
+    private static boolean isMultiLine(String string) {
+        return string.contains("\n");
     }
 }
