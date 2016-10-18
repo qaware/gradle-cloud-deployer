@@ -104,6 +104,8 @@ def subProjects = [
         ':deployer-plugin'
 ]
 jar {
+    baseName = "deployer"
+    version = "$version"
     dependsOn = subProjects.collect { it + ":build" }
     from files(subProjects.collect { project(it).sourceSets.main.output })
 }
