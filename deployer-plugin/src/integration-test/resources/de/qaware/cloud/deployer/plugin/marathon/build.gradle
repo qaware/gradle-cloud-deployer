@@ -1,0 +1,30 @@
+plugins {
+    id 'de.qaware.cloud.deployer.plugin'
+}
+
+deployer {
+    marathon {
+        id = "marathon-zwitscher-one"
+        baseUrl = "$System.env.MARATHON_URL"
+        strategy = "REPLACE"
+        auth {
+            token = openId(createTempTokenFile())
+        }
+        files = [file("marathon-zwitscher-eureka.json")]
+    }
+    marathon {
+        id = "marathon-zwitscher-two"
+        baseUrl = "$System.env.MARATHON_URL"
+        strategy = "REPLACE"
+        auth {
+            token = openId(createTempTokenFile())
+        }
+        files = [file("marathon-zwitscher-config.json")]
+    }
+}
+
+static def createTempTokenFile() {
+    File file = File.createTempFile("token",".tmp")
+    file.write("$System.env.MARATHON_TOKEN")
+    return file
+}
