@@ -48,7 +48,8 @@ public class DefaultTokenInitializer implements TokenInitializer {
         try {
             return FileUtil.readFileContent(tokenFile);
         } catch (ResourceConfigException e) {
-            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", tokenFile.getPath()), e);
+            String filePath = tokenFile == null ? "null" : tokenFile.getPath();
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", filePath), e);
         }
     }
 }

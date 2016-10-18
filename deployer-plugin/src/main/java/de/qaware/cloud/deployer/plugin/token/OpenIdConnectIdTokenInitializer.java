@@ -53,7 +53,8 @@ public class OpenIdConnectIdTokenInitializer implements TokenInitializer {
         } catch (ResourceException e) {
             throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_DCOS_API_TOKEN"), e);
         } catch (ResourceConfigException e) {
-            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", authTokenFile.getPath()), e);
+            String filePath = authTokenFile == null ? "null" : authTokenFile.getPath();
+            throw new EnvironmentConfigException(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_ERROR_RETRIEVING_TOKEN_FROM_FILE", filePath), e);
         }
     }
 }
