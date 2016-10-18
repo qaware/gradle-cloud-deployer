@@ -1,0 +1,34 @@
+plugins {
+    id 'de.qaware.cloud.deployer.plugin'
+}
+
+deployer {
+    kubernetes {
+        id = "kubernetes-zwitscher-one"
+        baseUrl = "$System.env.KUBERNETES_URL"
+        namespace = "$System.env.KUBERNETES_NAMESPACE_PREFIX-kubernetes-zwitscher-one"
+        strategy = "RESET"
+        auth {
+            username = "$System.env.KUBERNETES_USERNAME"
+            password = "$System.env.KUBERNETES_PASSWORD"
+        }
+        ssl {
+            trustAll = true
+        }
+        files = [file("kubernetes-zwitscher-eureka.yml")]
+    }
+    kubernetes {
+        id = "kubernetes-zwitscher-two"
+        baseUrl = "$System.env.KUBERNETES_URL"
+        namespace = "$System.env.KUBERNETES_NAMESPACE_PREFIX-kubernetes-zwitscher-two"
+        strategy = "RESET"
+        auth {
+            username = "$System.env.KUBERNETES_USERNAME"
+            password = "$System.env.KUBERNETES_PASSWORD"
+        }
+        ssl {
+            trustAll = true
+        }
+        files = [file("kubernetes-zwitscher-config.yml")]
+    }
+}

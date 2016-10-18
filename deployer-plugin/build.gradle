@@ -1,3 +1,5 @@
+apply plugin: 'java-gradle-plugin'
+
 jar {
     baseName = 'deployer-plugin'
     version = "$version"
@@ -8,6 +10,9 @@ dependencies {
     compile project(':deployer-kubernetes')
     compile project(':deployer-marathon')
     compile project(':deployer-dcos')
-
     compile gradleApi()
+
+    testCompile project (path: ':deployer-commons', configuration: 'tests')
+
+    integrationTestCompile 'io.fabric8:kubernetes-client:1.4.4'
 }
