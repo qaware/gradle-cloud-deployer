@@ -96,6 +96,18 @@ task wrapper(type: Wrapper) {
     gradleVersion = "3.1"
 }
 
+def subProjects = [
+        ':deployer-commons',
+        ':deployer-dcos',
+        ':deployer-kubernetes',
+        ':deployer-marathon',
+        ':deployer-plugin'
+]
+jar {
+    dependsOn = subProjects.collect { it + ":build" }
+    from files(subProjects.collect { project(it).sourceSets.main.output })
+}
+
 // --- Plugin config ---
 sonarqube {
     properties {
