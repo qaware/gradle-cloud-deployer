@@ -1,18 +1,27 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
+    }
+}
+
 plugins {
     id "org.sonarqube" version "2.1-rc2"
     id "com.github.hierynomus.license" version "0.13.1"
     id "org.unbroken-dome.test-sets" version "1.2.0"
+    id "com.gradle.plugin-publish" version "0.9.6"
 }
 
 apply plugin: "org.sonarqube"
-
-// --- Meta ---
-description = "Gradle plugin to deploy applications to Kubernetes and DC/OS Marathon"
+apply plugin: "com.gradle.plugin-publish"
 
 // --- (Sub-)Project config ---
 allprojects {
     group = "de.qaware.cloud.deployer"
-    version = "1.0.0"
 
     repositories {
         mavenLocal()
@@ -96,23 +105,46 @@ task wrapper(type: Wrapper) {
     gradleVersion = "3.1"
 }
 
+// Override some tasks to achieve jar creation in root project
 def subProjects = [
-        ':deployer-commons',
-        ':deployer-dcos',
-        ':deployer-kubernetes',
-        ':deployer-marathon',
-        ':deployer-plugin'
+        ":deployer-commons",
+        ":deployer-dcos",
+        ":deployer-kubernetes",
+        ":deployer-marathon",
+        ":deployer-plugin"
 ]
 jar {
-    baseName = "deployer"
-    version = "$version"
     dependsOn = subProjects.collect { it + ":build" }
     from files(subProjects.collect { project(it).sourceSets.main.output })
 }
+javadoc {
+    source subProjects.collect { project(it).sourceSets.main.allJava }
+    classpath = files(subProjects.collect { project(it).sourceSets.main.compileClasspath })
+}
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from files(subProjects.collect { project(it).sourceSets.main.allSource })
+}
+publishPlugins.dependsOn sourcesJar
 
 // --- Plugin config ---
 sonarqube {
     properties {
         property "sonar.java.coveragePlugin", "jacoco"
+    }
+}
+
+pluginBundle {
+    website = project.websiteUrl
+    vcsUrl = project.scmUrl
+
+    plugins {
+        deployerPlugin {
+            id = "de.qaware.cloud.deployer"
+            displayName = project.displayName
+            description = project.description
+            tags = ["cloud", "deployment", "marathon", "kubernetes"]
+            version = project.version
+        }
     }
 }
