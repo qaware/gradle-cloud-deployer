@@ -26,20 +26,24 @@ import de.qaware.cloud.deployer.plugin.extension.AuthExtension;
 import de.qaware.cloud.deployer.plugin.extension.DeployerType;
 import de.qaware.cloud.deployer.plugin.extension.EnvironmentExtension;
 import de.qaware.cloud.deployer.plugin.extension.SSLExtension;
+import de.qaware.cloud.deployer.plugin.token.DefaultTokenInitializer;
 import de.qaware.cloud.deployer.plugin.token.TokenInitializer;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sjahreis
@@ -48,18 +52,18 @@ public class EnvironmentConfigFactoryTest {
 
     private static final Strategy DEFAULT_STRATEGY = Strategy.REPLACE;
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
     private EnvironmentExtension environmentExtension;
     private SSLExtension sslExtension;
     private AuthExtension authExtension;
-    private TokenInitializer tokenInitializer;
 
     @Before
     public void setup() {
         List<File> files = new ArrayList<>();
 
-        sslExtension = mock(SSLExtension.class);
-        authExtension = mock(AuthExtension.class);
-        tokenInitializer = mock(TokenInitializer.class);
+        sslExtension = new SSLExtension();
+        authExtension = new AuthExtension();
 
         environmentExtension = mock(EnvironmentExtension.class);
         when(environmentExtension.getDeployerType()).thenReturn(DeployerType.MARATHON);
@@ -93,59 +97,64 @@ public class EnvironmentConfigFactoryTest {
 
     @Test
     public void testCreateWithSSLTrustAll() throws EnvironmentConfigException {
-        when(sslExtension.isTrustAll()).thenReturn(true);
+        sslExtension.setTrustAll(true);
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
         testEquality(environmentConfig);
     }
 
     @Test
-    public void testCreateWithSSLCustomCertificate() throws EnvironmentConfigException, ResourceConfigException {
-        when(sslExtension.getCertificate()).thenReturn("CERTIFICATE");
+    public void testCreateWithSSLCustomCertificate() throws EnvironmentConfigException, ResourceConfigException, IOException {
+        File tokenFile = folder.newFile("token.temp");
+        FileUtils.writeStringToFile(tokenFile, "CERTIFICATE", Charset.defaultCharset());
+        sslExtension.setCertificate(tokenFile);
+
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
         testEquality(environmentConfig);
     }
 
     @Test
     public void testCreateWithEmptyCustomCertificate() throws EnvironmentConfigException {
+        sslExtension = spy(sslExtension);
         when(sslExtension.getCertificate()).thenReturn("");
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
         testEquality(environmentConfig);
     }
 
     @Test
-    public void testCreateWithTokenAuthentication() throws EnvironmentConfigException {
-        when(tokenInitializer.initialize(any())).thenReturn("TOKEN");
-        when(authExtension.getToken()).thenReturn(tokenInitializer);
+    public void testCreateWithTokenAuthentication() throws EnvironmentConfigException, IOException {
+        File tokenFile = folder.newFile("token.temp");
+        FileUtils.writeStringToFile(tokenFile, "TOKEN", Charset.defaultCharset());
+        authExtension.setToken(new DefaultTokenInitializer(tokenFile));
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
         testEquality(environmentConfig);
     }
 
     @Test
     public void testCreateWithBasicAuthentication() throws EnvironmentConfigException {
-        when(authExtension.getPassword()).thenReturn("PASSWORD");
-        when(authExtension.getUsername()).thenReturn("USERNAME");
+        authExtension.setPassword("PASSWORD");
+        authExtension.setUsername("USERNAME");
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
         testEquality(environmentConfig);
     }
 
     @Test
     public void testCreateWithBasicAuthenticationMissingPassword() throws EnvironmentConfigException {
-        when(authExtension.getUsername()).thenReturn("USERNAME");
+        authExtension.setUsername("USERNAME");
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
 
         // Reset
-        when(authExtension.getUsername()).thenReturn(null);
+        authExtension.setUsername(null);
 
         testEquality(environmentConfig);
     }
 
     @Test
     public void testCreateWithBasicAuthenticationMissingUsername() throws EnvironmentConfigException {
-        when(authExtension.getPassword()).thenReturn("PASSWORD");
+        authExtension.setPassword("PASSWORD");
         EnvironmentConfig environmentConfig = EnvironmentConfigFactory.create(environmentExtension);
 
         // Reset
-        when(authExtension.getPassword()).thenReturn(null);
+        authExtension.setPassword(null);
 
         testEquality(environmentConfig);
     }
