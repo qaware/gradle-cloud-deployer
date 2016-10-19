@@ -34,9 +34,12 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
+import static de.qaware.cloud.deployer.marathon.logging.MarathonMessageBundle.MARATHON_MESSAGE_BUNDLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -90,6 +93,24 @@ public class MarathonResourceFactoryTest {
     }
 
     @Test
+    public void testCreateResourcesWithValidGroupAndApp() throws ResourceException, ResourceConfigException {
+        MarathonResourceConfig appConfig = new MarathonResourceConfig("test", ContentType.JSON, FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/factory/app.json"));
+        MarathonResourceConfig groupConfig = new MarathonResourceConfig("test", ContentType.JSON, FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/factory/group.json"));
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
+
+        List<MarathonResourceConfig> configs = new ArrayList<>();
+        configs.add(appConfig);
+        configs.add(groupConfig);
+
+        List<MarathonResource> resources= resourceFactory.createResources(configs);
+        assertEquals(2, resources.size());
+        MarathonResource appResource = resources.get(0);
+        assertTrue(appResource instanceof AppResource);
+        MarathonResource groupResource = resources.get(1);
+        assertTrue(groupResource instanceof GroupResource);
+    }
+
+    @Test
     public void testCreateResourceWithUnknownType() throws ResourceException, ResourceConfigException {
         boolean exceptionThrown = false;
         MarathonResourceConfig config = new MarathonResourceConfig("test", ContentType.JSON, FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/factory/unknown.json"));
@@ -98,6 +119,21 @@ public class MarathonResourceFactoryTest {
             resourceFactory.createResource(config);
         } catch (ResourceException e) {
             exceptionThrown = true;
+        }
+        assertTrue(exceptionThrown);
+    }
+
+    @Test
+    public void testCreateResourceWithEmptyContent() throws ResourceException, ResourceConfigException {
+        boolean exceptionThrown = false;
+        MarathonResourceConfig config = new MarathonResourceConfig("test", ContentType.JSON, FileUtil.readFileContent("/de/qaware/cloud/deployer/marathon/resource/factory/unknown.json"));
+        config.setContent("");
+        MarathonResourceFactory resourceFactory = new MarathonResourceFactory(environmentConfig);
+        try {
+            resourceFactory.createResource(config);
+        } catch (ResourceException e) {
+            exceptionThrown = true;
+            assertEquals(MARATHON_MESSAGE_BUNDLE.getMessage("DEPLOYER_MARATHON_ERROR_EMPTY_CONFIG", "test"), e.getMessage());
         }
         assertTrue(exceptionThrown);
     }
