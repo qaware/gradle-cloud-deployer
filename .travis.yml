@@ -5,7 +5,7 @@ jdk:
 before_install:
   - chmod +x gradlew
 
-script: ./gradlew clean build --rerun-tasks --continue jacocoTestReport
+script: ./gradlew build --rerun-tasks --continue jacocoTestReport
 
 after_script:
   - bash <(curl -s https://codecov.io/bash)
