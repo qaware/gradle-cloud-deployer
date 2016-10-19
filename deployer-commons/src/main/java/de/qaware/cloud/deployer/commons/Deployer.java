@@ -29,6 +29,7 @@ public interface Deployer {
     /**
      * Deploys the list of config files.
      *
+     * @param files The files which define the resources to deploy.
      * @throws ResourceConfigException If a problem during config parsing and interpretation occurs.
      * @throws ResourceException       If a problem during resource deletion/creation occurs.
      */

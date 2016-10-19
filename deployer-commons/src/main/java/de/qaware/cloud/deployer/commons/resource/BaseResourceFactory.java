@@ -98,6 +98,7 @@ public abstract class BaseResourceFactory<ResourceType extends BaseResource, Con
     /**
      * Creates a ping resource for the specified environment config to test the connectivity.
      *
+     * @param environmentConfig The environment config.
      * @return The ping resource.
      * @throws ResourceException If a error during ping resource creation occurs.
      */

@@ -39,6 +39,7 @@ public abstract class BaseDeletionStrategy {
      * Deletes the list of specified resources. If the resource doesn't exist it will be skipped.
      *
      * @param resources The list of resources to delete.
+     * @param <ResourceType> The type of resources this strategy deletes.
      * @throws ResourceException If an error during resource deletion occurs.
      */
     public <ResourceType extends Resource> void deleteResources(List<ResourceType> resources) throws ResourceException {
