@@ -62,14 +62,14 @@ public final class TokenResource {
 
                 // Execute request.
                 Response<Token> tokenResponse = tokenClient.login(token).execute();
-                if (tokenResponse.code() != 200 || tokenResponse.body() == null) {
+                if (tokenResponse.code() != 200) {
                     throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
                 }
 
                 // Return authentication token.
                 return tokenResponse.body().getToken();
             } catch (IOException e) {
-                throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"), e);
+                throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"), e);
             }
         } else {
             throw new EnvironmentConfigException(DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN"));

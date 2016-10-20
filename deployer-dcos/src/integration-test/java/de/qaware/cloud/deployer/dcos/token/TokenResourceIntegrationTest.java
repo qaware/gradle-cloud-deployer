@@ -48,7 +48,7 @@ public class TokenResourceIntegrationTest extends TestCase {
 
     public void testRetrieveAuthenticationTokenInvalidAddress() throws ResourceException {
         EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getStrategy());
-        assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION"));
+        assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));
 
         newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getStrategy());
         assertException(newEnvironmentConfig, authToken, DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN"));

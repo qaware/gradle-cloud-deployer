@@ -56,6 +56,15 @@ public class TokenResourceTest {
     }
 
     @Test
+    public void testRetrieveAuthenticationTokenWithNullToken() throws ResourceException {
+        assertExceptionOnRetrieveAuthenticationToken(
+                environmentConfig,
+                null,
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_EMPTY_TOKEN")
+        );
+    }
+
+    @Test
     public void testRetrieveAuthenticationTokenWithEmptyToken() throws ResourceException {
         assertExceptionOnRetrieveAuthenticationToken(
                 environmentConfig,
@@ -80,12 +89,27 @@ public class TokenResourceTest {
     }
 
     @Test
+    public void testRetrieveAuthenticationTokenWithEmptyTokenResponse() throws ResourceException {
+        instanceRule.stubFor(post(TOKEN_PATTERN)
+                .willReturn(aResponse().withStatus(200)));
+
+        assertExceptionOnRetrieveAuthenticationToken(
+                environmentConfig,
+                OPEN_ID_TOKEN,
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN")
+        );
+
+        verify(1, postRequestedFor(TOKEN_PATTERN));
+        verify(postRequestedFor(TOKEN_PATTERN).withRequestBody(equalTo("{\"token\":\"" + OPEN_ID_TOKEN + "\"}")));
+    }
+
+    @Test
     public void testRetrieveAuthenticationTokenWithInvalidAddress() throws ResourceException {
         EnvironmentConfig newEnvironmentConfig = new EnvironmentConfig("test", "http://bla-blub-foobar-bla-12341.xy/", environmentConfig.getStrategy());
         assertExceptionOnRetrieveAuthenticationToken(
                 newEnvironmentConfig,
                 OPEN_ID_TOKEN,
-                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_ESTABLISH_CONNECTION")
+                DCOS_MESSAGE_BUNDLE.getMessage("DEPLOYER_DCOS_ERROR_COULD_NOT_RETRIEVE_TOKEN")
         );
 
         newEnvironmentConfig = new EnvironmentConfig("test", "http://google.de/mich/gibts/nicht/1234/bla/", environmentConfig.getStrategy());
