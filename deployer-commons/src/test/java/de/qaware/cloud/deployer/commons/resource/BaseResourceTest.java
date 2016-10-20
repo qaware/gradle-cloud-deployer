@@ -39,7 +39,6 @@ import static org.mockito.Mockito.*;
 /**
  * @author sjahreis
  */
-@SuppressWarnings("unchecked")
 public class BaseResourceTest {
 
     private BaseResource<BaseResourceConfig> baseResource;
