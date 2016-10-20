@@ -1,5 +1,5 @@
 plugins {
-    id 'de.qaware.cloud.deployer.plugin'
+    id 'de.qaware.cloud.deployer'
 }
 
 deployer {
