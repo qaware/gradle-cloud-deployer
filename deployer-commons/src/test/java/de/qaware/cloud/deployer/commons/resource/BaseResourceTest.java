@@ -21,8 +21,11 @@ import de.qaware.cloud.deployer.commons.config.resource.ContentType;
 import de.qaware.cloud.deployer.commons.error.ResourceException;
 import de.qaware.cloud.deployer.commons.strategy.Strategy;
 import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okhttp3.internal.http.RealResponseBody;
+import okio.Buffer;
+import okio.BufferedSink;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -31,6 +34,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import static de.qaware.cloud.deployer.commons.logging.CommonsMessageBundle.COMMONS_MESSAGE_BUNDLE;
 import static org.junit.Assert.*;
@@ -41,7 +45,13 @@ import static org.mockito.Mockito.*;
  */
 public class BaseResourceTest {
 
+    private final static String RESOURCE_ID = "test-resource";
+    private final static String RESOURCE_CONTENT = "content";
+    private final static String MEDIA_TYPE = "application/json";
+
     private BaseResource<BaseResourceConfig> baseResource;
+    private BaseResourceConfig resourceConfig;
+    private ClientFactory clientFactory;
 
     @Before
     public void setup() throws ResourceException {
@@ -49,9 +59,13 @@ public class BaseResourceTest {
 
         EnvironmentConfig environmentConfig = new EnvironmentConfig("test", BASE_URL, Strategy.REPLACE);
 
-        ClientFactory clientFactory = new ClientFactory(environmentConfig);
+        clientFactory = new ClientFactory(environmentConfig);
 
-        BaseResourceConfig resourceConfig = new BaseResourceConfig("", ContentType.JSON, "") {
+        resourceConfig = new BaseResourceConfig("", ContentType.JSON, RESOURCE_CONTENT) {
+            @Override
+            public String getResourceId() {
+                return RESOURCE_ID;
+            }
         };
 
         baseResource = new BaseResource<BaseResourceConfig>(resourceConfig, clientFactory) {
@@ -62,7 +76,7 @@ public class BaseResourceTest {
 
             @Override
             protected MediaType createMediaType() throws ResourceException {
-                return null;
+                return MediaType.parse(MEDIA_TYPE);
             }
 
             @Override
@@ -448,6 +462,34 @@ public class BaseResourceTest {
         Call<ResponseBody> call = (Call<ResponseBody>) mock(Call.class);
         when(call.execute()).thenThrow(InterruptedException.class);
         baseResource.executeDeleteCallAndBlock(call);
+    }
+
+    @Test
+    public void testGetId() {
+        assertEquals(RESOURCE_ID, baseResource.getId());
+    }
+
+    @Test
+    public void testGetResourceConfig() {
+        assertEquals(resourceConfig, baseResource.getResourceConfig());
+    }
+
+    @Test
+    public void testCreateClient() {
+        clientFactory = mock(ClientFactory.class);
+        Object banana = new Object();
+        when(clientFactory.create(any())).thenReturn(banana);
+        assertEquals(banana, clientFactory.create(Object.class));
+    }
+
+    @Test
+    public void testCreateRequestBody() throws ResourceException, IOException {
+        RequestBody body = baseResource.createRequestBody();
+        assertNotNull(body);
+        assertEquals(MEDIA_TYPE, body.contentType().type() + "/" + body.contentType().subtype());
+        BufferedSink bufferedSink = new Buffer();
+        body.writeTo(bufferedSink);
+        assertEquals(RESOURCE_CONTENT, bufferedSink.buffer().readString(Charset.defaultCharset()));
     }
 
     private void assertExceptionOnExecuteCall(Call call, String message) {
