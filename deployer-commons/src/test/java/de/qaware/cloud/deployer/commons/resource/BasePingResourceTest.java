@@ -86,4 +86,10 @@ public class BasePingResourceTest {
         }
         assertTrue(exceptionThrown);
     }
+
+    @Test
+    public void testToString() {
+        String toString = basePingResource.toString();
+        assertEquals(COMMONS_MESSAGE_BUNDLE.getMessage("DEPLOYER_COMMONS_MESSAGES_PING", ENVIRONMENT_ID), toString);
+    }
 }
