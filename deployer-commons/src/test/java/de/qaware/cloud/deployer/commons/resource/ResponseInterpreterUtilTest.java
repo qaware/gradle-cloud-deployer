@@ -15,6 +15,8 @@
  */
 package de.qaware.cloud.deployer.commons.resource;
 
+import okhttp3.Protocol;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import org.junit.Test;
 import retrofit2.Response;
@@ -22,6 +24,8 @@ import retrofit2.Response;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static retrofit2.Response.success;
 
 /**
  * @author sjahreis
@@ -32,7 +36,7 @@ public class ResponseInterpreterUtilTest {
 
     @Test
     public void testIsNotFoundResponse() {
-        Response<ResponseBody> response = Response.success(body);
+        Response<ResponseBody> response = success(body);
         boolean interpreterResponse = ResponseInterpreterUtil.isNotFoundResponse(response);
         assertFalse(interpreterResponse);
 
@@ -51,8 +55,17 @@ public class ResponseInterpreterUtilTest {
 
     @Test
     public void testIsSuccessResponse() {
-        Response<ResponseBody> response = Response.success(body);
+        Response<ResponseBody> response = success(body);
         boolean interpreterResponse = ResponseInterpreterUtil.isSuccessResponse(response);
+        assertTrue(interpreterResponse);
+
+        response = success(body, new okhttp3.Response.Builder()
+                .code(201)
+                .message("OK")
+                .protocol(Protocol.HTTP_1_1)
+                .request(new Request.Builder().url("http://localhost/").build())
+                .build());
+        interpreterResponse = ResponseInterpreterUtil.isSuccessResponse(response);
         assertTrue(interpreterResponse);
 
         response = Response.error(401, body);
@@ -70,7 +83,7 @@ public class ResponseInterpreterUtilTest {
 
     @Test
     public void testIsServerErrorResponse() {
-        Response<ResponseBody> response = Response.success(body);
+        Response<ResponseBody> response = success(body);
         boolean interpreterResponse = ResponseInterpreterUtil.isServerErrorResponse(response);
         assertFalse(interpreterResponse);
 
