@@ -94,9 +94,7 @@ public class MarathonDeployerTest {
 
         // Verify resources were called correctly
         verify(environmentConfig, times(1)).getStrategy();
-        verify(marathonResourceConfigFactory, times(1)).createConfigs(any());
         verify(marathonResourceConfigFactory, times(1)).createConfigs(files);
-        verify(marathonResourceFactory, times(1)).createResources(any());
         verify(marathonResourceFactory, times(1)).createResources(configs);
         verify(resource1, times(1)).exists();
         verify(resource2, times(1)).exists();
@@ -112,9 +110,7 @@ public class MarathonDeployerTest {
 
         // Verify resources were called correctly
         verify(environmentConfig, times(1)).getStrategy();
-        verify(marathonResourceConfigFactory, times(1)).createConfigs(any());
         verify(marathonResourceConfigFactory, times(1)).createConfigs(files);
-        verify(marathonResourceFactory, times(1)).createResources(any());
         verify(marathonResourceFactory, times(1)).createResources(configs);
         verify(resource1, times(1)).exists();
         verify(resource2, times(1)).exists();
