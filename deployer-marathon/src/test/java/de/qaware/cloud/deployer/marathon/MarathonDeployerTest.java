@@ -82,8 +82,8 @@ public class MarathonDeployerTest {
         when(marathonResourceFactory.createResources(configs)).thenReturn(resources);
 
         // Return mock factories
-        whenNew(MarathonResourceFactory.class).withAnyArguments().thenReturn(marathonResourceFactory);
-        whenNew(MarathonResourceConfigFactory.class).withAnyArguments().thenReturn(marathonResourceConfigFactory);
+        whenNew(MarathonResourceFactory.class).withArguments(environmentConfig).thenReturn(marathonResourceFactory);
+        whenNew(MarathonResourceConfigFactory.class).withNoArguments().thenReturn(marathonResourceConfigFactory);
     }
 
     @Test
