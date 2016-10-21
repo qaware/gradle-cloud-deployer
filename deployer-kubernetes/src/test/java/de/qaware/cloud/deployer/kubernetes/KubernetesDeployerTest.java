@@ -23,16 +23,15 @@ import de.qaware.cloud.deployer.kubernetes.resource.KubernetesResourceFactory;
 import de.qaware.cloud.deployer.kubernetes.resource.base.KubernetesResource;
 import de.qaware.cloud.deployer.kubernetes.resource.namespace.NamespaceResource;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -40,9 +39,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 /**
  * @author sjahreis
  */
-@RunWith(PowerMockRunner.class)
 @PrepareForTest(KubernetesDeployer.class)
 public class KubernetesDeployerTest {
+
+    @Rule
+    public PowerMockRule rule = new PowerMockRule();
 
     private KubernetesEnvironmentConfig kubernetesEnvironmentConfig;
     private List<File> files;

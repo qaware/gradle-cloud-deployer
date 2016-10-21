@@ -22,27 +22,27 @@ import de.qaware.cloud.deployer.marathon.config.resource.MarathonResourceConfigF
 import de.qaware.cloud.deployer.marathon.resource.MarathonResourceFactory;
 import de.qaware.cloud.deployer.marathon.resource.base.MarathonResource;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author sjahreis
  */
-@RunWith(PowerMockRunner.class)
 @PrepareForTest(MarathonDeployer.class)
 public class MarathonDeployerTest {
+
+    @Rule
+    public PowerMockRule rule = new PowerMockRule();
 
     private EnvironmentConfig environmentConfig;
     private List<File> files;
