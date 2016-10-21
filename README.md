@@ -6,7 +6,7 @@
 [![Dependency Status](https://dependencyci.com/github/qaware/gradle-cloud-deployer/badge)](https://dependencyci.com/github/qaware/gradle-cloud-deployer)
 [![Dependency Status](https://www.versioneye.com/user/projects/5809b705912815003afa4729/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5809b705912815003afa4729)
 
-is a gradle plugin to deploy applications to Kubernetes and DC/OS Marathon.
+Gradle plugin to deploy applications to Kubernetes and DC/OS Marathon.
 
 ## Sponsor
 
