@@ -1,8 +1,6 @@
-<p align="acenter">
-    <img align="center" src="https://github.com/qaware/gradle-cloud-deployer/blob/master/wiki/logo.png?raw=true" alt="gradle-cloud-deployer" href="https://github.com/qaware/gradle-cloud-deployer"/>
-</p>
-
+![Gradle-Cloud-Deployer](https://github.com/qaware/gradle-cloud-deployer/blob/master/wiki/logo.png?raw=true)
 #Gradle-Cloud-Deployer
+
 [![Build Status](https://travis-ci.org/qaware/gradle-cloud-deployer.svg?branch=master)](https://travis-ci.org/qaware/gradle-cloud-deployer)
 [![codebeat badge](https://codebeat.co/badges/660364b2-bd46-4c5a-9f14-920ac85ecec1)](https://codebeat.co/projects/github-com-qaware-gradle-cloud-deployer)
 [![codecov](https://codecov.io/gh/qaware/gradle-cloud-deployer/branch/master/graph/badge.svg)](https://codecov.io/gh/qaware/gradle-cloud-deployer)
