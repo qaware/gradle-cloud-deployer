@@ -40,4 +40,4 @@ The plugin supports different deployment strategies
 - REPLACE
 
 ## Sponsor
-[![QAware GmbH](https://github.com/qaware/gradle-cloud-deployer/blob/master/wiki/qaware.svg?raw=true)](http://www.qaware.de)
+[![QAware GmbH](https://github.com/qaware/gradle-cloud-deployer/blob/master/wiki/qaware.png?raw=true)](http://www.qaware.de)
