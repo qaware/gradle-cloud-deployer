@@ -139,7 +139,17 @@ gradlew delete --environmentId=test
 See the [documentation](#documentation) for more details on the tasks.
 
 ## Documentation
-The [wiki](https://github.com/qaware/gradle-cloud-deployer/wiki) contains the documentation for plugin configuration and usage.
+The [wiki](https://github.com/qaware/gradle-cloud-deployer/wiki) contains the documentation for plugin configuration and
+usage.
+
+## Development
+For details on building and developing the Gradle-Cloud-Deployer plugin, please see the
+[wiki](https://github.com/qaware/gradle-cloud-deployer/wiki).
+
+## Contributing
+Is there anything missing? Do you have ideas for new features or improvements?
+
+All you have to do is to fork this repository, improve the code and issue a pull request.
 
 ## Maintainer
 Simon Jahreiß (@sjahreis)
