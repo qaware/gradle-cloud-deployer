@@ -39,5 +39,12 @@ The plugin supports different deployment strategies
 - RESET
 - REPLACE
 
+## Maintainer
+Simon Jahreiß (@sjahreis)
+
 ## Sponsor
 [![QAware GmbH](https://github.com/qaware/gradle-cloud-deployer/blob/master/wiki/qaware.png?raw=true)](http://www.qaware.de)
+
+## License
+This software is provided under the Apache License, Version 2.0 license.
+See the [`LICENSE`](https://github.com/qaware/gradle-cloud-deployer/blob/master/LICENSE) file for details.
