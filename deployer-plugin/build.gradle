@@ -10,7 +10,6 @@ dependencies {
     compile project(':deployer-kubernetes')
     compile project(':deployer-marathon')
     compile project(':deployer-dcos')
-    compile gradleApi()
 
     testCompile project (path: ':deployer-commons', configuration: 'tests')
 
