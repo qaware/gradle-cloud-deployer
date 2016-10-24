@@ -23,6 +23,8 @@ import de.qaware.cloud.deployer.plugin.task.DeployTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
+import static de.qaware.cloud.deployer.plugin.logging.PluginMessageBundle.PLUGIN_MESSAGE_BUNDLE;
+
 /**
  * Specifies all tasks offered and the extension used by the gradle cloud deployer plugin.
  */
@@ -38,11 +40,21 @@ public class DeployerPlugin implements Plugin<Project> {
         project.getExtensions().create("deployer", DeployerExtension.class, project);
 
         // Deploy tasks
-        project.getTasks().create("deployAll", DeployAllTask.class);
-        project.getTasks().create("deploy", DeployTask.class);
+        DeployAllTask deployAllTask = project.getTasks().create("deployAll", DeployAllTask.class);
+        deployAllTask.setDescription(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_TASK_DESCRIPTION_DEPLOY_ALL"));
+        deployAllTask.setGroup(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_PLUGIN_GROUP"));
+
+        DeployTask deployTask = project.getTasks().create("deploy", DeployTask.class);
+        deployTask.setDescription(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_TASK_DESCRIPTION_DEPLOY"));
+        deployTask.setGroup(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_PLUGIN_GROUP"));
 
         // Delete tasks
-        project.getTasks().create("deleteAll", DeleteAllTask.class);
-        project.getTasks().create("delete", DeleteTask.class);
+        DeleteAllTask deleteAllTask = project.getTasks().create("deleteAll", DeleteAllTask.class);
+        deleteAllTask.setDescription(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_TASK_DESCRIPTION_DELETE_ALL"));
+        deleteAllTask.setGroup(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_PLUGIN_GROUP"));
+
+        DeleteTask deleteTask = project.getTasks().create("delete", DeleteTask.class);
+        deleteTask.setDescription(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_TASK_DESCRIPTION_DELETE"));
+        deleteTask.setGroup(PLUGIN_MESSAGE_BUNDLE.getMessage("DEPLOYER_PLUGIN_MESSAGES_PLUGIN_GROUP"));
     }
 }
