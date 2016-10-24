@@ -10,6 +10,10 @@
 
 The Gradle-Cloud-Deployer is a gradle plugin which deploys your applications directly into your cloud.
 
+This plugin is available at the [Gradle Plugins Portal](https://plugins.gradle.org/plugin/de.qaware.cloud.deployer).
+
+Check out the [**quick start**](#quick-start)!
+
 ## Supported cloud orchestrators
 The supported cloud orchestrators and concepts are ...
 
@@ -85,6 +89,7 @@ deployer {
     kubernetes {
         id = "kubernetes-zwitscher"
         baseUrl = "https://your-address.com"
+        namespace = "test"
         strategy = "UPDATE"
         auth {
             username = "admin"
