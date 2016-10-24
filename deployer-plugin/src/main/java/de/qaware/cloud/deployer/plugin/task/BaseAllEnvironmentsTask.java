@@ -23,6 +23,7 @@ import de.qaware.cloud.deployer.plugin.environment.Environment;
 import de.qaware.cloud.deployer.plugin.environment.EnvironmentFactory;
 import de.qaware.cloud.deployer.plugin.extension.DeployerExtension;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,7 @@ public abstract class BaseAllEnvironmentsTask extends DefaultTask {
     /**
      * Contains all environments.
      */
+    @Internal
     private List<Environment> environments;
 
     /**

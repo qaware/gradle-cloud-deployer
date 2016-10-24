@@ -18,6 +18,7 @@ package de.qaware.cloud.deployer.plugin.task;
 import de.qaware.cloud.deployer.commons.error.EnvironmentConfigException;
 import de.qaware.cloud.deployer.plugin.environment.Environment;
 import org.gradle.api.internal.tasks.options.Option;
+import org.gradle.api.tasks.Internal;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ public abstract class BaseSingleEnvironmentTask extends BaseAllEnvironmentsTask 
     /**
      * The environment representation of the selected environment.
      */
+    @Internal
     private Environment environment;
 
     /**
