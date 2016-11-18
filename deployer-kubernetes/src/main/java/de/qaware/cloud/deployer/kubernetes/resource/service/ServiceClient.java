@@ -33,7 +33,7 @@ interface ServiceClient {
      * @param namespace The service's namespace.
      * @return The server's http response.
      */
-    @GET("/api/v1/namespaces/{namespace}/services/{name}")
+    @GET("api/v1/namespaces/{namespace}/services/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
     /**
@@ -43,7 +43,7 @@ interface ServiceClient {
      * @param serviceDescription The request body which contains the service.
      * @return The server's http response.
      */
-    @POST("/api/v1/namespaces/{namespace}/services")
+    @POST("api/v1/namespaces/{namespace}/services")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody serviceDescription);
 
     /**
@@ -54,7 +54,7 @@ interface ServiceClient {
      * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}/services/{name}", hasBody = true)
+    @HTTP(method = "DELETE", path = "api/v1/namespaces/{namespace}/services/{name}", hasBody = true)
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 
     /**
@@ -65,6 +65,6 @@ interface ServiceClient {
      * @param serviceDescription The request body which contains the updated service.
      * @return The server's http response.
      */
-    @PATCH("/api/v1/namespaces/{namespace}/services/{name}")
+    @PATCH("api/v1/namespaces/{namespace}/services/{name}")
     Call<ResponseBody> update(@Path("name") String name, @Path("namespace") String namespace, @Body RequestBody serviceDescription);
 }

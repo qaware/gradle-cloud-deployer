@@ -33,7 +33,7 @@ interface PodClient {
      * @param namespace The pod's namespace.
      * @return The server's http response.
      */
-    @GET("/api/v1/namespaces/{namespace}/pods/{name}")
+    @GET("api/v1/namespaces/{namespace}/pods/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
     /**
@@ -43,7 +43,7 @@ interface PodClient {
      * @param podDescription The request body which contains the pod.
      * @return The server's http response.
      */
-    @POST("/api/v1/namespaces/{namespace}/pods")
+    @POST("api/v1/namespaces/{namespace}/pods")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody podDescription);
 
     /**
@@ -54,6 +54,6 @@ interface PodClient {
      * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}/pods/{name}", hasBody = true)
+    @HTTP(method = "DELETE", path = "api/v1/namespaces/{namespace}/pods/{name}", hasBody = true)
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 }

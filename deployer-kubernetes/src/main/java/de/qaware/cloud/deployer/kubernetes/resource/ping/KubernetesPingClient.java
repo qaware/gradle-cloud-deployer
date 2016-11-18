@@ -30,6 +30,6 @@ interface KubernetesPingClient {
      *
      * @return The server's http response.
      */
-    @GET("/api/v1/namespaces")
+    @GET("api/v1/namespaces")
     Call<ResponseBody> ping();
 }

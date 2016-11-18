@@ -34,7 +34,7 @@ interface ReplicationControllerClient {
      * @param namespace The replication controller's namespace.
      * @return The server's http response.
      */
-    @GET("/api/v1/namespaces/{namespace}/replicationcontrollers/{name}")
+    @GET("api/v1/namespaces/{namespace}/replicationcontrollers/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
     /**
@@ -44,7 +44,7 @@ interface ReplicationControllerClient {
      * @param replicationControllerDescription The request body which contains the replication controller.
      * @return The server's http response.
      */
-    @POST("/api/v1/namespaces/{namespace}/replicationcontrollers")
+    @POST("api/v1/namespaces/{namespace}/replicationcontrollers")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody replicationControllerDescription);
 
     /**
@@ -55,7 +55,7 @@ interface ReplicationControllerClient {
      * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}/replicationcontrollers/{name}", hasBody = true)
+    @HTTP(method = "DELETE", path = "api/v1/namespaces/{namespace}/replicationcontrollers/{name}", hasBody = true)
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 
     /**
@@ -66,6 +66,6 @@ interface ReplicationControllerClient {
      * @param scale     The new scale object.
      * @return The server's http response.
      */
-    @PUT("/api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale")
+    @PUT("api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale")
     Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body Scale scale);
 }

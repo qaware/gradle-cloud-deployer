@@ -34,7 +34,7 @@ interface DeploymentClient {
      * @param namespace The deployment's namespace.
      * @return The server's http response.
      */
-    @GET("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
+    @GET("apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
     Call<ResponseBody> get(@Path("name") String name, @Path("namespace") String namespace);
 
     /**
@@ -44,7 +44,7 @@ interface DeploymentClient {
      * @param deploymentDescription The request body which contains the deployment.
      * @return The server's http response.
      */
-    @POST("/apis/extensions/v1beta1/namespaces/{namespace}/deployments")
+    @POST("apis/extensions/v1beta1/namespaces/{namespace}/deployments")
     Call<ResponseBody> create(@Path("namespace") String namespace, @Body RequestBody deploymentDescription);
 
     /**
@@ -55,7 +55,7 @@ interface DeploymentClient {
      * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @HTTP(method = "DELETE", path = "/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}", hasBody = true)
+    @HTTP(method = "DELETE", path = "apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}", hasBody = true)
     Call<ResponseBody> delete(@Path("name") String name, @Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 
     /**
@@ -66,7 +66,7 @@ interface DeploymentClient {
      * @param deploymentDescription The request body which contains the updated deployment.
      * @return The server's http response.
      */
-    @PATCH("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
+    @PATCH("apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}")
     Call<ResponseBody> update(@Path("name") String name, @Path("namespace") String namespace, @Body RequestBody deploymentDescription);
 
     /**
@@ -77,6 +77,6 @@ interface DeploymentClient {
      * @param scale     The new scale object.
      * @return The server's http response.
      */
-    @PUT("/apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}/scale")
+    @PUT("apis/extensions/v1beta1/namespaces/{namespace}/deployments/{name}/scale")
     Call<ResponseBody> updateScale(@Path("name") String name, @Path("namespace") String namespace, @Body Scale scale);
 }

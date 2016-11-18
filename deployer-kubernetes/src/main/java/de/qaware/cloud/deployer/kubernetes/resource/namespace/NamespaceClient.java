@@ -32,7 +32,7 @@ interface NamespaceClient {
      * @param namespace The namespace's name.
      * @return The server's http response.
      */
-    @GET("/api/v1/namespaces/{namespace}")
+    @GET("api/v1/namespaces/{namespace}")
     Call<ResponseBody> get(@Path("namespace") String namespace);
 
     /**
@@ -41,7 +41,7 @@ interface NamespaceClient {
      * @param namespaceDescription The request body which contains the namespace.
      * @return The server's http response.
      */
-    @POST("/api/v1/namespaces")
+    @POST("api/v1/namespaces")
     Call<ResponseBody> create(@Body RequestBody namespaceDescription);
 
     /**
@@ -51,6 +51,6 @@ interface NamespaceClient {
      * @param deleteOptions The delete options.
      * @return The server's http response.
      */
-    @HTTP(method = "DELETE", path = "/api/v1/namespaces/{namespace}", hasBody = true)
+    @HTTP(method = "DELETE", path = "api/v1/namespaces/{namespace}", hasBody = true)
     Call<ResponseBody> delete(@Path("namespace") String namespace, @Body DeleteOptions deleteOptions);
 }

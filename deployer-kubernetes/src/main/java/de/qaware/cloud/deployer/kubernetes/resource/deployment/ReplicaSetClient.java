@@ -32,6 +32,6 @@ interface ReplicaSetClient {
      * @param labelSelector The label selector which identifies the replica set.
      * @return The server's http response.
      */
-    @DELETE("/apis/extensions/v1beta1/namespaces/{namespace}/replicasets")
+    @DELETE("apis/extensions/v1beta1/namespaces/{namespace}/replicasets")
     Call<ResponseBody> delete(@Path("namespace") String namespace, @Query("labelSelector") String labelSelector);
 }
