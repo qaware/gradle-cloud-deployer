@@ -31,7 +31,7 @@ interface AppClient {
      * @param appId The app's id.
      * @return The server's http response.
      */
-    @GET("/service/marathon/v2/apps/{appId}")
+    @GET("service/marathon/v2/apps/{appId}")
     Call<ResponseBody> get(@Path("appId") String appId);
 
     /**
@@ -40,7 +40,7 @@ interface AppClient {
      * @param appDescription The request body which contains the app.
      * @return The server's http response.
      */
-    @POST("/service/marathon/v2/apps?force=true")
+    @POST("service/marathon/v2/apps?force=true")
     Call<ResponseBody> create(@Body RequestBody appDescription);
 
     /**
@@ -49,7 +49,7 @@ interface AppClient {
      * @param appId The app's id.
      * @return The server's http response.
      */
-    @DELETE("/service/marathon/v2/apps/{appId}?force=true")
+    @DELETE("service/marathon/v2/apps/{appId}?force=true")
     Call<ResponseBody> delete(@Path("appId") String appId);
 
     /**
@@ -59,6 +59,6 @@ interface AppClient {
      * @param appDescription The request body with the updated app.
      * @return The server's http response.
      */
-    @PUT("/service/marathon/v2/apps/{appId}?force=true")
+    @PUT("service/marathon/v2/apps/{appId}?force=true")
     Call<ResponseBody> update(@Path("appId") String appId, @Body RequestBody appDescription);
 }

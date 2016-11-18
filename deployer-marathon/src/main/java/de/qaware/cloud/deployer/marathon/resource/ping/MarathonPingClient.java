@@ -29,6 +29,6 @@ interface MarathonPingClient {
      *
      * @return The server's http response.
      */
-    @GET("/service/marathon/ping")
+    @GET("service/marathon/ping")
     Call<ResponseBody> ping();
 }

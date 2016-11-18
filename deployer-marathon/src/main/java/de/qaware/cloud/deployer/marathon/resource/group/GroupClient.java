@@ -31,7 +31,7 @@ interface GroupClient {
      * @param groupId The groups's id.
      * @return The server's http response.
      */
-    @GET("/service/marathon/v2/groups/{groupId}")
+    @GET("service/marathon/v2/groups/{groupId}")
     Call<ResponseBody> get(@Path("groupId") String groupId);
 
     /**
@@ -40,7 +40,7 @@ interface GroupClient {
      * @param groupDescription The request body which contains the group.
      * @return The server's http response.
      */
-    @POST("/service/marathon/v2/groups?force=true")
+    @POST("service/marathon/v2/groups?force=true")
     Call<ResponseBody> create(@Body RequestBody groupDescription);
 
     /**
@@ -49,7 +49,7 @@ interface GroupClient {
      * @param groupId The group's id.
      * @return The server's http response.
      */
-    @DELETE("/service/marathon/v2/groups/{groupId}?force=true")
+    @DELETE("service/marathon/v2/groups/{groupId}?force=true")
     Call<ResponseBody> delete(@Path("groupId") String groupId);
 
     /**
@@ -59,6 +59,6 @@ interface GroupClient {
      * @param groupDescription The request body with the updated group.
      * @return The server's http response.
      */
-    @PUT("/service/marathon/v2/groups/{groupId}?force=true")
+    @PUT("service/marathon/v2/groups/{groupId}?force=true")
     Call<ResponseBody> update(@Path("groupId") String groupId, @Body RequestBody groupDescription);
 }
