@@ -43,7 +43,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.de.qaware.cloud.deployer:deployer:0.9.1"
+    classpath "gradle.plugin.de.qaware.cloud.deployer:deployer:0.9.2"
   }
 }
 
@@ -53,7 +53,7 @@ apply plugin: "de.qaware.cloud.deployer"
 Build script snippet for new, incubating, plugin mechanism introduced in **Gradle 2.1**:
 ```groovy
 plugins {
-  id "de.qaware.cloud.deployer" version "0.9.1"
+  id "de.qaware.cloud.deployer" version "0.9.2"
 }
 ```
 
