@@ -2,6 +2,7 @@
 #Gradle-Cloud-Deployer
 
 [![Build Status](https://travis-ci.org/qaware/gradle-cloud-deployer.svg?branch=master)](https://travis-ci.org/qaware/gradle-cloud-deployer)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ef03b8e7550a48479f2c99e1d52006e0)](https://www.codacy.com/app/simon-jahreiss/gradle-cloud-deployer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=qaware/gradle-cloud-deployer&amp;utm_campaign=Badge_Grade)
 [![codebeat badge](https://codebeat.co/badges/660364b2-bd46-4c5a-9f14-920ac85ecec1)](https://codebeat.co/projects/github-com-qaware-gradle-cloud-deployer)
 [![codecov](https://codecov.io/gh/qaware/gradle-cloud-deployer/branch/master/graph/badge.svg)](https://codecov.io/gh/qaware/gradle-cloud-deployer)
 [![Dependency Status](https://dependencyci.com/github/qaware/gradle-cloud-deployer/badge)](https://dependencyci.com/github/qaware/gradle-cloud-deployer)
